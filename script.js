@@ -30,7 +30,18 @@ document.querySelectorAll('.nav-links a').forEach(link => {
   });
 });
 
-// Toggle dark mode
+// Function to apply theme on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const currentTheme = localStorage.getItem('theme');
+  if (currentTheme === 'dark') {
+    document.body.classList.add('dark');
+  }
+});
+
+// Toggle theme and store preference
 document.getElementById('themeToggle').addEventListener('click', () => {
   document.body.classList.toggle('dark');
+  const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
+  localStorage.setItem('theme', theme);
 });
+

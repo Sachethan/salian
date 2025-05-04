@@ -1,5 +1,5 @@
 :root {
-  --bg: #f9f9f9;
+  --bg:linear-gradient(90deg,rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgba(255, 241, 214, 1) 100%);
   --text: #222;
   --nav-bg: #111;
   --accent: #764ba2;
@@ -27,11 +27,18 @@ body.dark {
   box-sizing: border-box;
   transition: background 0.3s, color 0.3s;
 }
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--text);
+  background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
 }
+
 .container {
   max-width: 1100px;
   margin: auto;
@@ -99,10 +106,23 @@ header {
 
 /* Hero */
 .hero {
-  background: linear-gradient(to right, #667eea, #764ba2);
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
   color: #fff;
   text-align: center;
   padding: 100px 20px;
+}
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 .hero h2 {
   font-size: 2.5rem;
@@ -126,6 +146,16 @@ header {
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   margin-top: 30px;
 }
+.grid a{
+  text-decoration: none;
+  color: var(--text);
+}
+.grid_2 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
 .card, .portfolio-item {
   background: var(--card-bg);
   padding: 20px;
@@ -135,10 +165,15 @@ header {
 }
 .card:hover, .portfolio-item:hover {
   transform: translateY(-5px);
+  }
+.dark .card:hover, .dark .portfolio-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 2px 10px rgba(255,255,255,100);
+
 }
 
 .portfolio-item img {
-  width: 100%;
+  width: 200px;
   height: 100%;
   object-fit: cover; /* Ensures image covers the area without distortion */
   object-position: center;
@@ -154,7 +189,6 @@ header {
 
 .contact {
   padding: 60px 20px;
-  background: var(--section-bg);
   color: var(--text);
 }
 
@@ -184,7 +218,10 @@ header {
   font-size: 1rem;
   line-height: 1.6;
 }
-
+.contact-info a{
+  text-decoration: none;
+  color: var(--text);
+}
 .info-box {
   display: flex;
   align-items: center;
@@ -271,8 +308,17 @@ header {
   .menu-toggle {
     display: block;
   }
+  .grid_2 {
+  display: flex;
+     overflow-x: auto;
+     gap: 16px;
+     padding: 16px;
+     scroll-snap-type: x mandatory;
+}
+  
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
