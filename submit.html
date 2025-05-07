@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Submission Successful</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #4facfe, #00f2fe);
+      background-size: 400% 400%;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: gradient 15s ease infinite;
+      height: 100vh;
+      padding: 20px;
+    }
+  @keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 40px 30px;
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      animation: slideIn 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #f0f0f0;
+    }
+
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      color: #00ffd5;
+    }
+
+    .button {
+      margin-top: 30px;
+      padding: 12px 25px;
+      background: #00ffd5;
+      color: #003333;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .button:hover {
+      background: #00e6c2;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="icon">✅</div>
+    <h1>Submission Successful</h1>
+    <p id="thankYouMsg">Thank you for reaching out. We will contact you shortly.</p>
+   <button class="button" onclick="window.location.href='index.html'">Back to Home</button>
+  </div>
+
+  <script>
+    const name = localStorage.getItem("userName") || "User";
+    const email = localStorage.getItem("userEmail") || "";
+
+    document.getElementById("thankYouMsg").textContent =
+      `Hello ${name}, your request was submitted successfully. We will contact you within 24 hours at ${email}.`;
+
+  </script>
+
+</body>
+</html>

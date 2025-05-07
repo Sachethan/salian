@@ -37,7 +37,39 @@ body {
   color: var(--text);
   background-size: 400% 400%;
 	animation: gradient 15s ease infinite;
+  transition: transform 0.5s ease;
 }
+
+.loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .loader.show {
+      visibility: visible;
+      opacity: 1;
+    }
+.spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #ccc;
+      border-top-color: #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
 .container {
   max-width: 1100px;
@@ -315,10 +347,75 @@ header {
      padding: 16px;
      scroll-snap-type: x mandatory;
 }
-  
+}
+
+.pe_post {
+  background: wheat;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  border-radius: 10px;
+}
+.pe_post img {
+  width: 90px;
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+  /* Overlay with blur */
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  /* Popup box */
+  .popup-box {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 90%;
+    width: 320px;
+    animation: popupIn 0.3s ease-out;
+  }
+
+  .popup-box p {
+    margin: 0 0 20px;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .popup-box button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .popup-box button:hover {
+    background-color: #0056b3;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0 }
+    to { opacity: 1 }
+  }
+
+  @keyframes popupIn {
+    from { transform: scale(0.95); opacity: 0 }
+    to { transform: scale(1); opacity: 1 }
+  }

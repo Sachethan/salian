@@ -17,6 +17,7 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#portfolio">Portfolio</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><button class="btn" id="clearDataBtn" style="display: none;" onclick="cleardata()">Clear My Data</button></li>
       </ul>
       <div class="nav-actions">
         <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
@@ -24,29 +25,35 @@
       </div>
     </nav>
   </header>
-
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+  </div>
+<!-- Overlay + Popup -->
+<div id="popupOverlay" class="overlay">
+  <div class="popup-box">
+    <p>✅ Request message updated.<br>Feel free to edit it if needed.</p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+  
   <section id="home" class="hero">
     <div class="container">
-      <h2>Hello, I'm Sachethan</h2>
+      <h2>Hello <span id="userdisplay"></span>, I'm Sachethan</h2>
       <p>Freelancer | Digital Creator</p>
-      <a href="#contact" class="btn">Hire Me</a>
+      <a href="#contact" class="btn">Contact Me</a>
     </div>
   </section>
 
-  <section id="about" class="section container">
-    <h2>About Me</h2>
-    <p>I'm a creative freelancer offering services in photo editing, poster design, logo making, video editing, and more. I turn ideas into visuals that connect with your audience.</p>
-  </section>
-
+ 
   <section id="services" class="section container">
     <h2>Services</h2>
     <div class="grid">
-      <a href="#contact"><div class="card">📷 Photo Editing</div></a>
-      <a href="#contact"><div class="card">🎨 Poster Design</div></a>
-      <a href="#contact"><div class="card">🧩 Logo Design</div></a>
-      <a href="#contact"><div class="card">🎬 Video Editing</div></a>
-      <a href="#contact"><div class="card">📱 Social Media Creatives</div></a>
-      <a href="#contact"><div class="card">✨ Custom Requests</div></a>
+      <a href="#contact" class="service-card" data-service="📷 Photo Editing"><div class="card">📷 Photo Editing</div></a>
+      <a href="#contact" class="service-card" data-service="🎨 Poster Design"><div class="card">🎨 Poster Design</div></a>
+      <a href="#contact" class="service-card" data-service="🧩 Logo Design"><div class="card">🧩 Logo Design</div></a>
+      <a href="#contact" class="service-card" data-service="🎬 Video Editing"><div class="card">🎬 Video Editing</div></a>
+      <a href="#contact" class="service-card" data-service="📱 Social Media Creatives"><div class="card">📱 Social Media Creatives</div></a>
+      <a href="#contact" onclick="document.getElementById('requestInput').value = '';"><div class="card">✨ Custom Requests</div></a>
     </div>
   </section>
 
@@ -72,6 +79,10 @@
   <p>Invitation Design</p>
 </div>
   </section>
+ <section id="about" class="section container">
+    <h2>About Me</h2>
+    <p>I'm a creative freelancer offering services in photo editing, poster design, logo making, video editing, and more. I turn ideas into visuals that connect with your audience.</p>
+  </section>
 
   <section class="contact" id="contact">
   <h2>Contact Me</h2>
@@ -91,16 +102,15 @@
     <form class="contact-form" id="contactForm">
   <input type="text" name="name" placeholder="Your Name" required />
   <input type="email" name="email" placeholder="Your Email" required />
-  <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-  <button type="submit">Send Message</button>
+  <textarea id="requestInput" name="message" rows="5" placeholder="Your Message" required></textarea>
+  <button type="submit">Send Request Message</button>
   <p id="formResponse" style="margin-top:10px;"></p>
 </form>
-
   </div>
 </section>
 
   <footer class="footer">
-    <p>© 2025 Sachethan. All rights reserved.</p>
+    <p>© 2025 Sachethan salian. All rights reserved.</p>
   </footer>
 
   <script src="script.js"></script>
