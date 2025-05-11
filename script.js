@@ -1,3 +1,23 @@
+const hideElfsightLink = () => {
+    const link = document.querySelector('a[href*="elfsight.com/youtube-channel-plugin-yottie"]');
+    if (link) {
+      link.remove();
+    } else {
+      setTimeout(hideElfsightLink, 500); // Retry until it's available
+    }
+  };
+  hideElfsightLink();
+const hideElfsightLink_i = () => {
+    const link = document.querySelector('a[href*="elfsight.com"]');
+    if (link) {
+      link.remove();
+    } else {
+      setTimeout(hideElfsightLink_i, 600); // Retry until it's available
+    }
+  };
+  hideElfsightLink_i();
+
+
 let navOpen = false;
 
 function toggleMenu() {
@@ -112,21 +132,3 @@ const serviceCards = document.querySelectorAll(".service-card");
     document.getElementById("popupOverlay").style.display = "none";
   }
 
-const hideElfsightLink = () => {
-    const link = document.querySelector('a[href*="elfsight.com/youtube-channel-plugin-yottie"]');
-    if (link) {
-      link.remove();
-    } else {
-      setTimeout(hideElfsightLink, 500); // Retry until it's available
-    }
-  };
-  hideElfsightLink();
-const hideElfsightLink_i = () => {
-    const link = document.querySelector('a[href*="elfsight.com"]');
-    if (link) {
-      link.remove();
-    } else {
-      setTimeout(hideElfsightLink_i, 600); // Retry until it's available
-    }
-  };
-  hideElfsightLink_i();
