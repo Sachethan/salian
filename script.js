@@ -1,22 +1,17 @@
-const hideElfsightLink = () => {
-    const link = document.querySelector('a[href*="elfsight.com/youtube-channel-plugin-yottie"]');
-    if (link) {
-      link.remove();
+function hideElfsightBranding() {
+    const badge = document.querySelector('a[href*="elfsight.com"]');
+    if (badge) {
+      badge.remove(); // Or badge.style.display = "none";
     } else {
-      setTimeout(hideElfsightLink, 500); // Retry until it's available
+      setTimeout(hideElfsightBranding, 500); // Retry after 500ms
     }
-  };
-  hideElfsightLink();
-const hideElfsightLink_i = () => {
-    const link = document.querySelector('a[href*="elfsight.com"]');
-    if (link) {
-      link.remove();
-    } else {
-      setTimeout(hideElfsightLink_i, 600); // Retry until it's available
-    }
-  };
-  hideElfsightLink_i();
+  }
 
+  // Start checking once the page loads
+  window.addEventListener("DOMContentLoaded", hideElfsightBranding);
+  
+  // Keep checking every few seconds in case it's added later
+  setInterval(hideElfsightBranding, 3000);
 
 let navOpen = false;
 
