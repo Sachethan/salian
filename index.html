@@ -10,12 +10,14 @@
 <body>
   <header>
     <nav class="container nav-container">
-      <h1 class="logo">Sachethan</h1>
+      <h1 class="logo">
+  <img src="logo.png" alt="Gallery of Salian" style="height: 40px;">
+</h1>
       <ul class="nav-links" id="navLinks">
         <li><a href="#home">Home</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#youtube">Portfolio</a></li>
         <li><a href="#contact">Contact</a></li>
         <li><button class="btn" id="clearDataBtn" style="display: none;" onclick="cleardata()">Clear My Data</button></li>
       </ul>
@@ -39,28 +41,37 @@
   <section id="home" class="hero">
     <div class="container">
       <h2>Hello <span id="userdisplay"></span>, I'm Sachethan</h2>
-      <p>Freelancer | Digital Creator</p>
-      <a href="#contact" class="btn">Contact Me</a>
+      <p> | Digital Creator | </p>
+      <a href="#footer" class="btn">Let's Go..</a>
     </div>
   </section>
    <section id="services" class="section container">
-    <h2>Services</h2>
+    <h2>Contact Me For</h2>
     <div class="grid">
       <a href="#contact" class="service-card" data-service="📷 Photo Editing"><div class="card">📷 Photo Editing</div></a>
       <a href="#contact" class="service-card" data-service="🎨 Poster Design"><div class="card">🎨 Poster Design</div></a>
       <a href="#contact" class="service-card" data-service="🧩 Logo Design"><div class="card">🧩 Logo Design</div></a>
       <a href="#contact" class="service-card" data-service="🎬 Video Editing"><div class="card">🎬 Video Editing</div></a>
       <a href="#contact" class="service-card" data-service="📱 Social Media Creatives"><div class="card">📱 Social Media Creatives</div></a>
-      <a href="#contact" onclick="document.getElementById('requestInput').value = '';"><div class="card">✨ Custom Requests</div></a>
+      <a href="#contact" class="service-card" data-service="✨ Web Design (Ai Code)"><div class="card">✨ Web Design (Ai Code)</div></a>
     </div>
         </section>
-<section id="youtube" class="section container">
+<section id="youtube" class="section container moregap">
     <h2>Youtube Channel</h2>
         <!-- Elfsight YouTube Gallery | Untitled YouTube Gallery -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
 <div class="elfsight-app-9c8a0458-04a9-4e4a-a944-0385bbc9f7ff" data-elfsight-app-lazy></div>
       </section>
-  <section id="portfolio" class="section container">
+        
+<section id="insta" class="section container moregap">
+    <h2>Instagram</h2>
+<!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
+<div class="elfsight-app-909f0c5d-fb2d-49ce-9fbd-92f210d7c01c" data-elfsight-app-lazy></div>
+      </section>
+    
+        
+  <section style="display:none;"id="portfolio" class="section container">
     <h2>Portfolio</h2>
     <div class="grid_2">
      <div class="portfolio-item">
@@ -88,7 +99,7 @@
   </section>
 
   <section class="contact" id="contact">
-  <h2>Contact Me</h2>
+  <h2>Contact Details</h2>
   <div class="contact-container">
     <div class="contact-info">
       <p>I'd love to hear from you! Whether it's a project, question, or just to say hello — feel free to get in touch.</p>
@@ -112,7 +123,7 @@
   </div>
 </section>
 
-  <footer class="footer">
+  <footer id="footer" class="footer">
     <p>© 2025 Sachethan salian. All rights reserved.</p>
   </footer>
 

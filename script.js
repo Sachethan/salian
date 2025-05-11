@@ -121,3 +121,12 @@ const hideElfsightLink = () => {
     }
   };
   hideElfsightLink();
+const hideElfsightLink_i = () => {
+    const link = document.querySelector('a[href*="elfsight.com"]');
+    if (link) {
+      link.remove();
+    } else {
+      setTimeout(hideElfsightLink_i, 600); // Retry until it's available
+    }
+  };
+  hideElfsightLink_i();
