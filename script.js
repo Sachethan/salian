@@ -74,41 +74,22 @@ function navigateWithLoader(url, delay = 800) {
   }
 }
 
-function goBack() {
-  const loader = document.getElementById('loader');
-  loader.classList.add('show');
-
-  setTimeout(() => {
-    if (history.length > 1) {
-      history.back();
-    } else {
-      window.location.href = 'index.html'; // fallback if no history
-    }
-  }, 200);
-}
 
   window.addEventListener("DOMContentLoaded", () => {
-  const savedName = localStorage.getItem("userName");
-  const savedEmail = localStorage.getItem("userEmail");
+  const savedName = localStorage.getItem("username");
+      const savedEmail = localStorage.getItem("userEmail");
 
   if (savedName) {
     document.querySelector("input[name='name']").value = savedName;
     document.getElementById("userdisplay").textContent = savedName;
+    document.getElementById("userPname").textContent = savedName;
   }
 
   if (savedEmail) {
     document.querySelector("input[name='email']").value = savedEmail;
   }
-      if (savedName && savedEmail) {
-      document.getElementById("clearDataBtn").style.display = "inline-block";
-    }
 });
 
-function cleardata() {
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userEmail");
-    location.reload();
-}
 
 const serviceCards = document.querySelectorAll(".service-card");
 

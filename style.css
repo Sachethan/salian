@@ -10,6 +10,8 @@
   --accent-hover: #0056b3;
   --input-bg: #f9f9f9;
   --input-border: #ccc;
+  --dbg: #fff;
+  --logout: #d00;
 }
 body.dark {
   --bg: #121212;
@@ -20,6 +22,8 @@ body.dark {
   --text: #fff;
   --input-bg: #222;
   --input-border: #555;
+  --dbg: #121212;
+  --logout: #007bff;
 }
 * {
   margin: 0;
@@ -130,7 +134,7 @@ header {
   align-items: center;
   gap: 15px;
 }
-#themeToggle {
+#themeToggle, #profileButton {
   background: none;
   border: none;
   color: #fff;
@@ -143,6 +147,51 @@ header {
   cursor: pointer;
   color: #fff;
 }
+
+#profileDropdown {
+      display: none;
+      position: absolute;
+      right: 40px;
+      top: 55px;
+      background-color: var(--dbg);
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+#profileDropdown .dropdown-item {
+      padding: 10px 15px;
+      font-size: 14px;
+      margin: 0;
+      color: var(--text);
+      text-decoration: none;
+      display: block;
+    }
+
+    #profileDropdown .dropdown-item:hover {
+      background-color: #f5f5f5;
+    }
+
+    #profileDropdown .dropdown-header {
+      font-weight: bold;
+      border-bottom: 1px solid #ddd;
+    }
+    #logoutButton {
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      padding: 10px 15px;
+      margin: 0;
+      font-size: 14px;
+      color: var(--logout);
+      cursor: pointer;
+    }
+
+    #logoutButton:hover {
+      background-color: #f5f5f5;
+    }
 
 /* Hero */
 .hero {
@@ -173,9 +222,52 @@ header {
   padding: 10px 20px;
   margin-top: 20px;
   display: inline-block;
+  border: 9px;
   border-radius: 5px;
   text-decoration: none;
 }
+
+.lbtn {
+  background: #fff;
+  color: #333;
+  padding: 5px 10px;
+  margin-top: 0;
+  border: 9px;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+
+#super-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      flex-direction: column;
+      font-size: 20px;
+    }
+
+    .dloader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3DDC84;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
 .section {
   padding: 20px 15px;
   text-align: center;

@@ -4,14 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sachethan Salian</title>
-  <link rel="stylesheet" href="style.css" />
+ 
+  <link rel="stylesheet" href="https://sachethan.github.io/salian/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  
+  <style>
+     #notificationBox {
+      display: none;
+      border: 2px solid #4CAF50;
+      padding: 15px;
+      background: #f1f1f1;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
   <header>
     <nav class="container nav-container">
       <h1 class="logo">
-  <img src="logo.png" alt="Gallery of Salian" style="height: 40px;">
+  <img src="https://sachethan.github.io/salian/logo.png" alt="Gallery of Salian" style="height: 40px;">
 </h1>
       <ul class="nav-links" id="navLinks">
         <li><a href="#home">Home</a></li>
@@ -19,16 +30,34 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#youtube">Portfolio</a></li>
         <li><a href="#contact">Contact</a></li>
-        <li><button class="btn" id="clearDataBtn" style="display: none;" onclick="cleardata()">Clear My Data</button></li>
+        <button class="lbtn" onclick="window.location.href='login/login.html';" id="loginpage" title="login page">Login</button>
       </ul>
-      <div class="nav-actions">
+      <div class="nav-actions">              
+        <button id="profileButton" title="Profile Page"
+             style="display:none;" class="lbtn px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-100 focus:outline-none">
+        👤
+      </button>
+        
+        <!-- Dropdown -->
+    <div id="profileDropdown">
+        <div class="dropdown-item dropdown-header">👋 Hello, <span id="userPname"></span></div>
+        <a href="editprofile.html" class="dropdown-item">Edit Profile</a>
+        <button id="logoutButton">Logout</button>
+      </div>
+        
+        
         <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
         <div class="menu-toggle" onclick="toggleMenu()">☰</div>
       </div>
     </nav>
   </header>
   <div class="loader" id="loader">
-    <div class="spinner"></div>
+   <div class="spinner"></div>
+  </div>
+  
+  <div id="super-popup">
+    <div class="dloader"></div>
+    <div>Preparing your download...</div>
   </div>
 <!-- Overlay + Popup -->
 <div id="popupOverlay" class="overlay">
@@ -40,30 +69,40 @@
   
   <section id="home" class="hero">
     <div class="container">
-      <h2>Hello <span id="userdisplay"></span>, I'm Sachethan</h2>
+      <h2>Hello <span id="userdisplay">....</span>, Im Sachethan</h2>
       <p> | Digital Creator | </p>
-      <a href="#footer" class="btn">Let's Go..</a>
+      <button onclick="window.location.href = '#footer';" class="btn">Lets Go..</button>
+      <button id="download-app" onclick="window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';" download="SachethanApp.apk" class="btn"><i class="fa-brands fa-android"></i> Download App</button>
     </div>
   </section>
+  
    <section id="services" class="section container">
     <h2>Contact Me For</h2>
     <div class="grid">
-      <a href="#contact" class="service-card" data-service="📷 Photo Editing"><div class="card">📷 Photo Editing</div></a>
-      <a href="#contact" class="service-card" data-service="🎨 Poster Design"><div class="card">🎨 Poster Design</div></a>
-      <a href="#contact" class="service-card" data-service="🧩 Logo Design"><div class="card">🧩 Logo Design</div></a>
-      <a href="#contact" class="service-card" data-service="🎬 Video Editing"><div class="card">🎬 Video Editing</div></a>
-      <a href="#contact" class="service-card" data-service="📱 Social Media Creatives"><div class="card">📱 Social Media Creatives</div></a>
-      <a href="#contact" class="service-card" data-service="✨ Web Design (Ai Code)"><div class="card">✨ Web Design (Ai Code)</div></a>
+      <a href="#contact" class="service-card" data-service="📷 Photo Editing"><div class="card">📷 Photo Editing</div>
+</a>
+      <a href="#contact" class="service-card" data-service="🎨 Poster Design"><div class="card">🎨 Poster Design</div>
+</a>
+      <a href="#contact" class="service-card" data-service="🧩 Logo Design"><div class="card">🧩 Logo Design</div>
+</a>
+      <a href="#contact" class="service-card" data-service="🎬 Video Editing"><div class="card">🎬 Video Editing</div>
+</a>
+      <a href="#contact" class="service-card" data-service="📱 Social Media Creatives"><div class="card">📱 Social Media Creatives</div>
+</a>
+      <a href="#contact" class="service-card" data-service="✨ Web Design (Ai Code)"><div class="card">✨ Web Design (Ai Code)</div>
+</a>
     </div>
         </section>
-<section id="youtube" class="section container moregap">
+
+<section id="youtube" class="section container moregap">
     <h2>Youtube Channel</h2>
-        <!-- Elfsight YouTube Gallery | Untitled YouTube Gallery -->
+        
+<!-- Elfsight YouTube Gallery | Untitled YouTube Gallery -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
 <div class="elfsight-app-9c8a0458-04a9-4e4a-a944-0385bbc9f7ff" data-elfsight-app-lazy></div>
       </section>
         
-<section id="insta" class="section container moregap">
+<section id="insta" class="section container moregap">
     <h2>Instagram</h2>
 <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
 <script src="https://static.elfsight.com/platform/platform.js" async></script>
@@ -93,10 +132,18 @@
   <p>Invitation Design</p>
 </div>
   </section>
- <section id="about" class="section container">
+
+ <section id="about" class="section container">
     <h2>About Me</h2>
-    <p>I'm a creative freelancer offering services in photo editing, poster design, logo making, video editing, and more. I turn ideas into visuals that connect with your audience.</p>
+    <p>I am a creative freelancer offering services in photo editing, poster design, logo making, video editing, and more. I turn ideas into visuals that connect with your audience.</p>
   </section>
+<section id="notify" class="section container">
+    <div id="notificationBox">
+    <h3>New Notification</h3>
+    <p><strong>Title:</strong> <span id="notifTitle"></span></p>
+    <p><strong>Message:</strong> <span id="notifMessage"></span></p>
+  </div>
+</section>
 
   <section class="contact" id="contact">
   <h2>Contact Details</h2>
@@ -114,8 +161,8 @@
       </div>
 
     <form class="contact-form" id="contactForm">
-  <input type="text" name="name" placeholder="Your Name" required />
-  <input type="email" name="email" placeholder="Your Email" required />
+  <input type="text" name="name" placeholder="Your Name" readonly />
+  <input type="email" name="email" placeholder="Your Email" readonly />
   <textarea id="requestInput" name="message" rows="5" placeholder="Your Message" required></textarea>
   <button type="submit">Send Request Message</button>
   <p id="formResponse" style="margin-top:10px;"></p>
@@ -127,8 +174,129 @@
     <p>© 2025 Sachethan salian. All rights reserved.</p>
   </footer>
 
-  <script src="script.js"></script>
-  <script src="mail.js"></script>
-  <script src="image.js"></script>
-</body>
+  <script src="https://sachethan.github.io/salian/script.js"></script>
+  <script src="https://sachethan.github.io/salian/mail.js"></script>
+  <script src="https://sachethan.github.io/salian/image.js"></script>
+<script>
+if (!localStorage.getItem('isLoggedIn')) {
+    
+  }
+else{
+  document.getElementById("profileButton").style.display = "inline-block";
+  document.getElementById("loginpage").style.display = "none";
+
+}
+    function isWebView() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      return (
+        (ua.includes("wv")) || // Android WebView
+        (ua.includes("Android") && ua.includes("Version/")) || // Old Android WebView
+        (window.navigator.standalone === true) // iOS standalone mode
+      );
+    }
+
+    // Hide download banner if opened in app
+    if (isWebView()) {
+      document.getElementById("download-app").style.display = "none";
+    }
+
+const params = new URLSearchParams(window.location.search);
+    const title = params.get("title");
+    const msg = params.get("msg");
+
+    if (title && msg) {
+      document.getElementById("notifTitle").textContent = title;
+      document.getElementById("notifMessage").textContent = msg;
+      document.getElementById("notificationBox").style.display = "block";
+    }
+
+function logout(){
+  localStorage.removeItem('isLoggedIn');
+window.location.href = 'index.html';
+
+}
+
+  </script> 
+
+ <script>
+    document.getElementById("download-app").addEventListener("click", function (e) {
+      // Show popup
+      const popup = document.getElementById("super-popup");
+      popup.style.display = "flex";
+
+      // Start download
+      setTimeout(() => {
+        window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';
+      }, 800); // slight delay to ensure popup is visible
+
+      // Auto-hide popup after 7 seconds
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 7000);
+    });
+  </script>
+
+  <script>
+
+  const API_URL = "https://script.google.com/macros/s/AKfycbwCqigws5tUSNuKm4IQ2VLiN-KWKWZDrDzDliQzOzxwMgb2BezGSDOww5tZrOtVq2Kt/exec"; // <-- Replace with your Web App URL if different
+
+const email = localStorage.getItem("userEmail");
+window.onload = async function () {
+     if (!email) {
+        window.location.href = "#";
+        return;
+    }
+
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        const clientData = data.find(row => row[1] === email);
+
+        if (clientData) {
+            document.getElementById("userdisplay").textContent = clientData[0];
+            const userole = clientData[3];
+            const usename = clientData[0];
+            localStorage.setItem("role", userole);
+            localStorage.setItem("username", usename);
+          document.querySelector("input[name='name']").value = usename;
+    document.getElementById("userdisplay").textContent = usename;
+    document.getElementById("userPname").textContent = usename;
+ 
+            } else {
+            alert("User not found!");
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        showPopupMessage("Failed to load. Please login again.");
+        window.location.href = "index.html";
+    } finally {
+        // Hide the loading indicator and clear the timeout when done
+    }
+};
+
+  </script>
+
+<script>
+    const profileBtn = document.getElementById('profileButton');
+    const dropdown = document.getElementById('profileDropdown');
+
+    profileBtn.addEventListener('click', () => {
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      alert("Logging out...");
+      logout();
+    });
+
+   </script>
+     
+  </body>
 </html>

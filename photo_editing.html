@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Services of Sachethan Salian</title>
+</head>
+<body>
+<section id="youtube" class="section container">
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
+<div class="elfsight-app-9c8a0458-04a9-4e4a-a944-0385bbc9f7ff" data-elfsight-app-lazy></div>
+</section>
+<!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+<script src="https://static.elfsight.com/platform/platform.js" async></script>
+<div class="elfsight-app-909f0c5d-fb2d-49ce-9fbd-92f210d7c01c" data-elfsight-app-lazy></div>
+</body>
+  <script>
+function hideElfsightBranding() {
+    const badge = document.querySelector('a[href*="elfsight.com"]');
+    if (badge) {
+      badge.remove(); // Or badge.style.display = "none";
+    } else {
+      setTimeout(hideElfsightBranding, 500); // Retry after 500ms
+    }
+  }
+
+  // Start checking once the page loads
+  window.addEventListener("DOMContentLoaded", hideElfsightBranding);
+  
+  // Keep checking every few seconds in case it's added later
+  setInterval(hideElfsightBranding, 3000);      </script>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Push Notification Sender</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .status-message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-8 px-4">
+
+    <div class="w-full max-w-2xl bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6">Send Push Notification</h2>
+        
+        <div id="statusMessageContainer" class="mb-4"></div>
+
+        <form id="notifyForm" class="space-y-4">
+            <div>
+                <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                <input type="text" id="title" name="title" placeholder="Enter notification title" required 
+                       class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            </div>
+            <div>
+                <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+                <textarea id="message" name="message" placeholder="Enter notification message" required rows="4"
+                          class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+            </div>
+            <button type="submit" id="sendButton"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                Send Notification
+            </button>
+        </form>
+
+        <div class="mt-10">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">Sent Notifications Log</h2>
+            <div class="overflow-x-auto bg-white rounded-lg shadow">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Loading logs...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Google Apps Script URL - Replace with your actual script URL
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyifenu2BzB6ColV_Dq29-ij4Q5misKBCXsSYoFfUpAN4W1SzBwe47peifb_k0AIB5P/exec";
+        
+        const notifyForm = document.getElementById("notifyForm");
+        const titleInput = document.getElementById("title");
+        const messageInput = document.getElementById("message");
+        const sendButton = document.getElementById("sendButton");
+        const logTableBody = document.getElementById("logTableBody");
+        const statusMessageContainer = document.getElementById("statusMessageContainer");
+
+        // Function to display status messages
+        function showStatusMessage(message, isError = false) {
+            statusMessageContainer.innerHTML = ''; // Clear previous messages
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            messageDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+            statusMessageContainer.appendChild(messageDiv);
+            // Automatically remove the message after 5 seconds
+            setTimeout(() => {
+                if (statusMessageContainer.contains(messageDiv)) {
+                    statusMessageContainer.removeChild(messageDiv);
+                }
+            }, 5000);
+        }
+
+        // Handle form submission
+        notifyForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            sendButton.disabled = true;
+            sendButton.textContent = "Sending...";
+
+            const payload = {
+                title: titleInput.value,
+                message: messageInput.value
+            };
+
+            fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    // If response is not ok, try to parse error from text
+                    return res.text().then(text => { throw new Error(text || `HTTP error! status: ${res.status}`) });
+                }
+                return res.text(); // Google Apps Script often returns plain text for simple POST responses
+            })
+            .then(data => {
+                showStatusMessage(data || "Notification sent successfully!");
+                notifyForm.reset();
+                loadSentLogs(); // Refresh the log
+            })
+            .catch(err => {
+                console.error("Failed to send notification:", err);
+                showStatusMessage("Failed to send notification: " + err.message, true);
+            })
+            .finally(() => {
+                sendButton.disabled = false;
+                sendButton.textContent = "Send Notification";
+            });
+        });
+
+        // Load sent messages log
+        function loadSentLogs() {
+            logTableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Loading logs...</td></tr>'; // Show loading state
+            fetch(scriptURL + '?action=getLogs') // Assuming your script handles a GET request for logs
+                .then(res => {
+                    if (!res.ok) {
+                         throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    logTableBody.innerHTML = ""; // Clear existing logs or loading message
+                    if (data && data.length > 0) {
+                        data.reverse().forEach(row => { // Show newest first
+                            const tr = document.createElement("tr");
+                            tr.className = "hover:bg-gray-50 transition-colors duration-150";
+                            tr.innerHTML = `
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row.title || 'N/A'}</td>
+                                <td class="px-6 py-4 whitespace-normal text-sm text-gray-500 break-words">${row.message || 'N/A'}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.date || 'N/A'}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.time || 'N/A'}</td>
+                            `;
+                            logTableBody.appendChild(tr);
+                        });
+                    } else {
+                        logTableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">No notifications sent yet.</td></tr>';
+                    }
+                })
+                .catch(err => {
+                    console.error("Error loading logs:", err);
+                    logTableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-red-500 text-center">Error loading logs: ${err.message}</td></tr>`;
+                });
+        }
+
+        // Initial load of logs
+        loadSentLogs();
+    </script>
+
+</body>
+</html>

@@ -1,39 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Salian Notification Page</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    #notificationBox {
-      display: none;
-      border: 2px solid #4CAF50;
-      padding: 15px;
-      background: #f1f1f1;
-      border-radius: 8px;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Push Notification Receiver</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e0e7ff; /* Light indigo background for track */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6366f1; /* Indigo thumb */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5; /* Darker indigo on hover */
+        }
+        #notificationArea {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
-<body>
-  <h2>Welcome to Salian</h2>
+<body class="bg-indigo-50 min-h-screen flex flex-col items-center justify-center p-4">
 
-  <div id="notificationBox">
-    <h3>New Notification</h3>
-    <p><strong>Title:</strong> <span id="notifTitle"></span></p>
-    <p><strong>Message:</strong> <span id="notifMessage"></span></p>
-  </div>
+    <div class="w-full max-w-md h-[80vh] sm:h-[70vh] bg-white rounded-xl shadow-2xl flex flex-col overflow-hidden">
+        <header class="bg-indigo-600 text-white p-4 text-center rounded-t-xl">
+            <h1 class="text-xl font-semibold">Received Notifications</h1>
+        </header>
+        
+        <div id="notificationArea" class="flex-grow p-4 space-y-4 overflow-y-auto bg-gray-50">
+            <p id="loadingMessage" class="text-center text-gray-500 py-4">Loading notifications...</p>
+        </div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const title = params.get("title");
-    const msg = params.get("msg");
+        <footer class="p-3 bg-gray-100 border-t border-gray-200 text-center rounded-b-xl">
+            <p class="text-xs text-gray-500">
+                Checking for new messages automatically.
+                <span id="lastUpdated" class="block sm:inline"></span>
+            </p>
+        </footer>
+    </div>
 
-    if (title && msg) {
-      document.getElementById("notifTitle").textContent = title;
-      document.getElementById("notifMessage").textContent = msg;
-      document.getElementById("notificationBox").style.display = "block";
-    }
-  </script>
+    <script>
+        // Google Apps Script URL - Replace with your actual script URL
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyifenu2BzB6ColV_Dq29-ij4Q5misKBCXsSYoFfUpAN4W1SzBwe47peifb_k0AIB5P/exec";
+        
+        const notificationArea = document.getElementById("notificationArea");
+        const loadingMessage = document.getElementById("loadingMessage");
+        const lastUpdatedSpan = document.getElementById("lastUpdated");
+        let displayedNotificationIds = new Set(); // To keep track of displayed notifications and avoid duplicates
+
+        // Function to create a notification bubble
+        function createNotificationElement(notification) {
+            const notificationId = `${notification.date}-${notification.time}-${notification.title}-${notification.message}`; // Create a unique ID
+            if (displayedNotificationIds.has(notificationId)) {
+                return null; // Dont create element if already displayed
+            }
+
+            const bubble = document.createElement("div");
+            bubble.className = "p-3 rounded-lg shadow bg-white max-w-xs sm:max-w-sm break-words"; // Kept on one side for simplicity
+
+            const titleEl = document.createElement("h3");
+            titleEl.className = "font-semibold text-sm text-indigo-700";
+            titleEl.textContent = notification.title || "Untitled";
+            bubble.appendChild(titleEl);
+
+            const messageEl = document.createElement("p");
+            messageEl.className = "text-gray-800 text-sm mt-1";
+            messageEl.textContent = notification.message || "No message content.";
+            bubble.appendChild(messageEl);
+
+            const timestampEl = document.createElement("p");
+            timestampEl.className = "text-xs text-gray-400 mt-2 text-right";
+            timestampEl.textContent = `${notification.date || ''} ${notification.time || ''}`;
+            bubble.appendChild(timestampEl);
+            
+            displayedNotificationIds.add(notificationId);
+            return bubble;
+        }
+
+        // Load and display notifications
+        function loadNotifications() {
+            fetch(scriptURL + '?action=getLogs') // Assuming your script handles a GET request for logs
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (loadingMessage) {
+                        loadingMessage.style.display = 'none'; // Hide loading message once data is fetched or attempted
+                    }
+
+                    let newMessagesAdded = false;
+                    if (data && data.length > 0) {
+                        // Process data (Google Apps Script usually returns newest last, so we might not need to reverse)
+                        // Lets assume data is chronological (oldest first) or we want to display it as is.
+                        data.forEach(notification => {
+                            const notificationElement = createNotificationElement(notification);
+                            if (notificationElement) {
+                                notificationArea.appendChild(notificationElement);
+                                newMessagesAdded = true;
+                            }
+                        });
+                        
+                        if (newMessagesAdded) {
+                            // Scroll to the bottom only if new messages were added
+                            notificationArea.scrollTop = notificationArea.scrollHeight;
+                        }
+
+                    } else if (displayedNotificationIds.size === 0) { // Only show "no messages" if nothing ever loaded
+                         notificationArea.innerHTML = '<p class="text-center text-gray-500 py-4">No notifications received yet.</p>';
+                    }
+                    
+                    lastUpdatedSpan.textContent = `Last checked: ${new Date().toLocaleTimeString()}`;
+                })
+                .catch(err => {
+                    console.error("Error loading notifications:", err);
+                    if (loadingMessage) {
+                        loadingMessage.textContent = `Error loading notifications: ${err.message}. Will retry.`;
+                        loadingMessage.style.color = 'red';
+                    } else if (displayedNotificationIds.size === 0) {
+                        notificationArea.innerHTML = `<p class="text-center text-red-500 py-4">Error loading notifications: ${err.message}. Will retry.</p>`;
+                    }
+                    lastUpdatedSpan.textContent = `Update failed: ${new Date().toLocaleTimeString()}`;
+                });
+        }
+
+        // Initial load
+        loadNotifications();
+
+        // Periodically check for new notifications (e.g., every 7 seconds)
+        setInterval(loadNotifications, 7000); 
+    </script>
+
 </body>
 </html>

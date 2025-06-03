@@ -26,7 +26,7 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
       document.getElementById("formResponse").textContent = "Message sent successfully!";
       form.reset();
       loader.classList.remove('show');
-      window.location.href = 'https://sachethan.github.io/salian/submit.html';
+      window.location.href = 'submit.html';
     })
     .catch(err => {
       document.getElementById("formResponse").textContent = "Failed to send message. Try again.";
