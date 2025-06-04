@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,11 +7,9 @@
   <title>Edit Profile</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Custom font (optional, Tailwind uses sans-serif by default) */
     body {
-      font-family: 'Inter', sans-serif; /* Inter is a common choice with Tailwind */
+      font-family: 'Inter', sans-serif;
     }
-    /* Simple loading spinner (optional, can be enhanced) */
     .spinner {
       border: 4px solid rgba(0, 0, 0, 0.1);
       width: 24px;
@@ -23,55 +22,43 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
-/* Close icon styles */
-        .close-icon {
-            position: absolute;
-            background: none;
-            border: none;
-            padding: 0.5rem; /* Makes it easier to click */
-            cursor: pointer;
-            line-height: 1;
-            z-index: 10; /* Ensure its above other elements if needed */
-            transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-
-        .close-icon svg {
-            width: 1.25rem; /* 20px */
-            height: 1.25rem; /* 20px */
-            stroke: #718096; /* Medium gray, matching form-label color */
-            transition: stroke 0.2s ease;
-        }
-
-        .close-icon:hover svg {
-            stroke: #4f46e5; /* Indigo accent on hover */
-        }
-        .close-icon:active {
-            transform: scale(0.9);
-        }
-
-        .close-icon-top-right {
-            top: 1rem;  /* Adjust as needed, considering form padding */
-            right: 1rem; /* Adjust as needed, considering form padding */
-        }
-
-        .close-icon-top-left {
-            top: 1rem;  /* Adjust as needed */
-            left: 1rem; /* Adjust as needed */
-        }
+    .close-icon {
+      position: absolute;
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      cursor: pointer;
+      line-height: 1;
+      z-index: 10;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .close-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      stroke: #718096;
+      transition: stroke 0.2s ease;
+    }
+    .close-icon:hover svg {
+      stroke: #4f46e5;
+    }
+    .close-icon:active {
+      transform: scale(0.9);
+    }
+    .close-icon-top-right {
+      top: 1rem;
+      right: 1rem;
+    }
   </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6">
-
   <div class="absolute bg-white p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-md">
     <button onclick="history.back()" class="close-icon close-icon-top-right" aria-label="Close login form">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-     </button>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
     <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">Edit Your Details</h2>
-
     <form id="editUserForm" class="space-y-6">
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
@@ -83,40 +70,32 @@
         <input type="text" id="NewUsername" placeholder="Enter new username"
                class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
       </div>
-      
-
       <div>
         <label for="NewPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
         <div class="relative">
           <input type="password" id="NewPassword" placeholder="Enter new password or view current"
                  class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out pr-10">
           <button type="button" id="togglePasswordVisibility" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
-    <i id="eyeIcon" class="fa-solid fa-eye"></i>
-    <i id="eyeSlashIcon" class="fa-solid fa-eye-slash hidden"></i>
-  </button>
+            <i id="eyeIcon" class="fa-solid fa-eye"></i>
+            <i id="eyeSlashIcon" class="fa-solid fa-eye-slash hidden"></i>
+          </button>
         </div>
         <p class="mt-1 text-xs text-gray-500">You can view your current password or enter a new one to change it.</p>
       </div>
-
       <button type="submit" id="updateButton"
               class="w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
         <span id="buttonText">Update Details</span>
         <div id="loadingSpinner" class="spinner ml-2 hidden"></div>
       </button>
-
-      <div id="popupMessage" class="text-center mt-4 text-sm">
-        </div>
+      <div id="popupMessage" class="text-center mt-4 text-sm"></div>
     </form>
   </div>
 
   <script>
-    // --- CONFIGURATION ---
-    const API_URL = "https://script.google.com/macros/s/AKfycbwCqigws5tUSNuKm4IQ2VLiN-KWKWZDrDzDliQzOzxwMgb2BezGSDOww5tZrOtVq2Kt/exec"; // <-- Replace with your Web App URL if different
-    const email = localStorage.getItem("email"); // Make sure 'email' is correctly set in localStorage
+    const API_URL = "https://script.google.com/macros/s/AKfycbwCqigws5tUSNuKm4IQ2VLiN-KWKWZDrDzDliQzOzxwMgb2BezGSDOww5tZrOtVq2Kt/exec";
+    const email = localStorage.getItem("userEmail");
 
-    // --- DOM ELEMENTS ---
     const editUserForm = document.getElementById("editUserForm");
-    const UserEmail = document.getElementById("useremail");
     const newUsernameInput = document.getElementById("NewUsername");
     const newPasswordInput = document.getElementById("NewPassword");
     const popupMessage = document.getElementById("popupMessage");
@@ -126,9 +105,8 @@
     const togglePasswordVisibilityButton = document.getElementById("togglePasswordVisibility");
     const eyeIcon = document.getElementById("eyeIcon");
     const eyeSlashIcon = document.getElementById("eyeSlashIcon");
+    const useremail = document.getElementById("useremail");
 
-
-    // --- HELPER FUNCTIONS ---
     function showPopupMessage(message, isError = false) {
       popupMessage.textContent = message;
       popupMessage.className = `text-center mt-4 text-sm ${isError ? 'text-red-600' : 'text-green-600'} font-medium`;
@@ -141,7 +119,7 @@
 
     function setLoadingState(isLoading) {
       if (isLoading) {
-        buttonText.textContent = "Processing..."; // Changed from "Updating..." for more general use
+        buttonText.textContent = "Processing...";
         loadingSpinner.classList.remove("hidden");
         updateButton.disabled = true;
         updateButton.classList.add("opacity-75", "cursor-not-allowed");
@@ -154,16 +132,12 @@
     }
 
     function togglePasswordVisibility() {
-        const type = newPasswordInput.getAttribute("type") === "password" ? "text" : "password";
-        newPasswordInput.setAttribute("type", type);
-        // Toggle icon
-        eyeIcon.classList.toggle("hidden");
-        eyeSlashIcon.classList.toggle("hidden");
+      const type = newPasswordInput.getAttribute("type") === "password" ? "text" : "password";
+      newPasswordInput.setAttribute("type", type);
+      eyeIcon.classList.toggle("hidden");
+      eyeSlashIcon.classList.toggle("hidden");
     }
 
-    // --- API INTERACTIONS ---
-
-    // Load user data from Google Sheets using email
     async function loadUserData() {
       if (!email) {
         showPopupMessage("Error: Email not found in local storage. Please log in again.", true);
@@ -174,30 +148,23 @@
         return;
       }
 
+      console.log("Stored email:", email);
+
       setLoadingState(true);
       clearPopupMessage();
 
       try {
-        // Consider if your API can fetch a single user by email for efficiency.
-        // If your API supports it, pass email as a query parameter for targeted fetching.
         const response = await fetch(`${API_URL}?action=getSheetData&email=${encodeURIComponent(email)}`);
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: "Network response was not ok." }));
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error("Network response was not ok.");
         const data = await response.json();
-
-        // Assuming the first row is headers.
-        // Column indices: Username=0, Email=1, Password=2. Adjust if your sheet is different.
         const user = data.find((row, index) =>
-          index !== 0 && // Skip header row
-          row[1] && row[1].toString().trim().toLowerCase() === email.trim().toLowerCase()
+          index !== 0 && row[1] && row[1].toString().trim().toLowerCase() === email.trim().toLowerCase()
         );
 
         if (user) {
-          newUsernameInput.value = user[0] || ""; // Username from sheet
-          newPasswordInput.value = user[2] || ""; // Password from sheet (as requested)
-          useremail.value = user[1] || ""; 
+          newUsernameInput.value = user[0] || "";
+          newPasswordInput.value = user[2] || "";
+          useremail.value = user[1] || "";
           showPopupMessage("User data loaded. You can now edit your details.", false);
         } else {
           showPopupMessage("User not found. Please check the email or contact support.", true);
@@ -214,17 +181,16 @@
       }
     }
 
-    // Modify user details
     async function modifyUserDetails(event) {
       event.preventDefault();
       clearPopupMessage();
 
-      const currentUsername = newUsernameInput.value.trim(); // Renamed for clarity
-      const currentPasswordInField = newPasswordInput.value; // Get the value as is, might be empty or existing or new
+      const currentUsername = newUsernameInput.value.trim();
+      const currentPasswordInField = newPasswordInput.value;
 
       if (!currentUsername) {
-         showPopupMessage("Username cannot be empty.", true);
-         return;
+        showPopupMessage("Username cannot be empty.", true);
+        return;
       }
 
       if (!email) {
@@ -233,13 +199,12 @@
       }
 
       setLoadingState(true);
-     const payload = {
+      const payload = {
         action: "modifyUserDetails",
         email: email,
         username: currentUsername,
         password: currentPasswordInField
       };
-
 
       try {
         const response = await fetch(API_URL, {
@@ -250,16 +215,12 @@
           body: JSON.stringify(payload),
         });
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: "Network response was not ok." }));
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error("Network response was not ok.");
         const result = await response.json();
 
         if (result.success) {
           showPopupMessage("User details updated successfully!", false);
-           } else {
+        } else {
           showPopupMessage(result.message || "Error updating user details. Please try again.", true);
         }
       } catch (error) {
@@ -270,33 +231,25 @@
       }
     }
 
-    // --- INITIALIZATION ---
     if (editUserForm) {
-        editUserForm.addEventListener("submit", modifyUserDetails);
-    } else {
-        console.error("Edit form not found!");
+      editUserForm.addEventListener("submit", modifyUserDetails);
     }
 
     if (togglePasswordVisibilityButton) {
-        togglePasswordVisibilityButton.addEventListener("click", togglePasswordVisibility);
-    } else {
-        console.error("Toggle password button not found!");
+      togglePasswordVisibilityButton.addEventListener("click", togglePasswordVisibility);
     }
 
-
     document.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.getItem("email")) {
-            loadUserData();
-        } else {
-            showPopupMessage("No email found in storage. Please log in to edit details.", true);
-            newUsernameInput.disabled = true;
-            newPasswordInput.disabled = true;
-            updateButton.disabled = true;
-            updateButton.classList.add("opacity-50", "cursor-not-allowed");
-        }
+      if (localStorage.getItem("userEmail")) {
+        loadUserData();
+      } else {
+        showPopupMessage("No email found in storage. Please log in to edit details.", true);
+        newUsernameInput.disabled = true;
+        newPasswordInput.disabled = true;
+        updateButton.disabled = true;
+        updateButton.classList.add("opacity-50", "cursor-not-allowed");
+      }
     });
-      
-
   </script>
 </body>
 </html>
