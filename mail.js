@@ -14,8 +14,8 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
   };
 
   // Save to localStorage
-  localStorage.setItem("userName", data.name);
-  localStorage.setItem("userEmail", data.email);
+  localStorage.setItem("tempname", data.name);
+  localStorage.setItem("tempemail", data.email);
 
   fetch(SCRIPT_URL, {
     method: "POST",
