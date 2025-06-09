@@ -109,7 +109,7 @@ document.getElementById('themeToggle').addEventListener('click', () => {
                 });
             });
           
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCqigws5tUSNuKm4IQ2VLiN-KWKWZDrDzDliQzOzxwMgb2BezGSDOww5tZrOtVq2Kt/exec"; // <-- Replace with your Web App URL if different
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxU183NSwMKZhKHnvdhBDhKOEsncfRxUdeVCD1CEdfkwjq2LEH-fMCzUbmiEW772ZaC/exec"; // <-- Replace with your Web App URL if different
 
  
 let emailCheckTimeout;
@@ -172,9 +172,9 @@ showMessage(registerMessageDiv, 'Please fill in all fields.', 'error');
 return;
 }
 
-if (!/^\S+@\S+\.\S+$/.test(email)) {
-showMessage(registerMessageDiv, 'Enter a valid email address.', 'error');
-return;
+if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) {
+  showMessage(registerMessageDiv, 'Enter a valid Gmail address.', 'error');
+  return;
 }
 
 if (password !== confirmPassword) {
@@ -259,6 +259,7 @@ showMessage(loginMessageDiv, `Welcome back, ${data.name}!`, 'success');
 loginForm.reset();
 try {
 localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('usergd', 'true');
     localStorage.setItem('userEmail', email);
 window.location.href = '../index.html';
 } catch (e) {
