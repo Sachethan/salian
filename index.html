@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sachethan Salian</title>
  
-  <link rel="stylesheet" href="https://sachethan.github.io/salian/style.css" />
+  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   
   <style>
@@ -30,12 +30,10 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#youtube">Portfolio</a></li>
         <li><a href="#contact">Contact</a></li>
-        <button class="lbtn" onclick="window.location.href='login/login.html';" id="loginpage" title="login page">Login</button>
-      </ul>
+        </ul>
       <div class="nav-actions">              
         <button id="profileButton" title="Profile Page"
-             style="display:none;" class="lbtn px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-100 focus:outline-none">
-        👤
+             style="display:none;" class="lbtn px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-100 focus:outline-none"><i class="fa-solid fa-circle-user"></i>
       </button>
         
         <!-- Dropdown -->
@@ -71,8 +69,9 @@
     <div class="container">
       <h2>Hello <span id="userdisplay">....</span>, Im Sachethan</h2>
       <p> | Digital Creator | </p>
-      <button onclick="window.location.href = '#footer';" class="btn">Lets Go..</button>
-      <button id="download-app" onclick="window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';" download="SachethanApp.apk" class="btn"><i class="fa-brands fa-android"></i> Download App</button>
+      <button onclick="window.location.href = '#footer';" class="btn">Lets Go<i class="fa-solid fa-wind"></i></button>
+      <button id="download-app" onclick="window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';" download="SachethanApp.apk" class="btn">Download <i class="fa-brands fa-android"></i></button>
+      <button class="btn" onclick="window.location.href='login/login.html';" id="loginpage" title="login page">Login <i class="fa-solid fa-right-to-bracket"></i></button>
     </div>
   </section>
   
@@ -161,8 +160,8 @@
       </div>
 
     <form class="contact-form" id="contactForm">
-  <input type="text" name="name" placeholder="Your Name" readonly />
-  <input type="email" name="email" placeholder="Your Email" readonly />
+  <input type="text" id="name" name="name" placeholder="Your Name"/>
+  <input type="email" id="email" name="email" placeholder="Your Email"/>
   <textarea id="requestInput" name="message" rows="5" placeholder="Your Message" required></textarea>
   <button type="submit">Send Request Message</button>
   <p id="formResponse" style="margin-top:10px;"></p>
@@ -175,17 +174,46 @@
   </footer>
 
   <script src="https://sachethan.github.io/salian/script.js"></script>
-  <script src="https://sachethan.github.io/salian/mail.js"></script>
+  <script src="mail.js"></script>
   <script src="https://sachethan.github.io/salian/image.js"></script>
 <script>
+
+const nameInput = document.getElementById("name");
+  const emailInput = document.getElementById("email");
+  const userEmail = localStorage.getItem("email");
+const tempname = localStorage.getItem("tempname");
+const tempemail = localStorage.getItem("tempemail");
+const profileDropdown = document.getElementById("profileDropdown"); // or your actual ID
+
 if (!localStorage.getItem('isLoggedIn')) {
-    
-  }
-else{
+  // Enable input fields and make them required
+  nameInput.disabled = false;
+  emailInput.disabled = false;
+  nameInput.required = true;
+  emailInput.required = true;
+
+  // Set values from temporary variables (make sure they exist)
+  document.querySelector("input[name='name']").value = tempname || '';
+  document.querySelector("input[name='email']").value = tempemail || '';
+  document.getElementById("userdisplay").textContent = tempname || '';
+  
+} else {
+  // Show profile button, hide login
   document.getElementById("profileButton").style.display = "inline-block";
   document.getElementById("loginpage").style.display = "none";
 
+  // Disable fields and remove requirement
+  nameInput.disabled = true;
+  emailInput.disabled = true;
+  nameInput.required = false;
+  emailInput.required = false;
+  
+  // Show dropdown if user data exists
+  if (localStorage.getItem('usergd')) {
+    profileDropdown.style.display = 'block';
+  }
 }
+
     function isWebView() {
       const ua = navigator.userAgent || navigator.vendor || window.opera;
       return (
@@ -212,6 +240,10 @@ const params = new URLSearchParams(window.location.search);
 
 function logout(){
   localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('username');
+  localStorage.removeItem('tempname');
+  localStorage.removeItem('tempemail');
 window.location.href = 'index.html';
 
 }
@@ -238,7 +270,7 @@ window.location.href = 'index.html';
 
   <script>
 
-  const API_URL = "https://script.google.com/macros/s/AKfycbwCqigws5tUSNuKm4IQ2VLiN-KWKWZDrDzDliQzOzxwMgb2BezGSDOww5tZrOtVq2Kt/exec"; // <-- Replace with your Web App URL if different
+  const API_URL = "https://script.google.com/macros/s/AKfycbxU183NSwMKZhKHnvdhBDhKOEsncfRxUdeVCD1CEdfkwjq2LEH-fMCzUbmiEW772ZaC/exec"; // <-- Replace with your Web App URL if different
 
 const email = localStorage.getItem("userEmail");
 window.onload = async function () {
@@ -288,13 +320,17 @@ window.onload = async function () {
     document.addEventListener('click', (e) => {
       if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
         dropdown.style.display = 'none';
+        localStorage.removeItem('usergd');
       }
     });
 
     document.getElementById('logoutButton').addEventListener('click', () => {
-      alert("Logging out...");
-      logout();
-    });
+  const confirmLogout = confirm("Are you sure you want to log out?");
+  if (confirmLogout) {
+    logout();
+  }
+});
+
 
    </script>
      
