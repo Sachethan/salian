@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Firebase Login/Register</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 350px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .toggle-link {
+      color: #007BFF;
+      cursor: pointer;
+      margin-top: 15px;
+      display: block;
+    }
+
+    #userInfo {
+      margin-top: 20px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .logout-btn {
+      margin-top: 15px;
+      background: #f44336;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div id="registerForm">
+      <h2>Register</h2>
+      <input type="email" id="reg_email" placeholder="Email">
+      <input type="password" id="reg_pass" placeholder="Password">
+      <button onclick="register()">Register</button>
+      <span class="toggle-link" onclick="toggleForm('login')">Already have an account? Login</span>
+    </div>
+
+    <div id="loginForm" style="display:none;">
+      <h2>Login</h2>
+      <input type="email" id="log_email" placeholder="Email">
+      <input type="password" id="log_pass" placeholder="Password">
+      <button onclick="login()">Login</button>
+      <span class="toggle-link" onclick="toggleForm('register')">Dont have an account? Register</span>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div id="userInfo">Not logged in.</div>
+  </div>
+
+  <script>
+    // ✅ 1. Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD1GoVhU3Pb5uEglmyyrYMQRjHb0WGMf_8",
+      authDomain: "register-app-1626d.firebaseapp.com",
+      projectId: "register-app-1626d",
+      storageBucket: "register-app-1626d.firebasestorage.app",
+      messagingSenderId: "525701808469",
+      appId: "1:525701808469:web:123dd7c4742a731b54efdc",
+      measurementId: "G-DE106FT08L"
+    };
+
+    // ✅ 2. Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ✅ 3. Register function
+    function register() {
+      const email = document.getElementById("reg_email").value;
+      const password = document.getElementById("reg_pass").value;
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCred) => {
+          alert("Registered successfully!");
+          return db.collection("users").doc(userCred.user.uid).set({
+            email: email,
+            createdAt: new Date()
+          });
+        })
+        .catch((err) => alert(err.message));
+    }
+
+    // ✅ 4. Login function
+    function login() {
+      const email = document.getElementById("log_email").value;
+      const password = document.getElementById("log_pass").value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => alert("Logged in!"))
+        .catch((err) => alert(err.message));
+    }
+
+    // ✅ 5. Logout function
+    function logout() {
+      auth.signOut()
+        .then(() => alert("Logged out!"));
+    }
+
+    // ✅ 6. Toggle login/register
+    function toggleForm(form) {
+      document.getElementById("registerForm").style.display = form === "register" ? "block" : "none";
+      document.getElementById("loginForm").style.display = form === "login" ? "block" : "none";
+    }
+
+    // ✅ 7. Auth State Listener (after auth is defined)
+    auth.onAuthStateChanged((user) => {
+      const info = document.getElementById("userInfo");
+      if (user) {
+        info.innerText = `Logged in as: ${user.email}`;
+      } else {
+        info.innerText = "Not logged in.";
+      }
+    });
+  </script>
+
+</body>
+</html>
