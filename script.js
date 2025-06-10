@@ -53,12 +53,25 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Toggle theme and store preference
-document.getElementById('themeToggle').addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
-  localStorage.setItem('theme', theme);
+const toggle = document.getElementById('themeToggle');
+
+// Load theme and update switch on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  const isDarkMode = savedTheme === 'dark';
+
+  document.body.classList.toggle('dark', isDarkMode);
+  toggle.checked = isDarkMode;
 });
+
+// Toggle theme and save preference
+toggle.addEventListener('change', () => {
+  const isDark = toggle.checked;
+  document.body.classList.toggle('dark', isDark);
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+});
+
+
 
 
 // loader.js
@@ -108,3 +121,23 @@ const serviceCards = document.querySelectorAll(".service-card");
     document.getElementById("popupOverlay").style.display = "none";
   }
 
+
+function showTooltip(targetId) {
+    alert("getting");
+  const tooltip = document.getElementById(`tooltip-${targetId}`);
+  const target = document.getElementById(targetId);
+
+  if (!tooltip || !target) return;
+
+  // Position the tooltip
+  const rect = target.getBoundingClientRect();
+  tooltip.style.top = `${rect.bottom + window.scrollY + 6}px`;
+  tooltip.style.left = `${rect.left + window.scrollX}px`;
+
+  tooltip.setAttribute('data-show', 'true');
+
+  // Auto-hide after 3 seconds
+  setTimeout(() => {
+    tooltip.removeAttribute('data-show');
+  }, 3000);
+}

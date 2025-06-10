@@ -33,7 +33,7 @@
         </ul>
       <div class="nav-actions">              
         <button id="profileButton" title="Profile Page"
-             style="display:none;" class="lbtn px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-100 focus:outline-none"><i class="fa-solid fa-circle-user"></i>
+             style="display:none;" class="px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-100 focus:outline-none"><i class="fa-solid fa-circle-user"></i>
       </button>
         
         <!-- Dropdown -->
@@ -43,9 +43,12 @@
         <button id="logoutButton">Logout</button>
       </div>
         
-        
-        <button id="themeToggle" title="Toggle Dark Mode">🌙</button>
-        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+   <label class="theme-switch">
+  <input type="checkbox" id="themeToggle">
+  <span class="slider"></span>
+   
+</label>
+     <div class="menu-toggle" onclick="toggleMenu()">☰</div>
       </div>
     </nav>
   </header>
@@ -71,7 +74,7 @@
       <p> | Digital Creator | </p>
       <button onclick="window.location.href = '#footer';" class="btn">Lets Go<i class="fa-solid fa-wind"></i></button>
       <button id="download-app" onclick="window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';" download="SachethanApp.apk" class="btn">Download <i class="fa-brands fa-android"></i></button>
-      <button class="btn" onclick="window.location.href='login/login.html';" id="loginpage" title="login page">Login <i class="fa-solid fa-right-to-bracket"></i></button>
+      <button class="lbtn" onclick="window.location.href='login/login.html';" id="loginpage" title="login page">Login <i class="fa-solid fa-right-to-bracket"></i></button>
     </div>
   </section>
   
@@ -173,7 +176,7 @@
     <p>© 2025 Sachethan salian. All rights reserved.</p>
   </footer>
 
-  <script src="https://sachethan.github.io/salian/script.js"></script>
+  <script src="script.js"></script>
   <script src="mail.js"></script>
   <script src="https://sachethan.github.io/salian/image.js"></script>
 <script>
@@ -199,6 +202,7 @@ if (!localStorage.getItem('isLoggedIn')) {
   
 } else {
   // Show profile button, hide login
+  loader.classList.add('show');
   document.getElementById("profileButton").style.display = "inline-block";
   document.getElementById("loginpage").style.display = "none";
 
@@ -238,14 +242,10 @@ const params = new URLSearchParams(window.location.search);
       document.getElementById("notificationBox").style.display = "block";
     }
 
-function logout(){
-  localStorage.removeItem('isLoggedIn');
-  localStorage.removeItem('userEmail');
-  localStorage.removeItem('username');
-  localStorage.removeItem('tempname');
-  localStorage.removeItem('tempemail');
-window.location.href = 'index.html';
 
+function logout() {
+  ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user'].forEach(k => localStorage.removeItem(k));
+  window.location.href = 'index.html';
 }
 
   </script> 
@@ -269,44 +269,85 @@ window.location.href = 'index.html';
   </script>
 
   <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxU183NSwMKZhKHnvdhBDhKOEsncfRxUdeVCD1CEdfkwjq2LEH-fMCzUbmiEW772ZaC/exec";
 
-  const API_URL = "https://script.google.com/macros/s/AKfycbxU183NSwMKZhKHnvdhBDhKOEsncfRxUdeVCD1CEdfkwjq2LEH-fMCzUbmiEW772ZaC/exec"; // <-- Replace with your Web App URL if different
-
-const email = localStorage.getItem("userEmail");
 window.onload = async function () {
-     if (!email) {
-        window.location.href = "#";
-        return;
-    }
+  const email = localStorage.getItem("userEmail");
+  if (!email) {
+    window.location.href = "#";
+    return;
+  }
 
+  const storedUserStr = localStorage.getItem("user");
+  if (storedUserStr) {
+    const storedUser = JSON.parse(storedUserStr);
+
+    // Use local data immediately
+    updateUI(storedUser);
+
+    // Background check for fresh data
     try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
+      const response = await fetch(API_URL);
+      const data = await response.json();
 
-        const clientData = data.find(row => row[1] === email);
+      const freshData = data.find(row => row[1] === email);
 
-        if (clientData) {
-            document.getElementById("userdisplay").textContent = clientData[0];
-            const userole = clientData[3];
-            const usename = clientData[0];
-            localStorage.setItem("role", userole);
-            localStorage.setItem("username", usename);
-          document.querySelector("input[name='name']").value = usename;
-    document.getElementById("userdisplay").textContent = usename;
-    document.getElementById("userPname").textContent = usename;
- 
-            } else {
-            alert("User not found!");
+      if (freshData) {
+        const latestUser = {
+          username: freshData[0],
+          email: freshData[1],
+          password: freshData[2],
+          role: freshData[3]
+        };
+
+        // If something changed, update localStorage and UI
+        if (JSON.stringify(storedUser) !== JSON.stringify(latestUser)) {
+          localStorage.setItem("user", JSON.stringify(latestUser));
+          updateUI(latestUser);
+          console.log("User data updated from server.");
         }
+      } else {
+        alert("User not found!");
+      }
     } catch (error) {
-        console.error("Error fetching data:", error);
-        showPopupMessage("Failed to load. Please login again.");
-        window.location.href = "index.html";
-    } finally {
-        // Hide the loading indicator and clear the timeout when done
+      console.error("Error fetching data:", error);
     }
+  } else {
+    // No local user stored, fetch from server
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+
+      const clientData = data.find(row => row[1] === email);
+
+      if (clientData) {
+        const userObject = {
+          username: clientData[0],
+          email: clientData[1],
+          password: clientData[2],
+          role: clientData[3]
+        };
+
+        localStorage.setItem("user", JSON.stringify(userObject));
+        updateUI(userObject);
+      } else {
+        alert("User not found!");
+        window.location.href = "index.html";
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      window.location.href = "index.html";
+    }
+  }
 };
 
+// UI update logic (safe centralized)
+function updateUI(user) {
+  document.getElementById("userdisplay").textContent = user.username;
+  document.querySelector("input[name='name']").value = user.username;
+  document.getElementById("userPname").textContent = user.username;
+  loader.classList.remove('show');
+}
   </script>
 
 <script>
