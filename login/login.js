@@ -5,13 +5,13 @@ import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/fireb
 
 // --- Firebase Config ---
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID,
-    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+    apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
+    authDomain: "editech-93e95.firebaseapp.com",
+    projectId: "editech-93e95",
+    storageBucket: "editech-93e95.firebasestorage.app",
+    messagingSenderId: "337897717681",
+    appId: "1:337897717681:web:99a1c9344d6a4acf6dc790",
+    measurementId: "G-3CGVLC34XD"
 };
 
 // --- Initialize Firebase ---
