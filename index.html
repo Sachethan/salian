@@ -304,9 +304,13 @@ function hideMessage(id) {
 }
 
 function logout() {
-    alert("Logging out...");
-    ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user', 'userInfo'].forEach(k => localStorage.removeItem(k));
-    window.location.href = 'login/login.html';
+   showMessage(
+  "<strong>Status:</strong> Logout done successfully",
+  "info"
+            );    ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user', 'userInfo'].forEach(k => localStorage.removeItem(k));
+            setTimeout(() => {
+                    window.location.href = 'index.html';
+            }, 1000);
 }
 
 function isWebView() {
@@ -355,6 +359,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "<strong>Hello,..</strong> Your login was successful. Now you can use advanced options on this website.",
                 "info"
             );
+          localStorage.removeItem('usergd');
           setTimeout(() => {
                 profileDropdown.style.display = 'block';
             }, 15000);
