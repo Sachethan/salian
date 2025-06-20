@@ -120,7 +120,7 @@ bgclr{
         <span id="buttonText">Update Details</span>
         <div id="loadingSpinner" class="spinner ml-2 hidden"></div>
       </button>
-      <button type="button" id="deleteButton" style="display:none" onclick="openModal()" class="w-full flex items-center justify-center px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+      <button type="button" id="deleteButton" style="display:none" class="w-full flex items-center justify-center px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
         <span>Delete Account Permanently</span>
         </button>
       <div id="popupMessage" class="text-center mt-4 text-sm"></div>
@@ -134,15 +134,34 @@ bgclr{
       <p class="mb-2 text-gray-700">To delete your account, type <strong class="text-red-500">delete</strong> below:</p>
       <input type="text" id="deleteInput" class="w-full border border-gray-300 rounded px-3 py-2 mb-4" placeholder="Type 'delete' to confirm">
       <div class="flex justify-end space-x-3">
-        <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
-        <button onclick="confirmDelete()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Confirm</button>
+        <button id="closedeleteModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+        <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Confirm</button>
       </div>
     </div>
   </div>
   
-  <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbydgsa8TcO1gXKuYa8tyXo_HxDvMLk16ZQNMMUzs3oS6lCsf8L6VWJfVTee2T3qsbJx/exec";
+ 
+ <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+import {getAuth, onAuthStateChanged, updatePassword, deleteUser} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+import{getFirestore, getDoc, doc, updateDoc, deleteDoc} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"
 
+const firebaseConfig = {
+apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
+    authDomain: "editech-93e95.firebaseapp.com",
+    projectId: "editech-93e95",
+    storageBucket: "editech-93e95.firebasestorage.app",
+    messagingSenderId: "337897717681",
+    appId: "1:337897717681:web:99a1c9344d6a4acf6dc790",
+    measurementId: "G-3CGVLC34XD"
+  };
+ 
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+
+  const auth=getAuth();
+  const db=getFirestore();
+  
 const email = localStorage.getItem("userEmail");
 const editUserForm = document.getElementById("editUserForm");
 const newUsernameInput = document.getElementById("NewUsername");
@@ -156,8 +175,10 @@ const togglePasswordVisibilityButton = document.getElementById("togglePasswordVi
 const eyeIcon = document.getElementById("eyeIcon");
 const eyeSlashIcon = document.getElementById("eyeSlashIcon");
 const useremail = document.getElementById("useremail");
+const closedeleteModal = document.getElementById("closedeleteModal");
+const confirmDeleteBtn = document.getElementById("confirmDelete");
 
-// Utility Functions
+  // Utility Functions
 function showPopupMessage(message, isError = false) {
   popupMessage.textContent = message;
   popupMessage.className = `text-center mt-4 text-sm ${isError ? 'text-red-600' : 'text-green-600'} font-medium`;
@@ -166,6 +187,7 @@ function clearPopupMessage() {
   popupMessage.textContent = "";
   popupMessage.className = "text-center mt-4 text-sm";
 }
+  
 function setLoadingState(isLoading) {
   if (isLoading) {
     buttonText.textContent = "Processing...";
@@ -179,6 +201,7 @@ function setLoadingState(isLoading) {
     updateButton.classList.remove("opacity-75", "cursor-not-allowed");
   }
 }
+  
 function togglePasswordVisibility() {
   const type = newPasswordInput.type === "password" ? "text" : "password";
   newPasswordInput.type = type;
@@ -188,63 +211,59 @@ function togglePasswordVisibility() {
 
 // Load user data
 async function loadUserData() {
-  if (!email) {
-    showPopupMessage("Email not found. Please log in again.", true);
-    return;
-  }
+  const storedData = localStorage.getItem("userInfo");
+  if (!storedData) return;
 
   setLoadingState(true);
   clearPopupMessage();
 
   // Step 1: Load from localStorage first
-  const cachedUser = localStorage.getItem("user");
-  if (cachedUser) {
-    const userObj = JSON.parse(cachedUser);
-    newUsernameInput.value = userObj.username;
-    newPasswordInput.value = userObj.password;
-    useremail.value = userObj.email;
-    deleteButton.style.display = "block";
-    showPopupMessage("Loaded from local storage. Checking for updates...");
-  }
+  const userInfo = JSON.parse(storedData);
+  useremail.value = userInfo.email;
+  newUsernameInput.value = userInfo.username;
+  newPasswordInput.value = "";
+  deleteButton.style.display = "block";
+  showPopupMessage("Loaded from local storage. Checking for updates...");
 
-  // Step 2: Fetch fresh data from Google Script
+  // Step 2: Fetch fresh data from Firestore
   try {
-    const response = await fetch(`${API_URL}?action=getSheetData&email=${encodeURIComponent(email)}`);
-    if (!response.ok) throw new Error("Network error");
-    const data = await response.json();
+    onAuthStateChanged(auth, (user) => {
+      const loggedInUserId = localStorage.getItem("loggedInUserId");
 
-    const user = data.find((row, index) =>
-      index !== 0 && row[1] && row[1].toString().trim().toLowerCase() === email.trim().toLowerCase()
-    );
+      if (user && loggedInUserId) {
+        const docRef = doc(db, "users", loggedInUserId);
 
-    if (user) {
-      const freshUser = {
-        username: user[0],
-        email: user[1],
-        password: user[2],
-        role: user[3]
-      };
+        getDoc(docRef)
+          .then((docSnap) => {
+            if (docSnap.exists()) {
+              const userData = docSnap.data();
 
-      const cached = JSON.parse(localStorage.getItem("user") || "{}");
-      if (JSON.stringify(cached) !== JSON.stringify(freshUser)) {
-        localStorage.setItem("user", JSON.stringify(freshUser));
-        newUsernameInput.value = freshUser.username;
-        newPasswordInput.value = freshUser.password;
-        useremail.value = freshUser.email;
-        showPopupMessage("User data updated from server.");
+              // ✅ Correct placement
+              useremail.value = user.email; // Firebase Auth
+              newUsernameInput.value = userData.username; // Firestore
+              setLoadingState(false);
+              showPopupMessage("Updated with fresh data from Firestore.");
+            } else {
+              console.log("No document found matching ID");
+              setLoadingState(false);
+            }
+          })
+          .catch((error) => {
+            console.error("Error getting document:", error.message);
+            setLoadingState(false);
+          });
+      } else {
+        console.log("User or User ID not found in local storage");
+        setLoadingState(false);
       }
-    } else {
-      showPopupMessage("User not found.", true);
-    }
-  } catch (error) {
-    console.error("Fetch error:", error);
-    showPopupMessage("Error loading user data.", true);
-  } finally {
+    });
+  } catch (err) {
+    console.error("Unexpected error:", err.message);
     setLoadingState(false);
   }
 }
 
-// Modify user
+// Update user details
 async function modifyUserDetails(e) {
   e.preventDefault();
   clearPopupMessage();
@@ -257,36 +276,45 @@ async function modifyUserDetails(e) {
     return;
   }
 
-  const payload = {
-    action: "modifyUserDetails",
-    email: email,
-    username,
-    password
-  };
-
   setLoadingState(true);
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
 
-    const result = await response.json();
-    if (result.success) {
-      localStorage.setItem("user", JSON.stringify({ username, email, password, role: localStorage.getItem("role") }));
-      showPopupMessage("User details updated successfully!");
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        // Update Firestore username
+        const userDocRef = doc(db, "users", user.uid);
+        await updateDoc(userDocRef, {
+          username: username
+        });
+
+        // Update password (if provided)
+        if (password.trim() !== "") {
+          await updatePassword(user, password);
+        }
+
+        // Update localStorage
+        const userInfo = {
+          username: username,
+          email: user.email,
+          uid: user.uid
+        };
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+
+        showPopupMessage("User details updated successfully!");
+      } catch (error) {
+        console.error("Update error:", error.message);
+        showPopupMessage("Failed to update: " + error.message, true);
+      } finally {
+        setLoadingState(false);
+      }
     } else {
-      showPopupMessage(result.message || "Error updating user.", true);
+      showPopupMessage("User not logged in.", true);
+      setLoadingState(false);
     }
-  } catch (err) {
-    showPopupMessage("Update failed. Try again.", true);
-  } finally {
-    setLoadingState(false);
-  }
+  });
 }
 
-// Delete user
+  // Delete user
 function openModal() {
   if (confirm("Are you sure you want to delete your account?")) {
     document.getElementById('deleteModal').classList.remove('hidden');
@@ -296,30 +324,40 @@ function closeModal() {
   document.getElementById('deleteModal').classList.add('hidden');
   document.getElementById('deleteInput').value = '';
 }
+  
 function confirmDelete() {
   const input = document.getElementById('deleteInput').value.trim().toLowerCase();
   if (input === 'delete') {
-    deleteUser();
+    deleteFirebaseUser();
     closeModal();
   } else {
     alert("Please type 'delete' to confirm.");
   }
 }
-function deleteUser() {
-  const payload = { action: "deleteuser", email };
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.text())
-  .then(msg => {
-    console.log(msg);
-    localStorage.setItem("deletedaccount", "true");
-    location.reload();
-  })
-  .catch(err => {
-    console.error("Delete error:", err);
-    alert("Failed to delete user.");
+  
+function deleteFirebaseUser() {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        const userId = user.uid;
+
+        // Delete Firestore user document
+        await deleteDoc(doc(db, "users", userId));
+
+        // Delete Firebase Auth account
+        await deleteUser(user);
+
+        // Clear localStorage and reload
+        localStorage.clear();
+        localStorage.setItem("deletedaccount", "true");
+        logout();
+      } catch (error) {
+        console.error("Delete error:", error.message);
+        alert("Failed to delete account: " + error.message);
+      }
+    } else {
+      console.error("User not logged in.");
+    }
   });
 }
 
@@ -348,6 +386,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Events
   if (editUserForm) editUserForm.addEventListener("submit", modifyUserDetails);
+  if (deleteButton) deleteButton.addEventListener("click", openModal);
+  if (closedeleteModal) closedeleteModal.addEventListener("click", closeModal);
+  if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", confirmDelete);
   if (togglePasswordVisibilityButton) togglePasswordVisibilityButton.addEventListener("click", togglePasswordVisibility);
 });
 </script>

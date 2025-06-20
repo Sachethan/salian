@@ -16,6 +16,77 @@
       background: #f1f1f1;
       border-radius: 8px;
     }
+  
+  #messageContainer{
+  position: fixed;
+    top: 10%;
+    left: 50%;
+    width:90%;
+    transform: translateX(-50%);
+    z-index: 9999;
+  }
+    .message-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    margin-top: 0.1rem;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    position: relative;
+    max-width: 600px;
+    margin-inline: auto;
+}
+
+.message-box.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.success-message {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.error-message {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+  margin: 0;
+    cursor: pointer;
+    color: inherit;
+    margin-left: 12px;
+}
+ .email-status-message {
+     font-size: 0.75rem;
+     margin-top: 0.25rem;
+     margin-left: 0.25rem;
+     height: 1rem; /* Reserve space to prevent layout shift */
+     }
+.info-message {
+    background-color: #e0f2fe; /* Light blue */
+    color: #0369a1;            /* Darker blue */
+    border: 1px solid #7dd3fc;
+}
+
+.message-box span a {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
   </style>
 </head>
 <body>
@@ -52,6 +123,8 @@
       </div>
     </nav>
   </header>
+<div id="messageContainer" style=""></div>
+
   <div class="loader" id="loader">
    <div class="spinner"></div>
   </div>
@@ -67,7 +140,6 @@
     <button onclick="closePopup()">OK</button>
   </div>
 </div>
-  
   <section id="home" class="hero">
     <div class="container">
       <h2>Hello <span id="userdisplay">....</span>, Im Sachethan</h2>
@@ -180,200 +252,215 @@
   <script src="mail.js"></script>
   <script src="https://sachethan.github.io/salian/image.js"></script>
 <script>
+let messageIdCounter = 0; // Declare at top before any function uses it
 
-const nameInput = document.getElementById("name");
-  const emailInput = document.getElementById("email");
-  const userEmail = localStorage.getItem("email");
-const tempname = localStorage.getItem("tempname");
-const tempemail = localStorage.getItem("tempemail");
-const profileDropdown = document.getElementById("profileDropdown"); // or your actual ID
+function showMessage(messageHTML, type = 'error', redirectUrl = null) {
+    const container = document.getElementById('messageContainer');
 
-if (!localStorage.getItem('isLoggedIn')) {
-  // Enable input fields and make them required
-  nameInput.disabled = false;
-  emailInput.disabled = false;
-  nameInput.required = true;
-  emailInput.required = true;
+    const messageBox = document.createElement('div');
+    messageBox.className = 'message-box';
 
-  // Set values from temporary variables (make sure they exist)
-  document.querySelector("input[name='name']").value = tempname || '';
-  document.querySelector("input[name='email']").value = tempemail || '';
-  document.getElementById("userdisplay").textContent = tempname || '';
-  
-} else {
-  // Show profile button, hide login
-  loader.classList.add('show');
-  document.getElementById("profileButton").style.display = "inline-block";
-  document.getElementById("loginpage").style.display = "none";
+    if (type === 'success') messageBox.classList.add('success-message');
+    else if (type === 'info') messageBox.classList.add('info-message');
+    else messageBox.classList.add('error-message');
 
-  // Disable fields and remove requirement
-  nameInput.disabled = true;
-  emailInput.disabled = true;
-  nameInput.required = false;
-  emailInput.required = false;
-  
-  // Show dropdown if user data exists
-  if (localStorage.getItem('usergd')) {
-    profileDropdown.style.display = 'block';
-  }
+    const id = `message-${++messageIdCounter}`;
+    messageBox.id = id;
+
+    const span = document.createElement('span');
+    span.innerHTML = messageHTML;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '<i class="fa-solid fa-close"></i>';
+    closeBtn.className = 'close-btn';
+    closeBtn.onclick = () => hideMessage(id);
+
+    messageBox.appendChild(span);
+    messageBox.appendChild(closeBtn);
+    container.appendChild(messageBox);
+
+    requestAnimationFrame(() => {
+        messageBox.classList.add('show');
+    });
+
+    if (redirectUrl) {
+        messageBox.style.cursor = 'pointer';
+        messageBox.addEventListener('click', () => {
+            window.location.href = redirectUrl;
+        });
+    }
+
+    setTimeout(() => hideMessage(id), 10000); // auto-dismiss
 }
 
-    function isWebView() {
-      const ua = navigator.userAgent || navigator.vendor || window.opera;
-      return (
-        (ua.includes("wv")) || // Android WebView
+function hideMessage(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.classList.remove('show');
+        setTimeout(() => {
+            if (el.parentNode) el.parentNode.removeChild(el);
+        }, 300);
+    }
+}
+
+function logout() {
+    alert("Logging out...");
+    ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user', 'userInfo'].forEach(k => localStorage.removeItem(k));
+    window.location.href = 'login/login.html';
+}
+
+function isWebView() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    return (
+        ua.includes("wv") || // Android WebView
         (ua.includes("Android") && ua.includes("Version/")) || // Old Android WebView
-        (window.navigator.standalone === true) // iOS standalone mode
-      );
+        window.navigator.standalone === true // iOS
+    );
+}
+
+// Initial setup
+document.addEventListener("DOMContentLoaded", function () {
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const userdisplay = document.getElementById("userdisplay");
+    const profileDropdown = document.getElementById("profileDropdown");
+    const loginMessageDiv = document.getElementById('loginMessage');
+    const loader = document.getElementById("loader"); // Ensure this exists
+
+    const tempname = localStorage.getItem("tempname");
+    const tempemail = localStorage.getItem("tempemail");
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (!isLoggedIn) {
+        nameInput.disabled = false;
+        emailInput.disabled = false;
+        nameInput.required = true;
+        emailInput.required = true;
+
+        document.querySelector("input[name='name']").value = tempname || '';
+        document.querySelector("input[name='email']").value = tempemail || '';
+        if (userdisplay) userdisplay.textContent = tempname || '';
+    } else {
+        loader.classList.add('show');
+        document.getElementById("profileButton").style.display = "inline-block";
+        document.getElementById("loginpage").style.display = "none";
+
+        nameInput.disabled = true;
+        emailInput.disabled = true;
+        nameInput.required = false;
+        emailInput.required = false;
+
+        if (localStorage.getItem('usergd')) {          
+         showMessage(
+                "<strong>Hello,..</strong> Your login was successful. Now you can use advanced options on this website.",
+                "info"
+            );
+          setTimeout(() => {
+                profileDropdown.style.display = 'block';
+            }, 15000);
+        }
     }
 
-    // Hide download banner if opened in app
+    // If inside WebView, hide download banner
     if (isWebView()) {
-      document.getElementById("download-app").style.display = "none";
+        document.getElementById("download-app").style.display = "none";
     }
 
-const params = new URLSearchParams(window.location.search);
+    // Show popup notification if query params are present
+    const params = new URLSearchParams(window.location.search);
     const title = params.get("title");
     const msg = params.get("msg");
 
     if (title && msg) {
-      document.getElementById("notifTitle").textContent = title;
-      document.getElementById("notifMessage").textContent = msg;
-      document.getElementById("notificationBox").style.display = "block";
+        document.getElementById("notifTitle").textContent = title;
+        document.getElementById("notifMessage").textContent = msg;
+        document.getElementById("notificationBox").style.display = "block";
     }
 
+    // Load stored user data
+    const storedData = localStorage.getItem("userInfo");
+    if (storedData) {
+        const userInfo = JSON.parse(storedData);
+        userdisplay.textContent = userInfo.username;
+        document.getElementById("userPname").textContent = userInfo.username;
+        document.querySelector("input[name='name']").value = userInfo.email;
+      loader.classList.remove('show');
+    } else {
+      loader.classList.remove('show');
+        showMessage(
+            "<strong>Note:</strong> If you're a new user, please click to <a href='#' id='registerMessageLink'>Register</a>, if not then <a href='login/login.html'>Login</a>.",
+            "info"
+        );
+        window.location.href = '#';
+    }
 
-function logout() {
-  ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user'].forEach(k => localStorage.removeItem(k));
-  window.location.href = 'index.html';
-}
-
-  </script> 
-
- <script>
-    document.getElementById("download-app").addEventListener("click", function (e) {
-      // Show popup
-      const popup = document.getElementById("super-popup");
-      popup.style.display = "flex";
-
-      // Start download
-      setTimeout(() => {
-        window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';
-      }, 800); // slight delay to ensure popup is visible
-
-      // Auto-hide popup after 7 seconds
-      setTimeout(() => {
-        popup.style.display = "none";
-      }, 7000);
-    });
-  </script>
-
-  <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxU183NSwMKZhKHnvdhBDhKOEsncfRxUdeVCD1CEdfkwjq2LEH-fMCzUbmiEW772ZaC/exec";
-
-window.onload = async function () {
-  const email = localStorage.getItem("userEmail");
-  if (!email) {
-    window.location.href = "#";
-    return;
-  }
-
-  const storedUserStr = localStorage.getItem("user");
-  if (storedUserStr) {
-    const storedUser = JSON.parse(storedUserStr);
-
-    // Use local data immediately
-    updateUI(storedUser);
-
-    // Background check for fresh data
-    try {
-      const response = await fetch(API_URL);
-      const data = await response.json();
-
-      const freshData = data.find(row => row[1] === email);
-
-      if (freshData) {
-        const latestUser = {
-          username: freshData[0],
-          email: freshData[1],
-          password: freshData[2],
-          role: freshData[3]
-        };
-
-        // If something changed, update localStorage and UI
-        if (JSON.stringify(storedUser) !== JSON.stringify(latestUser)) {
-          localStorage.setItem("user", JSON.stringify(latestUser));
-          updateUI(latestUser);
-          console.log("User data updated from server.");
+    // Register click handler
+    document.body.addEventListener("click", function (e) {
+        if (e.target && e.target.id === "registerMessageLink") {
+            e.preventDefault();
+            localStorage.setItem("showRegister", "true");
+            window.location.href = "login/login.html";
         }
-      } else {
-        alert("User not found!");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  } else {
-    // No local user stored, fetch from server
-    try {
-      const response = await fetch(API_URL);
-      const data = await response.json();
+    });
 
-      const clientData = data.find(row => row[1] === email);
-
-      if (clientData) {
-        const userObject = {
-          username: clientData[0],
-          email: clientData[1],
-          password: clientData[2],
-          role: clientData[3]
-        };
-
-        localStorage.setItem("user", JSON.stringify(userObject));
-        updateUI(userObject);
-      } else {
-        alert("User not found!");
-        window.location.href = "index.html";
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      window.location.href = "index.html";
-    }
-  }
-};
-
-// UI update logic (safe centralized)
-function updateUI(user) {
-  document.getElementById("userdisplay").textContent = user.username;
-  document.querySelector("input[name='name']").value = user.username;
-  document.getElementById("userPname").textContent = user.username;
-  loader.classList.remove('show');
-}
-  </script>
-
-<script>
+    // Profile toggle
     const profileBtn = document.getElementById('profileButton');
-    const dropdown = document.getElementById('profileDropdown');
+    if (profileBtn) {
+        profileBtn.addEventListener('click', () => {
+            profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
 
-    profileBtn.addEventListener('click', () => {
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    });
+        document.addEventListener('click', (e) => {
+            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.style.display = 'none';
+                localStorage.removeItem('usergd');
+            }
+        });
+    }
 
-    document.addEventListener('click', (e) => {
-      if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = 'none';
-        localStorage.removeItem('usergd');
-      }
-    });
+    // Logout button
+    const logoutBtn = document.getElementById('logoutButton');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            if (confirm("Are you sure you want to log out?")) {
+                logout();
+            }
+        });
+    }
 
-    document.getElementById('logoutButton').addEventListener('click', () => {
-  const confirmLogout = confirm("Are you sure you want to log out?");
-  if (confirmLogout) {
-    logout();
-  }
+    // Download popup + redirect
+    const downloadAppBtn = document.getElementById("download-app");
+    if (downloadAppBtn) {
+        downloadAppBtn.addEventListener("click", function (e) {
+            const popup = document.getElementById("super-popup");
+            popup.style.display = "flex";
+
+            setTimeout(() => {
+                window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';
+            }, 800);
+
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 7000);
+        });
+    }
 });
 
+window.addEventListener("error", function (e) {
+  showMessage(
+    `<strong>Unexpected Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
+    "error"
+  );
+});
 
-   </script>
-     
+window.addEventListener("unhandledrejection", function (e) {
+  showMessage(
+    `<strong>App Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
+    "error"
+  );
+});
+
+</script>
+
   </body>
 </html>
