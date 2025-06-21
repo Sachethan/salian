@@ -33,6 +33,7 @@ body.dark {
 }
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 10%;
 }
 
 body {

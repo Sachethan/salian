@@ -13,6 +13,8 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
     message: form.message.value.trim()
   };
 
+  const messageShow = data.message;
+
   // Save to localStorage
   localStorage.setItem("tempname", data.name);
   localStorage.setItem("tempemail", data.email);
@@ -21,16 +23,23 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
     method: "POST",
     body: JSON.stringify(data),
   })
-    .then(res => res.json())
-    .then(response => {
-      document.getElementById("formResponse").textContent = "Message sent successfully!";
-      form.reset();
-      loader.classList.remove('show');
-      window.location.href = 'submit.html';
-    })
-    .catch(err => {
-      document.getElementById("formResponse").textContent = "Failed to send message. Try again.";
-      console.error("Error:", err);
-      loader.classList.remove('show');
-    });
+  .then(res => res.json())
+  .then(response => {
+    document.getElementById("formResponse").textContent = "Message sent successfully!";
+    loader.classList.remove('show');
+
+    // Show formatted message
+    showMessage(
+      `<strong>Message sent successfully!</strong><br> [ ${messageShow} ]`,
+      "info"
+    );
+
+    // Only clear the message field
+    form.message.value = "";
+  })
+  .catch(err => {
+    document.getElementById("formResponse").textContent = "Failed to send message. Try again.";
+    console.error("Error:", err);
+    loader.classList.remove('show');
+  });
 });

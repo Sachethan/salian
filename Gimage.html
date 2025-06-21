@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Masonry Style Google Drive Gallery</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      font-family: sans-serif;
+      background: transparent;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .masonry {
+      column-count: 4;         /* 🧱 Number of columns */
+      column-gap: 15px;        /* space between columns */
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      background: #fff;
+    }
+
+    .masonry-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .masonry-item img:hover {
+      transform: scale(1.03);
+    }
+
+    @media screen and (max-width: 800px) {
+      .masonry {
+        column-count: 2;
+      }
+    }
+
+    @media screen and (max-width: 500px) {
+      .masonry {
+        column-count: 3;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="masonry" id="gallery"></div>
+
+  <script>
+    const folderId = '1MO9c9601Y9CzbKMfyZzGYjp_y--8rfCW'; // Replace with your actual folder ID
+    const apiKey = 'AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks';     // Replace with your actual Google API key
+
+    async function loadImages() {
+      const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents and trashed=false&key=${apiKey}&fields=files(id,name,mimeType)`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = '';
+
+        data.files.forEach(file => {
+          if (file.mimeType.startsWith('image/')) {
+            const div = document.createElement('div');
+            div.className = 'masonry-item';
+
+            const img = document.createElement('img');
+            img.src = `https://lh3.googleusercontent.com/d/${file.id}=s800`; // better size for quality
+            img.alt = file.name;
+
+            div.appendChild(img);
+            gallery.appendChild(div);
+          }
+        });
+      } catch (err) {
+        console.error('Failed to load images:', err);
+      }
+    }
+
+    // Load images immediately
+    loadImages();
+  </script>
+
+</body>
+</html>

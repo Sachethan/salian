@@ -104,40 +104,8 @@ function navigateWithLoader(url, delay = 800) {
 });
 
 
-const serviceCards = document.querySelectorAll(".service-card");
-
-  serviceCards.forEach(card => {
-    card.addEventListener("click", () => {
-      const serviceName = card.dataset.service;
-      const message = `I need ${serviceName} service from your side, please reply to this`;
-        const popup = document.getElementById("popupOverlay");
-      const textarea = document.getElementById("requestInput");
-      textarea.value = message;
-        popup.style.display = "flex";
-            });
-  });
-
   function closePopup() {
     document.getElementById("popupOverlay").style.display = "none";
   }
 
 
-function showTooltip(targetId) {
-    alert("getting");
-  const tooltip = document.getElementById(`tooltip-${targetId}`);
-  const target = document.getElementById(targetId);
-
-  if (!tooltip || !target) return;
-
-  // Position the tooltip
-  const rect = target.getBoundingClientRect();
-  tooltip.style.top = `${rect.bottom + window.scrollY + 6}px`;
-  tooltip.style.left = `${rect.left + window.scrollX}px`;
-
-  tooltip.setAttribute('data-show', 'true');
-
-  // Auto-hide after 3 seconds
-  setTimeout(() => {
-    tooltip.removeAttribute('data-show');
-  }, 3000);
-}

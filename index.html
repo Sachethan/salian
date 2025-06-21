@@ -64,7 +64,7 @@
     border: none;
     font-weight: bold;
     font-size: 1.1rem;
-  margin: 0;
+    margin: 0;
     cursor: pointer;
     color: inherit;
     margin-left: 12px;
@@ -86,6 +86,31 @@
     text-decoration: underline;
     font-weight: 500;
 }
+  
+      .iframe-wrapper {
+      position: relative;
+      height: 350px; /* 🔁 set your desired height */
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .iframe-scroll {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .bottom-fade {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(to bottom, transparent, var(--bg)); /* match to your background */
+      pointer-events: none;
+    }
 
   </style>
 </head>
@@ -97,12 +122,17 @@
 </h1>
       <ul class="nav-links" id="navLinks">
         <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
+        <li><a href="#youtube">Youtube</a></li>
+        <li><a href="#gdrive">Edits</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#youtube">Portfolio</a></li>
+        <li><a href="#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
         </ul>
-      <div class="nav-actions">              
+      <div class="nav-actions">     
+   <label class="theme-switch">
+  <input type="checkbox" id="themeToggle">
+  <span class="slider"></span>  
+</label>        
         <button id="profileButton" title="Profile Page"
              style="display:none;" class="px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-100 focus:outline-none"><i class="fa-solid fa-circle-user"></i>
       </button>
@@ -114,11 +144,7 @@
         <button id="logoutButton">Logout</button>
       </div>
         
-   <label class="theme-switch">
-  <input type="checkbox" id="themeToggle">
-  <span class="slider"></span>
-   
-</label>
+
      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
       </div>
     </nav>
@@ -133,13 +159,7 @@
     <div class="dloader"></div>
     <div>Preparing your download...</div>
   </div>
-<!-- Overlay + Popup -->
-<div id="popupOverlay" class="overlay">
-  <div class="popup-box">
-    <p>✅ Request message updated.<br>Feel free to edit it if needed.</p>
-    <button onclick="closePopup()">OK</button>
-  </div>
-</div>
+  
   <section id="home" class="hero">
     <div class="container">
       <h2>Hello <span id="userdisplay">....</span>, Im Sachethan</h2>
@@ -149,7 +169,30 @@
       <button class="lbtn" onclick="window.location.href='login/login.html';" id="loginpage" title="login page">Login <i class="fa-solid fa-right-to-bracket"></i></button>
     </div>
   </section>
+ 
+ <section id="youtube" class="section container">
+    <h2>YouTube Channle</h2>
+  <iframe id="youtubefrm"
+  src="Youtube.html" 
+  width="100%" 
+  height="400" 
+  style="border: none; overflow: hidden;" 
+  scrolling="no"
+  allowfullscreen>
+</iframe>
+   </section>
   
+<section id="gdrive" class="section container" style="position: relative;">
+  <h2>Our Edits</h2><br>
+  <div class="iframe-wrapper">
+    <iframe 
+      src="gimage.html"
+      class="iframe-scroll"
+      allowfullscreen>
+    </iframe>
+    <div class="bottom-fade"></div>
+  </div>
+
    <section id="services" class="section container">
     <h2>Contact Me For</h2>
     <div class="grid">
@@ -167,22 +210,6 @@
 </a>
     </div>
         </section>
-
-<section id="youtube" class="section container moregap">
-    <h2>Youtube Channel</h2>
-        
-<!-- Elfsight YouTube Gallery | Untitled YouTube Gallery -->
-<script src="https://static.elfsight.com/platform/platform.js" async></script>
-<div class="elfsight-app-9c8a0458-04a9-4e4a-a944-0385bbc9f7ff" data-elfsight-app-lazy></div>
-      </section>
-        
-<section id="insta" class="section container moregap">
-    <h2>Instagram</h2>
-<!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
-<script src="https://static.elfsight.com/platform/platform.js" async></script>
-<div class="elfsight-app-909f0c5d-fb2d-49ce-9fbd-92f210d7c01c" data-elfsight-app-lazy></div>
-      </section>
-    
         
   <section style="display:none;"id="portfolio" class="section container">
     <h2>Portfolio</h2>
@@ -250,8 +277,24 @@
 
   <script src="script.js"></script>
   <script src="mail.js"></script>
-  <script src="https://sachethan.github.io/salian/image.js"></script>
 <script>
+  window.addEventListener("error", function (e) {
+  showMessage(
+    `<strong>Unexpected Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
+    "error"
+  );
+});
+
+window.addEventListener("unhandledrejection", function (e) {
+  showMessage(
+    `<strong>App Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
+    "error"
+  );
+});
+
+
+  
+  
 let messageIdCounter = 0; // Declare at top before any function uses it
 
 function showMessage(messageHTML, type = 'error', redirectUrl = null) {
@@ -306,8 +349,9 @@ function hideMessage(id) {
 function logout() {
    showMessage(
   "<strong>Status:</strong> Logout done successfully",
-  "info"
-            );    ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user', 'userInfo'].forEach(k => localStorage.removeItem(k));
+  "success"
+            );
+  ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user', 'userInfo'].forEach(k => localStorage.removeItem(k));
             setTimeout(() => {
                     window.location.href = 'index.html';
             }, 1000);
@@ -331,8 +375,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginMessageDiv = document.getElementById('loginMessage');
     const loader = document.getElementById("loader"); // Ensure this exists
 
-    const tempname = localStorage.getItem("tempname");
-    const tempemail = localStorage.getItem("tempemail");
     const isLoggedIn = localStorage.getItem("isLoggedIn");
 
     if (!isLoggedIn) {
@@ -341,9 +383,6 @@ document.addEventListener("DOMContentLoaded", function () {
         nameInput.required = true;
         emailInput.required = true;
 
-        document.querySelector("input[name='name']").value = tempname || '';
-        document.querySelector("input[name='email']").value = tempemail || '';
-        if (userdisplay) userdisplay.textContent = tempname || '';
     } else {
         loader.classList.add('show');
         document.getElementById("profileButton").style.display = "inline-block";
@@ -356,13 +395,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (localStorage.getItem('usergd')) {          
          showMessage(
-                "<strong>Hello,..</strong> Your login was successful. Now you can use advanced options on this website.",
-                "info"
+                "<strong>Hello,..</strong> Your login was successfull.",
+                "success"
             );
           localStorage.removeItem('usergd');
           setTimeout(() => {
                 profileDropdown.style.display = 'block';
-            }, 15000);
+            }, 10000);
         }
     }
 
@@ -388,7 +427,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const userInfo = JSON.parse(storedData);
         userdisplay.textContent = userInfo.username;
         document.getElementById("userPname").textContent = userInfo.username;
-        document.querySelector("input[name='name']").value = userInfo.email;
+        document.querySelector("input[name='name']").value = userInfo.username;
+        document.querySelector("input[name='email']").value = userInfo.email;
       loader.classList.remove('show');
     } else {
       loader.classList.remove('show');
@@ -451,21 +491,46 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-window.addEventListener("error", function (e) {
-  showMessage(
-    `<strong>Unexpected Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
-    "error"
-  );
-});
 
-window.addEventListener("unhandledrejection", function (e) {
-  showMessage(
-    `<strong>App Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
-    "error"
-  );
-});
+const serviceCards = document.querySelectorAll(".service-card");
+
+  serviceCards.forEach(card => {
+    card.addEventListener("click", () => {
+      const serviceName = card.dataset.service;
+      const message = `I need ${serviceName} service from your side, please reply to this`;
+      const textarea = document.getElementById("requestInput");
+      textarea.value = message;
+        showMessage(
+            "<strong>Note:</strong>Request message updated.<br>Feel free to edit it if needed.</a>.",
+            "info"
+        );
+
+            });
+  });
+  
+  
+  document.getElementById('youtube').addEventListener('touchstart', function () {
+    const touch = localStorage.getItem("touch");
+    if(!touch){
+  showMessage("Click to Watch on Youtube!", "info");
+      localStorage.setItem("touch","true");
+    }
+    return;
+    });
+
+  
+
 
 </script>
+<script>
+  function openLogin() {
+    const loginContainer = document.getElementById("loginContainer");
+    loginContainer.style.display = "block";
+    // Optional: Scroll to login iframe
+    loginContainer.scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+
 
   </body>
 </html>

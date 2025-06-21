@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube Slider</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: transparent;
+    }
+
+    /* Channel Profile */
+    .youtube-profile {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: transparent;
+      color: white;
+      padding: 15px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .youtube-profile img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+    .youtube-details h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .youtube-details p {
+      margin: 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    /* Slider Styles */
+    .slider-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: transparent;
+      padding: 10px 0;
+      border-radius: 12px;
+    }
+
+    .slider-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      will-change: transform;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      max-width: 100%;
+      padding: 0 10px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .slide img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 1px solid white;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 30px;
+      background: transparent;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      z-index: 10;
+      border-radius: 50%;
+    }
+
+    .nav-btn:hover {
+      background: transparent;
+      color: #007bff;
+    }
+
+    .nav-left {
+      left: 10px;
+      text-shadow: 0 6px 20px rgba(55,55,55,1);      
+    }
+
+    .nav-right {
+      right: 10px;
+      text-shadow: 0 6px 20px rgba(55,55,55,1);      
+    }
+  </style>
+</head>
+<body>
+
+  <!-- YouTube Profile Section -->
+  <div class="youtube-profile" id="youtubeProfile">
+    <!-- Profile will be injected here -->
+  </div>
+
+  <!-- Slider Section -->
+  <div class="slider-container">
+    <button class="nav-btn nav-left">&#10094;</button>
+    <div class="slider-track" id="slider-track">
+      <!-- Slides will be injected here -->
+    </div>
+    <button class="nav-btn nav-right">&#10095;</button>
+  </div>
+
+  <script>
+    const apiKey = 'AIzaSyCQjy7xXZ9zEdxkg8WqHxdwgEXDqQEAMVM'; // Your YouTube API key
+    const channelId = 'UCK6OT34QaIZtpjkIcMzKIEA'; // Your channel ID
+
+    const sliderTrack = document.getElementById('slider-track');
+    const profileContainer = document.getElementById('youtubeProfile');
+    let currentIndex = 0;
+
+    // Load Profile Data
+    fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${apiKey}`)
+      .then(res => res.json())
+      .then(data => {
+        const channel = data.items[0];
+        const title = channel.snippet.title;
+        const thumbnail = channel.snippet.thumbnails.default.url;
+        const subscribers = channel.statistics.subscriberCount;
+        const profileHTML = `
+          <img src="${thumbnail}" alt="${title}">
+          <div class="youtube-details">
+            <h3>${title}</h3>
+            <p>${formatSubscribers(subscribers)} Subscribers</p>
+          </div>
+        `;
+        profileContainer.innerHTML = profileHTML;
+      });
+
+// Load Videos for Slider (All Pages)
+fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`)
+  .then(res => res.json())
+  .then(data => {
+    const playlistId = data.items[0].contentDetails.relatedPlaylists.uploads;
+    fetchAllVideos(playlistId);
+  });
+
+let allItems = [];
+
+function fetchAllVideos(playlistId, pageToken = '') {
+  fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}&pageToken=${pageToken}`)
+    .then(res => res.json())
+    .then(data => {
+      allItems = allItems.concat(data.items);
+
+      if (data.nextPageToken) {
+        // Keep loading next page
+        fetchAllVideos(playlistId, data.nextPageToken);
+      } else {
+        // ✅ All videos fetched — now filter and show
+        const filteredItems = allItems.filter(item => {
+          const thumb = item.snippet.thumbnails.high;
+          const date = new Date(item.snippet.publishedAt);
+          return (
+            thumb.width >= thumb.height && // Not a Short
+            date.getFullYear() >= 2022     // From 2023+
+          );
+        });
+
+        // ✅ Sort by publish date (oldest to newest)
+        const sortedItems = filteredItems.sort((a, b) => {
+          return new Date(a.snippet.publishedAt) - new Date(b.snippet.publishedAt);
+        });
+
+        // ✅ Render to slider
+        sortedItems.forEach(item => {
+          const videoId = item.snippet.resourceId.videoId;
+          const thumbnail = item.snippet.thumbnails.high.url;
+
+          const slide = document.createElement('div');
+          slide.className = 'slide';
+          slide.innerHTML = `
+            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
+              <img src="${thumbnail}" alt="YouTube Video" />
+            </a>
+          `;
+          sliderTrack.appendChild(slide);
+        });
+      }
+    });
+}
+    // Navigation
+    const btnLeft = document.querySelector('.nav-left');
+    const btnRight = document.querySelector('.nav-right');
+
+    btnLeft.onclick = () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateSlider();
+      }
+    };
+
+    btnRight.onclick = () => {
+      if (currentIndex < sliderTrack.children.length - 1) {
+        currentIndex++;
+        updateSlider();
+      }
+    };
+
+    function updateSlider() {
+      const offset = currentIndex * 100;
+      sliderTrack.style.transform = `translateX(-${offset}%)`;
+    }
+
+    // Auto-slide
+    setInterval(() => {
+      if (currentIndex < sliderTrack.children.length - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      updateSlider();
+    }, 5000); // 5-second auto-slide
+  
+  function formatSubscribers(num) {
+  num = Number(num);
+  if (num >= 1e6) {
+    return (num / 1e6).toFixed(1).replace('.0', '') + 'M';
+  } else if (num >= 1e3) {
+    return (num / 1e3).toFixed(1).replace('.0', '') + 'K';
+  } else {
+    return num.toString();
+  }
+}
+
+  </script>
+</body>
+</html>
