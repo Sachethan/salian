@@ -173,7 +173,7 @@
  <section id="youtube" class="section container">
     <h2>YouTube Channle</h2>
   <iframe id="youtubefrm"
-  src="https://sachethan.github.io/salian/Youtube.html" 
+  src="Youtube.html" 
   width="100%" 
   height="400" 
   style="border: none; overflow: hidden;" 
@@ -185,7 +185,7 @@
 <section id="gdrive" class="section container" style="position: relative;">
   <h2>Our Edits</h2><br>
   <div class="iframe-wrapper">
-    <iframe 
+    <iframe id="scrollingIframe"
       src="https://sachethan.github.io/salian/Gimage.html"
       class="iframe-scroll"
       allowfullscreen>
@@ -520,17 +520,34 @@ const serviceCards = document.querySelectorAll(".service-card");
 
   
 
-
 </script>
 <script>
-  function openLogin() {
-    const loginContainer = document.getElementById("loginContainer");
-    loginContainer.style.display = "block";
-    // Optional: Scroll to login iframe
-    loginContainer.scrollIntoView({ behavior: 'smooth' });
-  }
-</script>
+  let scrollInterval;
+  const iframe = document.getElementById("scrollingIframe");
 
+  function startAutoScroll() {
+    const iframeWindow = iframe.contentWindow;
+    scrollInterval = setInterval(() => {
+      iframeWindow.scrollBy(0, 1); // Scroll down 1px every 20ms
+    }, 20);
+  }
+
+  function stopAutoScroll() {
+    clearInterval(scrollInterval);
+  }
+
+  // Start auto-scroll when iframe is loaded
+  iframe.addEventListener("load", () => {
+    startAutoScroll();
+
+    // Stop scrolling if the user touches or interacts
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+    iframe.contentWindow.addEventListener("touchstart", stopAutoScroll);
+    iframe.contentWindow.addEventListener("mousedown", stopAutoScroll);
+    iframe.contentWindow.addEventListener("wheel", stopAutoScroll);
+  });
+</script>
 
   </body>
 </html>

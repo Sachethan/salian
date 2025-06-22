@@ -5,10 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>YouTube Slider</title>
   <style>
+  
+  :root {
+  --bg:linear-gradient(90deg,rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgba(255, 241, 214, 1) 100%);
+  --text: #222;
+  --nav-bg: #111;
+  --accent: #764ba2;
+  --card-bg: #fff;
+  --section-bg: #fff;
+  --text: #111;
+  --accent: #007bff;
+  --accent-hover: #0056b3;
+  --input-bg: #f9f9f9;
+  --input-border: #ccc;
+  --dbg: #fff;
+  --logout: #d00;
+}
+body.dark {
+  --bg: #121212;
+  --text: #eee;
+  --nav-bg: #1f1f1f;
+  --card-bg: #1e1e1e;
+  --section-bg: #111;
+  --text: #fff;
+  --input-bg: #222;
+  --input-border: #555;
+  --dbg: #121212;
+  --logout: #007bff;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background 0.3s, color 0.3s;
+}
+  
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: transparent;
+      color: var(--text);
     }
 
     /* Channel Profile */
@@ -17,7 +53,6 @@
       align-items: center;
       gap: 15px;
       background: transparent;
-      color: white;
       padding: 15px 20px;
       border-bottom: 1px solid rgba(255,255,255,0.2);
     }
@@ -32,12 +67,13 @@
     .youtube-details h3 {
       margin: 0;
       font-size: 20px;
+      color: var(--text);
     }
 
     .youtube-details p {
       margin: 0;
       font-size: 14px;
-      color: #ccc;
+      color: var(--text);
     }
 
     /* Slider Styles */
@@ -70,7 +106,7 @@
       object-fit: cover;
       border-radius: 10px;
       cursor: pointer;
-      border: 1px solid white;
+      border: 1px solid var(--text);
       box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     }
 
@@ -80,7 +116,7 @@
       transform: translateY(-50%);
       font-size: 30px;
       background: transparent;
-      color: #fff;
+      color: var(--text);
       border: none;
       padding: 10px 15px;
       cursor: pointer;
@@ -121,6 +157,23 @@
   </div>
 
   <script>
+    // Function to apply theme on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const currentTheme = localStorage.getItem('theme');
+  if (currentTheme === 'dark') {
+    document.body.classList.add('dark');
+  }
+});
+  
+window.addEventListener("message", (event) => {
+    if (event.data.theme === "dark") {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  });
+  
+  
     const apiKey = 'AIzaSyCQjy7xXZ9zEdxkg8WqHxdwgEXDqQEAMVM'; // Your YouTube API key
     const channelId = 'UCK6OT34QaIZtpjkIcMzKIEA'; // Your channel ID
 
@@ -241,6 +294,8 @@ function fetchAllVideos(playlistId, pageToken = '') {
     return num.toString();
   }
 }
+  
+
 
   </script>
 </body>
