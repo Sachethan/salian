@@ -69,12 +69,20 @@ toggle.addEventListener('change', () => {
   const isDark = toggle.checked;
   document.body.classList.toggle('dark', isDark);
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        // Send dark mode info to iframe
-    const iframe = document.getElementById("youtubefrm");
-    if (iframe) {
-      iframe.contentWindow.postMessage({ theme: isDark ? "dark" : "light" }, "*");
-    }
+    
+    // Send dark mode info to iframe
+const gdrive = document.getElementById("scrollingIframe");
+const youtubefrm = document.getElementById("youtubefrm");
 
+const themeMessage = { theme: isDark ? "dark" : "light" };
+
+if (gdrive && gdrive.contentWindow) {
+  gdrive.contentWindow.postMessage(themeMessage, "*");
+}
+
+if (youtubefrm && youtubefrm.contentWindow) {
+  youtubefrm.contentWindow.postMessage(themeMessage, "*");
+}
 });
 
 

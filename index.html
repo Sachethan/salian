@@ -91,6 +91,7 @@
       position: relative;
       height: 350px; /* 🔁 set your desired height */
       overflow: hidden;
+      width: 100%;
       border-radius: 12px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
@@ -171,7 +172,7 @@
   </section>
  
  <section id="youtube" class="section container">
-    <h2>YouTube Channle</h2>
+    <h2>YouTube Channel</h2>
   <iframe id="youtubefrm"
   src="Youtube.html" 
   width="100%" 
@@ -183,10 +184,10 @@
    </section>
   
 <section id="gdrive" class="section container" style="position: relative;">
-  <h2>Our Edits</h2><br>
-  <div class="iframe-wrapper">
+  <h2>Edit Collections</h2><br>
+  <div class="iframe-wrapper" id="iframeWrapper">
     <iframe id="scrollingIframe"
-      src="https://sachethan.github.io/salian/Gimage.html"
+      src="Gimage.html"
       class="iframe-scroll"
       allowfullscreen>
     </iframe>
@@ -522,13 +523,33 @@ const serviceCards = document.querySelectorAll(".service-card");
 
 </script>
 <script>
-  let scrollInterval;
   const iframe = document.getElementById("scrollingIframe");
+  const wrapper = document.getElementById("iframeWrapper");
+
+  let scrollInterval;
+  let scrollDirection = 1; // 1 = down, -1 = up
+  let isPaused = false;
 
   function startAutoScroll() {
-    const iframeWindow = iframe.contentWindow;
+    const iframeWin = iframe.contentWindow;
+
     scrollInterval = setInterval(() => {
-      iframeWindow.scrollBy(0, 1); // Scroll down 1px every 20ms
+      if (isPaused) return;
+
+      // Scroll in current direction
+      iframeWin.scrollBy(0, scrollDirection);
+
+      const doc = iframeWin.document.documentElement;
+      const scrollTop = doc.scrollTop;
+      const scrollHeight = doc.scrollHeight;
+      const clientHeight = doc.clientHeight;
+
+      // Reverse scroll direction when top or bottom reached
+      if (scrollTop + clientHeight >= scrollHeight) {
+        scrollDirection = -1;
+      } else if (scrollTop <= 0) {
+        scrollDirection = 1;
+      }
     }, 20);
   }
 
@@ -536,18 +557,30 @@ const serviceCards = document.querySelectorAll(".service-card");
     clearInterval(scrollInterval);
   }
 
-  // Start auto-scroll when iframe is loaded
+  // Pause on hover
+  wrapper.addEventListener("mouseenter", () => isPaused = true);
+  wrapper.addEventListener("mouseleave", () => isPaused = false);
+
+  // Stop on touch, scroll, or mouse interaction
+  function stopOnInteraction(win) {
+    ["mousedown", "wheel", "touchstart"].forEach(event =>
+      win.addEventListener(event, () => stopAutoScroll(), { once: true })
+    );
+  }
+
+  // Wait until iframe content is loaded
   iframe.addEventListener("load", () => {
-    startAutoScroll();
+    try {
+      const win = iframe.contentWindow;
 
-    // Stop scrolling if the user touches or interacts
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-    iframe.contentWindow.addEventListener("touchstart", stopAutoScroll);
-    iframe.contentWindow.addEventListener("mousedown", stopAutoScroll);
-    iframe.contentWindow.addEventListener("wheel", stopAutoScroll);
+      startAutoScroll();
+      stopOnInteraction(win);
+    } catch (err) {
+      console.warn("⚠️ Cannot access iframe content (cross-origin)", err);
+    }
   });
 </script>
+
 
   </body>
 </html>

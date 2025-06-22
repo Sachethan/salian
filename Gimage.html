@@ -5,11 +5,44 @@
   <meta charset="UTF-8">
   <title>Masonry Style Google Drive Gallery</title>
   <style>
+  
+  :root {
+  --bg:linear-gradient(90deg,rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgba(255, 241, 214, 1) 100%);
+  --text: #222;
+  --nav-bg: #111;
+  --accent: #764ba2;
+  --card-bg: #fff;
+  --section-bg: #fff;
+  --accent: #007bff;
+  --accent-hover: #0056b3;
+  --input-bg: #f9f9f9;
+  --input-border: #ccc;
+  --dbg: #fff;
+  --logout: #d00;
+}
+body.dark {
+  --bg: #121212;
+  --text: #eee;
+  --nav-bg: #1f1f1f;
+  --card-bg: #1e1e1e;
+  --section-bg: #111;
+  --input-bg: #222;
+  --input-border: #555;
+  --dbg: #121212;
+  --logout: #007bff;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background 0.3s, color 0.3s;
+}  
+  
     body {
       margin: 0;
       padding: 30px;
       font-family: sans-serif;
-      background: transparent;
+      background: var(--bg);
     }
 
     h2 {
@@ -31,7 +64,7 @@
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      background: #fff;
+      background: transparent;
     }
 
     .masonry-item img {
@@ -44,6 +77,14 @@
     .masonry-item img:hover {
       transform: scale(1.03);
     }
+.image-caption {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text);
+  margin-top: 8px;
+  word-break: break-word;
+}
+
 
     @media screen and (max-width: 800px) {
       .masonry {
@@ -61,40 +102,67 @@
 <body>
   <div class="masonry" id="gallery"></div>
 
-  <script>
-    const folderId = '1MO9c9601Y9CzbKMfyZzGYjp_y--8rfCW'; // Replace with your actual folder ID
-    const apiKey = 'AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks';     // Replace with your actual Google API key
-
-    async function loadImages() {
-      const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents and trashed=false&key=${apiKey}&fields=files(id,name,mimeType)`;
-
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const gallery = document.getElementById('gallery');
-        gallery.innerHTML = '';
-
-        data.files.forEach(file => {
-          if (file.mimeType.startsWith('image/')) {
-            const div = document.createElement('div');
-            div.className = 'masonry-item';
-
-            const img = document.createElement('img');
-            img.src = `https://lh3.googleusercontent.com/d/${file.id}=s800`; // better size for quality
-            img.alt = file.name;
-
-            div.appendChild(img);
-            gallery.appendChild(div);
-          }
-        });
-      } catch (err) {
-        console.error('Failed to load images:', err);
-      }
+<script>
+window.addEventListener("message", (event) => {
+    if (event.data.theme === "dark") {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
     }
+  });  
+  
+    // Function to apply theme on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const currentTheme = localStorage.getItem('theme');
+  if (currentTheme === 'dark') {
+    document.body.classList.add('dark');
+  }
+});
+  
+  
+  
+  const folderId = '1MO9c9601Y9CzbKMfyZzGYjp_y--8rfCW';
+  const apiKey = 'AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks';
 
-    // Load images immediately
-    loadImages();
-  </script>
+  async function loadImages() {
+    const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents and trashed=false&key=${apiKey}&fields=files(id,name,mimeType)`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
+
+      data.files.forEach(file => {
+        if (file.mimeType.startsWith('image/')) {
+          const div = document.createElement('div');
+          div.className = 'masonry-item';
+
+          const img = document.createElement('img');
+          img.src = `https://lh3.googleusercontent.com/d/${file.id}=s800`;
+          img.alt = file.name;
+
+          const caption = document.createElement('p');
+          // Remove extension from filename
+          const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, '');
+          caption.textContent = nameWithoutExtension;
+
+          caption.className = 'image-caption';
+
+          div.appendChild(img);
+          div.appendChild(caption);
+          gallery.appendChild(div);
+        }
+      });
+    } catch (err) {
+      console.error('Failed to load images:', err);
+    }
+  }
+
+  // ✅ Call the function
+  loadImages();
+</script>
+
 
 </body>
 </html>
