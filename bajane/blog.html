@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sachethan Salian | Creative Hub</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Custom styles to apply the Inter font */
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    /* Ensure the main content area can scroll independently */
+    main {
+        overflow-y: auto;
+    }
+    /* Simple fade-out transition for the loader */
+    .loader-fade-out {
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col h-screen">
+
+  <!-- Sticky Header -->
+  <header class="bg-white border-b border-slate-200 shadow-sm z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <h1 class="text-xl font-bold text-slate-900">Sachethan Salian Creation</h1>
+        <!-- Menu Button -->
+        <div class="relative">
+          <button id="menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+            <span class="sr-only">Open main menu</span>
+            <!-- Hamburger Icon -->
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <!-- Dropdown Menu -->
+          <div id="menu-dropdown" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
+            <div class="py-1" role="none">
+              <a href="#" id="menu-home-link" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Home</a>
+              <a href="#" id="menu-editor-link" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Editor</a>
+              <a href="#" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">About</a>
+              <a href="#" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Contact</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub Header / Breadcrumb for iframe view -->
+  <div id="sub-header" class="bg-slate-100 border-b border-slate-200 hidden z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+      <nav class="text-sm font-medium">
+        <span id="home-breadcrumb-link" class="text-indigo-600 hover:text-indigo-800 cursor-pointer transition-colors">Home</span>
+        <span class="text-slate-400 mx-2">/</span>
+        <span class="text-slate-600">Anna Poorna Seva Samiti - Poster Editor</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main Content (Scrollable) -->
+  <main class="flex-grow">
+    <!-- Template Selection View -->
+    <div id="template-selector" class="flex flex-col items-center justify-center p-6 text-center h-full">
+      <div class="max-w-2xl w-full">
+        <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl mb-4">Select a Template</h2>
+        <p class="text-slate-600 mb-8 max-w-lg mx-auto">Choose a template to start creating your design. Click the button below to open the full editor.</p>
+        <img src="https://sachethan.github.io/salian/bajane/bg.jpg" alt="Template Preview" class="w-[150px] mx-auto rounded-lg border-2 border-slate-200 shadow-lg mb-8" />
+        <button id="load-template-btn" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
+          Open Full Editor
+        </button>
+      </div>
+    </div>
+
+    <!-- Full Iframe View -->
+    <div id="iframe-container" class="hidden h-full bg-slate-200 relative">
+      <!-- Loading Overlay -->
+      <div id="loading-overlay" class="absolute inset-0 bg-slate-200 bg-opacity-80 flex items-center justify-center z-10">
+        <div class="flex flex-col items-center">
+          <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p class="mt-4 text-lg font-medium text-slate-700">Loading Editor...</p>
+        </div>
+      </div>
+      <iframe id="viewer" src="about:blank" title="Poster Editor" class="w-full h-full border-0"></iframe>
+    </div>
+  </main>
+
+  <!-- Sticky Footer -->
+  <footer class="bg-white border-t border-slate-200 z-10">
+    <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500">
+      &copy; 2025 Sachethan Salian. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <div class="mt-3 text-center">
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+          <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Are you sure?</h3>
+        <div class="mt-2 px-7 py-3">
+          <p class="text-sm text-gray-500">
+            Any unsaved changes in the editor will be lost. Do you want to return to the template selection?
+          </p>
+        </div>
+        <div class="items-center px-4 py-3 space-x-4">
+          <button id="cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+            Cancel
+          </button>
+          <button id="confirm-back-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DOM Element Selection ---
+    const header = document.querySelector('header');
+    const footer = document.querySelector('footer');
+    const templateSelector = document.getElementById('template-selector');
+    const subHeader = document.getElementById('sub-header');
+    const iframeContainer = document.getElementById('iframe-container');
+    const viewerIframe = document.getElementById('viewer');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const loadTemplateBtn = document.getElementById('load-template-btn');
+    const homeBreadcrumbLink = document.getElementById('home-breadcrumb-link');
+    const confirmationModal = document.getElementById('confirmation-modal');
+    const confirmBackBtn = document.getElementById('confirm-back-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const menuButton = document.getElementById('menu-button');
+    const menuDropdown = document.getElementById('menu-dropdown');
+    const menuHomeLink = document.getElementById('menu-home-link');
+    const menuEditorLink = document.getElementById('menu-editor-link');
+
+    // --- State Variables ---
+    const editorUrl = 'https://sachethan.github.io/salian/bajane';
+    const blankPageUrl = 'about:blank';
+    
+    // --- Functions ---
+
+    /**
+     * Toggles the visibility of the main navigation menu.
+     */
+    function toggleMenu() {
+        menuDropdown.classList.toggle('hidden');
+    }
+
+    /**
+     * Hides the loading overlay with a fade-out effect.
+     */
+    function hideLoader() {
+        loadingOverlay.classList.add('loader-fade-out');
+        // Wait for the transition to finish before hiding the element completely
+        setTimeout(() => {
+            loadingOverlay.classList.add('hidden');
+        }, 500); // Must match the transition duration in CSS
+    }
+
+    /**
+     * Switches the view to the editor iframe.
+     */
+    function showEditor() {
+      // Show the loader first
+      loadingOverlay.classList.remove('hidden', 'loader-fade-out');
+      loadingOverlay.style.opacity = 1;
+
+      // Switch views
+      templateSelector.classList.add('hidden');
+      iframeContainer.classList.remove('hidden');
+      subHeader.classList.remove('hidden');
+      
+      // Set iframe container to fill space between header/subheader and footer
+      iframeContainer.style.height = `calc(100vh - ${header.offsetHeight + subHeader.offsetHeight + footer.offsetHeight}px)`;
+
+      // Start loading the iframe content
+      viewerIframe.src = editorUrl;
+    }
+
+    /**
+     * Switches the view back to the template selector.
+     */
+    function showTemplateSelector() {
+      viewerIframe.src = blankPageUrl; // Clear iframe to stop processes
+      templateSelector.classList.remove('hidden');
+      iframeContainer.classList.add('hidden');
+      subHeader.classList.add('hidden');
+      closeConfirmationModal();
+    }
+
+    /**
+     * Shows the confirmation modal.
+     */
+    function openConfirmationModal() {
+      // Only show modal if the editor is currently active
+      if (!iframeContainer.classList.contains('hidden')) {
+        confirmationModal.classList.remove('hidden');
+      } else {
+        // If editor isn't active, just ensure we are on the home screen
+        showTemplateSelector();
+      }
+    }
+
+    /**
+     * Hides the confirmation modal.
+     */
+    function closeConfirmationModal() {
+      confirmationModal.classList.add('hidden');
+    }
+
+    // --- Event Listeners ---
+    
+    // Hide loader once iframe content is fully loaded
+    viewerIframe.addEventListener('load', hideLoader);
+    
+    // Menu button toggles dropdown
+    menuButton.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevent the window click listener from firing immediately
+        toggleMenu();
+    });
+
+    // Menu links functionality
+    menuHomeLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openConfirmationModal();
+        toggleMenu();
+    });
+
+    menuEditorLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showEditor();
+        toggleMenu();
+    });
+    
+    // Load the editor when the main button is clicked
+    loadTemplateBtn.addEventListener('click', showEditor);
+
+    // Show confirmation modal when breadcrumb link is clicked
+    homeBreadcrumbLink.addEventListener('click', openConfirmationModal);
+
+    // Handle modal confirmation
+    confirmBackBtn.addEventListener('click', showTemplateSelector);
+
+    // Handle modal cancellation
+    cancelBtn.addEventListener('click', closeConfirmationModal);
+
+    // Global click listener to close menu/modal
+    window.addEventListener('click', (event) => {
+      // Close menu if clicked outside
+      if (!menuDropdown.classList.contains('hidden') && !menuButton.contains(event.target)) {
+        toggleMenu();
+      }
+      // Close modal if clicked on the background overlay
+      if (event.target === confirmationModal) {
+        closeConfirmationModal();
+      }
+    });
+
+  </script>
+
+</body>
+</html>
