@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="color-scheme" content="light">
+  <base href="https://sachethan.github.io/salian/bajane/"/>
   <title>Kannada Poster Editor</title>
 
   <!-- Tailwind CSS -->
@@ -19,6 +21,7 @@
     body {
       font-family: 'Noto Sans Kannada', sans-serif;
     }
+    
 
     .aspect-ratio-box {
       position: relative;
@@ -49,14 +52,17 @@
       border-top: 3px solid #c2410c;
       border-bottom: 3px solid #c2410c;
     }
-
     .text-header { font-size: clamp(0.5rem, 2.2cqw, 1rem); }
     .text-title { font-size: clamp(1.2rem, 4vw, 2.2rem); }
     .text-subtitle { font-size: clamp(0.8rem, 3.5cqw, 1.5rem); }
     .text-body-xl { font-size: clamp(0.9rem, 3.8cqw, 1.8rem); }
     .text-body-lg { font-size: clamp(0.8rem, 3.2cqw, 1.5rem); }
     .text-body-md { font-size: clamp(0.7rem, 2.8cqw, 1.2rem); }
-    .text-footer { font-size: clamp(0.9rem, 2.2cqw, 1rem); }
+    
+    .text-footer { 
+        font-size: clamp(0.9rem, 2.2cqw, 1rem);
+        bottom: 25px;
+    }
 
     [contenteditable="true"]:hover {
       outline: 2px dashed rgba(255,255,255,0.5);
@@ -66,6 +72,54 @@
       outline: 2px solid #fbbf24;
       background-color: rgba(0,0,0,0.1);
     }
+
+
+@media screen and (max-width: 360px) {
+  .text-title {
+    font-size: 1rem;
+  }
+
+  .text-footer{
+    font-size: 0.75rem;
+    bottom: 25px;
+  }
+  .ctm-Content{
+    bottom: 70px;
+    font-size: 0.74rem;
+  }
+  .text-header{
+    top:18px;
+    font-size: 8px;
+  }
+  .devi img{
+    height: 60px;
+    width: 60px;
+  }
+}
+@media screen and (min-width: 437px) and (max-width: 450px) {
+.ctm-Content{
+    bottom: 75px;
+  }
+.text-header{
+    top:21px;
+  }
+  
+}
+
+@media screen and (min-width: 436px) and (max-width: 437px) {
+.ctm-Content{
+    bottom: 75px;
+  font-size: 1.3rem;
+  }
+ .ctm-Content #change1{
+ font-size: 1rem;  
+ }
+.text-header{
+    top:21px;
+  }
+  
+}
+
   </style>
 </head>
 <body class="bg-gray-800">
@@ -75,7 +129,7 @@
     <!-- Poster Container -->
     <div class="aspect-ratio-box max-w-[640px] mx-auto">
       <div id="invitation-card" class="bg-gradient-radial from-orange-400 to-orange-600 shadow-2xl overflow-hidden">
-   <div class="absolute overflow-hidden z-50 pointer-events-none">
+   <div class="absolute overflow-hidden z-50 pointer-events-none opacity-50">
      <img src="boder.png"/>
    </div>
 
@@ -83,13 +137,13 @@
 
         <div class="flex-center p-2 md:p-4 text-center text-white flex flex-col items-center justify-between">
           <!-- Header -->
-          <div class="absolute top-6 m-0 p-0 font-semibold text-yellow-100 text-header">
+          <div class="absolute m-0 p-0 font-semibold text-yellow-100 text-header">
             <p contenteditable="false" class="m-0">||ಶ್ರೀ ಗುರುಭ್ಯೋ ನಮಃ || ಶ್ರೀ ಶರಭೇಶ್ವರಾಯ ನಮಃ ||</p>
             <p contenteditable="false">|| ಶ್ರೀ ಅಂಬಿಕಾ ಅನ್ನಪೂರ್ಣೇಶ್ವರಿ ನಮಃ ||</p>
           </div>
 
           <!-- Image -->
-<div class="absolute left-1/2 transform -translate-x-1/2 top-[10%] z-50">
+<div class="absolute left-1/2 transform -translate-x-1/2 top-[10%] z-50 devi">
   <img src="devi.jpeg"
        class="rounded-full border-2 md:border-4 border-yellow-400 shadow-lg w-[15cqw] h-[15cqw] max-w-[100px] max-h-[100px]"
        alt="Error"
@@ -98,17 +152,17 @@
 
 
           <!-- Title -->
-          <div class="absolute bg-gradient-to-b from-orange-500 to-orange-600 rounded-full px-2 py-2 shadow-xl border-2 border-orange-400 w-11/12 top-[20%]">
+          <div class="absolute bg-gradient-to-b from-orange-500 to-orange-600 rounded-full px-1 py-1 shadow-xl border-2 border-orange-400 w-11/12 top-[21%]">
             <h1 contenteditable="false" class="text-title m-0 font-black text-yellow-200 whitespace-nowrap pt-2">ಅನ್ನಪೂರ್ಣ ಆಶೀರ್ವಾದ ಸೇವಾ ಸಮಿತಿ</h1>
             <p contenteditable="false" class="text-subtitle text-yellow-100">ಇದರ ವತಿಯಿಂದ</p>
           </div>
 
           <!-- Content -->
-          <div class="absolute bottom-[90px] bg-black bg-opacity-20 rounded-2xl p-3 md:p-4 w-11/12 flex flex-col justify-center items-center text-yellow-50 shadow-inner-lg">
+          <div class="absolute ctm-Content bg-black bg-opacity-20 rounded-2xl p-3 md:p-4 w-11/12 flex flex-col justify-center items-center text-yellow-50 shadow-inner-lg">
             <div class="space-y-2">
-              <p contenteditable="false" class="text-body-xl font-bold">ಜ್ಞಾನಮಂದಿರ ಕಟ್ಟಡ ನಿರ್ಮಾಣ ಮಾಡುವ ಉದ್ದೇಶದಿಂದ ನಡೆಸಲಾಗುವ ವಾರದ ಶುಕ್ರವಾರ ಮನೆ ಮನೆ ಭಜನೆ</p>
-              <p id="change1" contenteditable="true" class="text-body-lg font-semibold bg-orange-800 bg-opacity-50 rounded-md px-3 py-1 pt-2 inline-block">(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) 11-07-2025</p>
-              <p contenteditable="false" class="text-body-xl font-bold">ಶುಕ್ರವಾರ ಸಂಜೆ 7.00ಕ್ಕೆ ಸರಿಯಾಗಿ</p>
+              <p contenteditable="false" class="font-bold">ಜ್ಞಾನಮಂದಿರ ಕಟ್ಟಡ ನಿರ್ಮಾಣ ಮಾಡುವ ಉದ್ದೇಶದಿಂದ ನಡೆಸಲಾಗುವ ವಾರದ ಶುಕ್ರವಾರ ಮನೆ ಮನೆ ಭಜನೆ</p>
+              <p id="change1" contenteditable="true" class="font-semibold bg-orange-800 bg-opacity-50 rounded-md px-3 py-1 pt-2 inline-block">(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) 11-07-2025</p>
+              <p contenteditable="false" class="font-bold">ಶುಕ್ರವಾರ ಸಂಜೆ 7.00ಕ್ಕೆ ಸರಿಯಾಗಿ</p>
               <div class="text-body-md pt-1">
                 <p id="change2" contenteditable="true" class="font-bold">ಶ್ರೀಮತಿ ಮತ್ತು ಶ್ರೀ ಹೆಸರು ಮತ್ತು ಮಕ್ಕಳು</p>
                 <p id="change3" contenteditable="true" class="font-semibold">ಊರಿನ / ಮನೆ ಹೆಸರು</p>
@@ -117,8 +171,8 @@
           </div>
 
           <!-- Footer -->
-          <div class="absolute bottom-9 text-footer font-semibold text-yellow-100 opacity-90">
-            <p contenteditable="false" class="bg-orange-800 rounded-md px-3 py-1 pt-2">ಆಶೀರ್ವಾದ ಪಡೆಯರ ಬಳಗ (ರಿ.) ಸೇವಾ ಟ್ರಸ್ಟ್ ವತಿಯಿಂದ</p>
+          <div class="absolute text-footer font-semibold text-yellow-100 opacity-90">
+            <p contenteditable="false" class="bg-orange-800 rounded-md px-3 py-1 pt-2 footer-text">ಆಶೀರ್ವಾದ ಪಡೆಯರ ಬಳಗ (ರಿ.) ಸೇವಾ ಟ್ರಸ್ಟ್ ವತಿಯಿಂದ</p>
           </div>
         </div>
 
@@ -128,14 +182,20 @@
   </div>
 
 <!-- Controls -->
-<div class="p-2 rounded-md shadow flex justify-center gap-3">
-  <button id="font-modal-button" class="px-4 py-1.5 text-sm font-medium text-gray-800 bg-gray-100 rounded hover:bg-gray-200 transition">
-    Change Font
-  </button>
-  <button id="download-button" class="px-4 py-1.5 text-sm font-medium text-white bg-green-500 rounded hover:bg-green-600 transition">
-    Download
-  </button>
-</div>
+   <div class="w-full max-w-md">
+        <!-- Controls Container -->
+        <div class="bg-slate-800/80 backdrop-blur-sm p-3 rounded-xl shadow-lg flex justify-center items-center gap-4 border border-slate-700">
+            <!-- Secondary Button: "Change Font" -->
+            <button id="font-modal-button" class="flex items-center gap-2 px-2 py-2 pt-3 text-sm font-medium text-slate-200 bg-slate-700 rounded-lg hover:bg-slate-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-sky-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-80"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+                Change Font
+            </button>
+            <!-- Primary Button: "Download" -->
+            <button id="download-button" class="flex items-center gap-2 px-2 py-2 pt-3 text-sm font-medium text-white bg-sky-500 rounded-lg hover:bg-sky-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-sky-400 shadow-md hover:shadow-sky-500/40">
+                Download
+            </button>
+        </div>
+    </div>
 
 
 
@@ -155,17 +215,17 @@
     </div>
   </div>
 <div class="mt-8 bg-gradient-to-br from-yellow-200 via-yellow-100 to-white text-gray-900 rounded-2xl shadow-xl border border-yellow-300 px-6 py-5 space-y-1 text-[clamp(0.8rem,2.2cqw,1.1rem)] leading-relaxed tracking-wide font-[500]">
-  <div class="text-xl font-bold text-orange-700 underline decoration-dotted underline-offset-4">
-    ಗಮನಿಸಿ:
-  </div>
+  <div class="text-xl font-bold text-orange-700 underline decoration-dotted underline-offset-4">
+    ಗಮನಿಸಿ:
+  </div>
 
-  <div>
+  <div>
 1. ಈ ಪೋಸ್ಟರ್‌ನಲ್ಲಿ ಈ ವಾರದ <span class="font-semibold text-orange-600">ಶುಕ್ರವಾರದ ದಿನಾಂಕ</span>ವು ಆಟೋಮ್ಯಾಟಿಕ್ ಅಪ್ಡೇಟ್ಗೊಳಿಸಲಾಗಿದೆ. ದಿನಾಂಕವನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ ಬದಲಾಯಿಸಬುದು.<br>
-    <br>
+    <br>
 2. <span class="font-semibold text-orange-600">ಹೆಸರು ಮತ್ತು ಸ್ಥಳ</span>ವನ್ನು ಕ್ಲಿಕ್ ಮಾಡುವ ಮೂಲಕ ಬದಲಾಯಿಸಬಹುದು.<br>
-    <br>
-3. ಇಂದು ಮಾಡಿದ ಬದಲಾವಣೆಗಳು <span class="font-semibold text-orange-600">ಈ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್ನಲ್ಲಿ ಮಾತ್ರ</span> ಸಂರಕ್ಷಿಸಲಾಗುತ್ತದೆ. ಮುಂದಿನ ಬಾರಿ ಭೇಟಿ ನೀಡುವಾಗ ನೀವು ಕೊನೆಯ ಬದಲಾವಣೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ನೋಡಬಹುದು. 
-  </div>
+    <br>
+3. ಇಂದು ಮಾಡಿದ ಬದಲಾವಣೆಗಳು <span class="font-semibold text-orange-600">ಈ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್ನಲ್ಲಿ ಮಾತ್ರ</span> ಸಂರಕ್ಷಿಸಲಾಗುತ್ತದೆ. ಮುಂದಿನ ಬಾರಿ ಭೇಟಿ ನೀಡುವಾಗ ನೀವು ಕೊನೆಯ ಬದಲಾವಣೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ನೋಡಬಹುದು. 
+  </div>
 </div>
 
 <!-- dom-to-image-more -->
@@ -216,83 +276,84 @@
     document.querySelectorAll('[contenteditable="true"]').forEach(el => {
       el.addEventListener('blur', () => autoFitText('[contenteditable="true"]'));
     });
+  // Download using html-to-image
+  downloadButton.addEventListener('click', () => {
+    downloadButton.textContent = 'Downloading...';
+    downloadButton.disabled = true;
 
-    // Download using html-to-image
-    downloadButton.addEventListener('click', () => {
-      downloadButton.textContent = 'Downloading...';
-      downloadButton.disabled = true;
+    document.fonts.ready.then(() => {
+      autoFitText('[contenteditable="true"]');
 
-      document.fonts.ready.then(() => {
-        autoFitText('[contenteditable="true"]');
-
-        htmlToImage.toJpeg(invitationCard, {
-          quality: 1,
-          cacheBust: true,
-          })
-        .then(dataUrl => {
-          const link = document.createElement('a');
-          link.download = 'poster-hq.jpg';
-          link.href = dataUrl;
-          link.click();
-          downloadButton.textContent = 'Download';
-          downloadButton.disabled = false;
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert("Download failed.");
-          downloadButton.textContent = 'Download';
-          downloadButton.disabled = false;
-        });
+      htmlToImage.toJpeg(invitationCard, {
+        quality: 1,
+        cacheBust: true
+      })
+      .then(dataUrl => {
+        const link = document.createElement('a');
+        const filename = `Bajane_${fridayDateFormatted || 'date'}.jpg`;
+        link.download = filename;
+        link.href = dataUrl;
+        link.click();
+        downloadButton.textContent = 'Downloaded';
+        downloadButton.disabled = false;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert("Download failed.");
+        downloadButton.textContent = 'Download Again';
+        downloadButton.disabled = false;
       });
     });
+  });
   </script>
 <script>
-  const editableIds = ['change2', 'change3']; // only these saved in localStorage
+  const editableIds = ['change2', 'change3'];
+  let fridayDateFormatted = ''; // Global variable to store Friday date
 
-  // Set default next Friday in #change1
-  window.addEventListener('DOMContentLoaded', () => {
-    // 1. Set #change1 default
-    const change1 = document.getElementById('change1');
-    if (change1) {
-      const today = new Date();
-      const nextFriday = new Date();
+  // Set default next Friday in #change1 and store date
+  window.addEventListener('DOMContentLoaded', () => {
+    const change1 = document.getElementById('change1');
+    if (change1) {
+      const today = new Date();
+      const nextFriday = new Date();
+      const dayOfWeek = today.getDay();
+      const daysUntilFriday = (5 - dayOfWeek + 7) % 7 || 7;
+      nextFriday.setDate(today.getDate() + daysUntilFriday);
 
-      // Get next Friday
-      const dayOfWeek = today.getDay();
-      const daysUntilFriday = (5 - dayOfWeek + 7) % 7 || 7;
-      nextFriday.setDate(today.getDate() + daysUntilFriday);
+      const dd = String(nextFriday.getDate()).padStart(2, '0');
+      const mm = String(nextFriday.getMonth() + 1).padStart(2, '0');
+      const yyyy = nextFriday.getFullYear();
 
-      const dd = String(nextFriday.getDate()).padStart(2, '0');
-      const mm = String(nextFriday.getMonth() + 1).padStart(2, '0');
-      const yyyy = nextFriday.getFullYear();
-      const formattedDate = `${dd}-${mm}-${yyyy}`;
+      fridayDateFormatted = `${dd}-${mm}-${yyyy}`; // Save for download
 
-      // Only set if not already modified
-      if (change1.textContent.trim() === '' || change1.textContent.includes('11-07-2025')) {
-        change1.textContent = `(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) ${formattedDate}`;
-      }
-    }
+      if (change1.textContent.trim() === '' || change1.textContent.includes('11-07-2025')) {
+        change1.textContent = `(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) ${fridayDateFormatted}`;
+      }
+    }
 
-    // 2. Load localStorage values for other IDs
-    editableIds.forEach(id => {
-      const saved = localStorage.getItem(`poster_${id}`);
-      if (saved) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = saved;
-      }
-    });
-  });
+    // Load saved name/place (change2/3)
+    editableIds.forEach(id => {
+      const saved = localStorage.getItem(`poster_${id}`);
+      if (saved) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = saved;
+      }
+    });
+  });
 
-  // Save only change2 and change3 on blur
-  editableIds.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('blur', () => {
-        localStorage.setItem(`poster_${id}`, el.textContent);
-      });
-    }
-  });
+  // Save change2 and change3 only
+  editableIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('blur', () => {
+        localStorage.setItem(`poster_${id}`, el.textContent);
+      });
+    }
+  });
+
+
 </script>
+
 
 
 </body>
