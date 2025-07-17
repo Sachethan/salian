@@ -567,6 +567,24 @@
   }
 </script>
 
+<script>
+  window.addEventListener("load", function () {
+    const hash = window.location.hash; // e.g., #about or #contact
+    const iframe = document.getElementById("viewer");
+
+    // Base URL (what you want to embed)
+    const baseURL = "https://itssachethan.blogspot.com/?m=1";
+
+    // Append hash if available
+    if (hash) {
+      iframe.src = baseURL + hash;
+    } else {
+      iframe.src = baseURL;
+    }
+  });
+</script>
+
+
 
 </body>
 </html>
