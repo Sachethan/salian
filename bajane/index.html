@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="light">
-  <base href="https://sachethan.github.io/salian/bajane/"/>
+  <base href=""/>
   <title>Kannada Poster Editor</title>
 
   <!-- Tailwind CSS -->
@@ -106,6 +106,23 @@
   
 }
 
+@media screen and (min-width: 393px) and (max-width: 400px) {
+  .text-title {
+    font-size: 1rem;
+  }
+  .ctm-Content{
+    bottom: 75px;
+    font-size: 0.85rem;
+  }
+  .ctm-Content #change1{
+ font-size: 0.65rem;  
+ }
+.text-header{
+    top:21px;
+  }
+  
+}
+
 @media screen and (min-width: 436px) and (max-width: 437px) {
 .ctm-Content{
     bottom: 75px;
@@ -172,7 +189,7 @@
 
           <!-- Footer -->
           <div class="absolute text-footer font-semibold text-yellow-100 opacity-90">
-            <p contenteditable="false" class="bg-orange-800 rounded-md px-3 py-1 pt-2 footer-text">ಆಶೀರ್ವಾದ ಪಡೆಯರ ಬಳಗ (ರಿ.) ಸೇವಾ ಟ್ರಸ್ಟ್ ವತಿಯಿಂದ</p>
+            <p contenteditable="false" class="bg-orange-800 rounded-md px-3 py-1 pt-2 footer-text">ಆಶೀರ್ವಾದ ಗೆಳೆಯರ ಬಳಗ (ರಿ.) ಸೇವಾ ಟ್ರಸ್ಟ್ ಪೆರ್ಲ ಬಿಯಪಾದೆ</p>
           </div>
         </div>
 
@@ -227,7 +244,9 @@
 3. ಇಂದು ಮಾಡಿದ ಬದಲಾವಣೆಗಳು <span class="font-semibold text-orange-600">ಈ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್ನಲ್ಲಿ ಮಾತ್ರ</span> ಸಂರಕ್ಷಿಸಲಾಗುತ್ತದೆ. ಮುಂದಿನ ಬಾರಿ ಭೇಟಿ ನೀಡುವಾಗ ನೀವು ಕೊನೆಯ ಬದಲಾವಣೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ನೋಡಬಹುದು. 
   </div>
 </div>
-
+<div>
+  <a href="/resolution.html" class="font-bold text-orange-700">Test Resolution</a>
+</div>
 <!-- dom-to-image-more -->
   <script>
     const fontModalButton = document.getElementById('font-modal-button');
@@ -296,10 +315,18 @@
         link.click();
         downloadButton.textContent = 'Downloaded';
         downloadButton.disabled = false;
+        top.showMessage(
+      `<strong>${filename} - Downloaded successfully!.</strong><br>`,
+      "success"
+    );
       })
       .catch(error => {
         console.error('Error:', error);
-        alert("Download failed.");
+        const filename = `Bajane_${fridayDateFormatted || 'date'}.jpg`;
+       top.showMessage(
+      `<strong>${filename} - Downloading failed. Please Try Again</strong><br>`,
+      "error"
+    );
         downloadButton.textContent = 'Download Again';
         downloadButton.disabled = false;
       });

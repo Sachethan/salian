@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Resolution Checker</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main container for the content -->
+    <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md text-center">
+        
+        <!-- Header -->
+        <h1 class="text-3xl font-bold mb-6 text-cyan-400">Device Resolution</h1>
+        
+        <!-- Screen Resolution Display -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2 text-gray-300">Screen Resolution</h2>
+            <p class="text-4xl font-bold bg-gray-700/50 p-4 rounded-lg">
+                <span id="screenWidth"></span> x <span id="screenHeight"></span>
+            </p>
+            <p class="text-xs text-gray-500 mt-2">This is the total resolution of your physical screen.</p>
+        </div>
+        
+        <!-- Viewport Size Display -->
+        <div>
+            <h2 class="text-xl font-semibold mb-2 text-gray-300">Browser Viewport Size</h2>
+            <p class="text-4xl font-bold bg-gray-700/50 p-4 rounded-lg">
+                <span id="viewportWidth"></span> x <span id="viewportHeight"></span>
+            </p>
+             <p class="text-xs text-gray-500 mt-2">This is the current size of the browser window. Try resizing it!</p>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DOM Element References ---
+        const screenWidthElem = document.getElementById('screenWidth');
+        const screenHeightElem = document.getElementById('screenHeight');
+        const viewportWidthElem = document.getElementById('viewportWidth');
+        const viewportHeightElem = document.getElementById('viewportHeight');
+
+        /**
+         * Updates the displayed viewport dimensions.
+         * This function is called on initial load and whenever the window is resized.
+         */
+        function updateViewportSize() {
+            // Get the inner width and height of the browser window
+            viewportWidthElem.textContent = window.innerWidth;
+            viewportHeightElem.textContent = window.innerHeight;
+        }
+
+        /**
+         * Sets the displayed screen resolution.
+         * This is typically static and doesn't change.
+         */
+        function setScreenResolution() {
+            // Get the width and height of the user's screen
+            screenWidthElem.textContent = screen.width;
+            screenHeightElem.textContent = screen.height;
+        }
+
+        // --- Event Listeners ---
+
+        // Add an event listener to update the viewport size when the window is resized
+        window.addEventListener('resize', updateViewportSize);
+
+        // --- Initial Setup ---
+
+        // Set the initial values when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setScreenResolution();
+            updateViewportSize();
+        });
+    </script>
+
+</body>
+</html>
