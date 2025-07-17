@@ -490,63 +490,6 @@
       });
     });
 
-    // Iframe auto-scrolling logic
-    const iframe = document.getElementById("scrollingIframe");
-    const wrapper = document.getElementById("iframeWrapper");
-
-    let scrollInterval;
-    let scrollDirection = 1; // 1 = down, -1 = up
-    let isPaused = false;
-
-    function startAutoScroll() {
-      const iframeWin = iframe.contentWindow;
-
-      scrollInterval = setInterval(() => {
-        if (isPaused) return;
-
-        // Scroll in current direction
-        iframeWin.scrollBy(0, scrollDirection);
-
-        const doc = iframeWin.document.documentElement;
-        const scrollTop = doc.scrollTop;
-        const scrollHeight = doc.scrollHeight;
-        const clientHeight = doc.clientHeight;
-
-        // Reverse scroll direction when top or bottom reached
-        if (scrollTop + clientHeight >= scrollHeight) {
-          scrollDirection = -1;
-        } else if (scrollTop <= 0) {
-          scrollDirection = 1;
-        }
-      }, 20);
-    }
-
-    function stopAutoScroll() {
-      clearInterval(scrollInterval);
-    }
-
-    // Pause on hover
-    wrapper.addEventListener("mouseenter", () => isPaused = true);
-    wrapper.addEventListener("mouseleave", () => isPaused = false);
-
-    // Stop on touch, scroll, or mouse interaction
-    function stopOnInteraction(win) {
-      ["mousedown", "wheel", "touchstart"].forEach(event =>
-        win.addEventListener(event, () => stopAutoScroll(), { once: true })
-      );
-    }
-
-    // Wait until iframe content is loaded
-    iframe.addEventListener("load", () => {
-      try {
-        const win = iframe.contentWindow;
-
-        startAutoScroll();
-        stopOnInteraction(win);
-      } catch (err) {
-        console.warn("⚠️ Cannot access iframe content (cross-origin)", err);
-      }
-    });
 
   </script>
 <script>
