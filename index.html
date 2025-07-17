@@ -4,156 +4,54 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sachethan Salian</title>
- 
+
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   
-  <style>
-     #notificationBox {
-      display: none;
-      border: 2px solid #4CAF50;
-      padding: 15px;
-      background: #f1f1f1;
-      border-radius: 8px;
-    }
-  
-  #messageContainer{
-  position: fixed;
-    top: 10%;
-    left: 50%;
-    width:90%;
-    transform: translateX(-50%);
-    z-index: 9999;
-  }
-    .message-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    border-radius: 50px;
-    font-size: 0.875rem;
-    margin-top: 0.1rem;
-    text-align: left;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    position: relative;
-    max-width: 600px;
-    margin-inline: auto;
-}
-
-.message-box.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.success-message {
-    background-color: #d1fae5;
-    color: #065f46;
-    border: 1px solid #6ee7b7;
-}
-
-.error-message {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin: 0;
-    cursor: pointer;
-    color: inherit;
-    margin-left: 12px;
-}
- .email-status-message {
-     font-size: 0.75rem;
-     margin-top: 0.25rem;
-     margin-left: 0.25rem;
-     height: 1rem; /* Reserve space to prevent layout shift */
-     }
-.info-message {
-    background-color: #e0f2fe; /* Light blue */
-    color: #0369a1;            /* Darker blue */
-    border: 1px solid #7dd3fc;
-}
-
-.message-box span a {
-    color: inherit;
-    text-decoration: underline;
-    font-weight: 500;
-}
-  
-      .iframe-wrapper {
-      position: relative;
-      height: 350px; /* 🔁 set your desired height */
-      overflow: hidden;
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .iframe-scroll {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .bottom-fade {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 50px;
-      background: linear-gradient(to bottom, transparent, var(--bg)); /* match to your background */
-      pointer-events: none;
-    }
-
-  </style>
 </head>
 <body>
   <header>
     <nav class="container nav-container">
       <h1 class="logo">
-  <img src="logo.png" alt="Gallery of Salian" style="height: 40px;">
-</h1>
+        <img src="logo.png" alt="Gallery of Salian" style="height: 40px;">
+      </h1>
       <ul class="nav-links" id="navLinks">
-        <li><a href="#home">Home</a></li>
+        <li><a href="index.html">Home</a></li>
         <li><a href="#youtube">Youtube</a></li>
         <li><a href="#gdrive">Edits</a></li>
         <li><a href="#services">Services</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
-        </ul>
+      </ul>
       <div class="nav-actions">     
-   <label class="theme-switch">
+<label class="theme-switch">
   <input type="checkbox" id="themeToggle">
-  <span class="slider"></span>  
-</label>        
+  <span class="slider">
+    <span class="knob"></span>
+  </span>
+</label>
+
+
+     
         <button id="profileButton" title="Profile Page"
              style="display:none;" class="px-4 py-2 bg-white border rounded-md shadow-sm hover:bg-gray-100 focus:outline-none"><i class="fa-solid fa-circle-user"></i>
-      </button>
+        </button>
         
         <!-- Dropdown -->
-    <div id="profileDropdown">
-        <div class="dropdown-item dropdown-header">👋 Hello, <span id="userPname"></span></div>
-        <a href="./editprofile.html" class="dropdown-item">Edit Profile</a>
-        <button id="logoutButton">Logout</button>
-      </div>
+        <div id="profileDropdown">
+          <div class="dropdown-item dropdown-header">👋 Hello, <span id="userPname"></span></div>
+          <a href="./editprofile.html" class="dropdown-item">Edit Profile</a>
+          <button id="logoutButton">Logout</button>
+        </div>
         
-
-     <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
       </div>
     </nav>
   </header>
-<div id="messageContainer" style=""></div>
+  <div id="messageContainer" style=""></div>
 
   <div class="loader" id="loader">
-   <div class="spinner"></div>
+    <div class="spinner"></div>
   </div>
   
   <div id="super-popup">
@@ -163,7 +61,7 @@
   
   <section id="home" class="hero">
     <div class="container">
-      <h2>Hello <span id="userdisplay">....</span>, Im Sachethan</h2>
+      <h1>Hello <span id="userdisplay">....</span>, Im Sachethan</h1>
       <p> | Digital Creator | </p>
       <button onclick="window.location.href = '#footer';" class="btn">Lets Go<i class="fa-solid fa-wind"></i></button>
       <button id="download-app" onclick="window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';" download="SachethanApp.apk" class="btn">Download <i class="fa-brands fa-android"></i></button>
@@ -171,108 +69,148 @@
     </div>
   </section>
  
- <section id="youtube" class="section container">
+  <section id="youtube" class="section youtube container animated-section">
+    <div class="youtubediv1">
     <h2>YouTube Channel</h2>
-  <iframe id="youtubefrm"
-  src="Youtube.html" 
-  width="100%" 
-  height="400" 
-  style="border: none; overflow: hidden;" 
-  scrolling="no"
-  allowfullscreen>
-</iframe>
-   </section>
-  
-<section id="gdrive" class="section container" style="position: relative;">
-  <h2>Edit Collections</h2><br>
-  <div class="iframe-wrapper" id="iframeWrapper">
-    <iframe id="scrollingIframe"
-      src="Gimage.html"
-      class="iframe-scroll"
+      <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+<dotlottie-player class="dotlottie" src="https://lottie.host/388e3d6b-1d19-4750-a7f8-e564402bc044/xZaj8d0aoO.lottie" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+  </div>
+    <div class="youtubediv2">
+    <iframe id="youtubefrm"
+      src="Youtube.html" 
+      width="100%" 
+      height="400" 
+      style="border: none; overflow: hidden;" 
+      scrolling="no"
       allowfullscreen>
     </iframe>
-    <div class="bottom-fade"></div>
-  </div>
-
-   <section id="services" class="section container">
-    <h2>Contact Me For</h2>
-    <div class="grid">
-      <a href="#contact" class="service-card" data-service="📷 Photo Editing"><div class="card">📷 Photo Editing</div>
-</a>
-      <a href="#contact" class="service-card" data-service="🎨 Poster Design"><div class="card">🎨 Poster Design</div>
-</a>
-      <a href="#contact" class="service-card" data-service="🧩 Logo Design"><div class="card">🧩 Logo Design</div>
-</a>
-      <a href="#contact" class="service-card" data-service="🎬 Video Editing"><div class="card">🎬 Video Editing</div>
-</a>
-      <a href="#contact" class="service-card" data-service="📱 Social Media Creatives"><div class="card">📱 Social Media Creatives</div>
-</a>
-      <a href="#contact" class="service-card" data-service="✨ Web Design (Ai Code)"><div class="card">✨ Web Design (Ai Code)</div>
-</a>
     </div>
-        </section>
+    
+  </section>
+  
+  <section id="gdrive" class="section container animated-section" style="position: relative;">
+    <div class="gdrivediv1">
+    <h2>Edit Collections</h2>
+ <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+<dotlottie-player class="dotlottie" src="https://lottie.host/8a9e5968-64b7-47d5-99c8-ff4b431d412c/042UAWNO7N.lottie" background="transparent" speed="1" style="width: auto; height: 300px; margin:0px;" loop autoplay></dotlottie-player>     
+      </div>
+    <div class="gdrivediv2">
+    <div class="giframe-wrapper" id="iframeWrapper">
+      <iframe id="scrollingIframe"
+        src="Gimage.html"
+        class="iframe-scroll"
+        allowfullscreen>
+      </iframe>
+      <div class="bottom-fade"></div>
+    </div>
+      </div>
+  </section>
+
+  <!-- Popup Overlay -->
+<div class="iframe-popup-overlay" id="popupOverlay">
+  <div class="iframe-popup-content">
+    <button class="iframe-popup-close" id="closePopup">&times;</button>
+    <iframe src="Gimage.html" allowfullscreen></iframe>
+  </div>
+</div>
+  
+  <section id="services" class="section container animated-section">
+    <div class="servicesdiv1">
+    <h2>Contact Me For</h2>
+      </div>
+    <div class="servicesdiv2">
+    <div class="grid">
+      <a href="#contact" class="service-card" data-service="📷 Photo Editing"><div class="card">📷<br>Photo Editing</div></a>
+      <a href="#contact" class="service-card" data-service="🎨 Poster Design"><div class="card">🎨<br>Poster Design</div></a>
+      <a href="#contact" class="service-card" data-service="🧩 Logo Design"><div class="card">🧩<br>Logo Design</div></a>
+      <a href="#contact" class="service-card" data-service="🎬 Video Editing"><div class="card">🎬<br>Video Editing</div></a>
+      <a href="#contact" class="service-card" data-service="📱 Social Media Creatives"><div class="card">📱<br>Social Media Creatives</div></a>
+      <a href="#contact" class="service-card" data-service="✨ Web Design (Ai Code)"><div class="card">✨<br>Web Design (Ai Code)</div></a>
+    </div>
+      </div>
+  </section>
+
+  <section id="tools" class="section container animated-section">
+    <div class="servicesdiv1">
+    <h2>Online Tools</h2>
+      </div>
+    <div class="servicesdiv2">
+    <div class="grid">
+                <div onclick="loadPosterEditor('bajane/blog.html')" class="scroll-animation card">
+                    <img src="content-creator.png" style="width:100px;;" alt="Concept Icon">
+                    <h3 class="text-xl font-bold text-main mb-2">1. Poster Editor</h3>
+                    <p class="text-secondary">We start by editing your vision with a solid plan.</p>
+  
+    </div>
+      </div>
+  </section>
+
         
-  <section style="display:none;"id="portfolio" class="section container">
+  <section style="display:none;"id="portfolio" class="section container animated-section">
     <h2>Portfolio</h2>
     <div class="grid_2">
-     <div class="portfolio-item">
-  <img id="sample1-img" alt="Logo Design Sample 1" />
-  <p>Logo Design</p>
-</div>
-
-<div class="portfolio-item">
-  <img id="sample2-img" alt="Poster Design Sample 2" />
-  <p>Poster Design</p>
-</div>
-
-<div class="portfolio-item">
-  <img id="sample3-img" alt="Invitation Design Sample 3" />
-  <p>Invitation Design</p>
-</div>
       <div class="portfolio-item">
-  <img id="sample4-img" alt="Invitation Design Sample 3" />
-  <p>Invitation Design</p>
-</div>
+        <img id="sample1-img" alt="Logo Design Sample 1" />
+        <p>Logo Design</p>
+      </div>
+      <div class="portfolio-item">
+        <img id="sample2-img" alt="Poster Design Sample 2" />
+        <p>Poster Design</p>
+      </div>
+      <div class="portfolio-item">
+        <img id="sample3-img" alt="Invitation Design Sample 3" />
+        <p>Invitation Design</p>
+      </div>
+      <div class="portfolio-item">
+        <img id="sample4-img" alt="Invitation Design Sample 3" />
+        <p>Invitation Design</p>
+      </div>
+    </div>
   </section>
 
- <section id="about" class="section container">
+  <section id="about" class="section container animated-section">
     <h2>About Me</h2>
-   <p>
-     I’m a Digital Creator passionate about photo editing, poster design, logo creation, video editing, and more. I transform ideas into compelling visuals that resonate with your audience.
-   </p>
+    <p>
+      I’m a Digital Creator passionate about photo editing, poster design, logo creation, video editing, and more. I transform ideas into compelling visuals that resonate with your audience.
+    </p>
   </section>
-<section id="notify" class="section container">
+  <section id="notify" class="section container animated-section">
     <div id="notificationBox">
-    <h3>New Notification</h3>
-    <p><strong>Title:</strong> <span id="notifTitle"></span></p>
-    <p><strong>Message:</strong> <span id="notifMessage"></span></p>
-  </div>
+      <h3>New Notification</h3>
+      <p><strong>Title:</strong> <span id="notifTitle"></span></p>
+      <p><strong>Message:</strong> <span id="notifMessage"></span></p>
+    </div>
+  </section>
+
+  <section class="contact animated-section" id="contact">
+    <h2>Contact Details</h2>
+    <div class="contact-container">
+      <div class="contact-info">
+        <p>I'd love to hear from you! Whether it's a project, question, or just to say hello — feel free to get in touch.</p>
+        <div class="info-box">
+          <i class="fa-solid fa-envelope"></i>
+          <a href="mailto:sachethansalian@gmail.com">sachethansalian@gmail.com</a>
+        </div>
+        <div class="info-box">
+          <i class="fa-brands fa-instagram"></i>
+          <a href="https://instagram.com/sachethan_salian_creation" target="_blank">@sachethan_salian_creation</a>
+        </div>
+      </div>
+
+      <form class="contact-form" id="contactForm">
+        <input type="text" id="name" name="name" placeholder="Your Name"/>
+        <input type="email" id="email" name="email" placeholder="Your Email"/>
+        <textarea id="requestInput" name="message" rows="5" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Request Message</button>
+        <p id="formResponse" style="margin-top:10px;"></p>
+      </form>
+    </div>
+  </section>
+
+<section id="posterEditorContainer" style="display: none; padding: 0; margin: 0;">
+  <iframe id="posterEditorIframe" src="" style="width: 100%; height: 100vh; border: none; margin: 0; padding: 0;"></iframe>
 </section>
 
-  <section class="contact" id="contact">
-  <h2>Contact Details</h2>
-  <div class="contact-container">
-    <div class="contact-info">
-      <p>I'd love to hear from you! Whether it's a project, question, or just to say hello — feel free to get in touch.</p>
-      <div class="info-box">
-        <i class="fa-solid fa-envelope"></i>
-        <a href="mailto:sachethansalian@gmail.com">sachethansalian@gmail.com</a>
-      </div>
-      <div class="info-box">
-        <i class="fa-brands fa-instagram"></i>
-        <a href="https://instagram.com/sachethan_salian_creation" target="_blank">@sachethan_salian_creation</a>
-      </div>
-      </div>
-
-    <form class="contact-form" id="contactForm">
-  <input type="text" id="name" name="name" placeholder="Your Name"/>
-  <input type="email" id="email" name="email" placeholder="Your Email"/>
-  <textarea id="requestInput" name="message" rows="5" placeholder="Your Message" required></textarea>
-  <button type="submit">Send Request Message</button>
-  <p id="formResponse" style="margin-top:10px;"></p>
-</form>
-  </div>
-</section>
 
   <footer id="footer" class="footer">
     <p>© 2025 Sachethan salian. All rights reserved.</p><br>
@@ -281,114 +219,120 @@
 
   <script src="script.js"></script>
   <script src="mail.js"></script>
-<script>
-  window.addEventListener("error", function (e) {
-  showMessage(
-    `<strong>Unexpected Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
-    "error"
-  );
-});
-
-window.addEventListener("unhandledrejection", function (e) {
-  showMessage(
-    `<strong>App Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
-    "error"
-  );
-});
-
-
-  
-  
-let messageIdCounter = 0; // Declare at top before any function uses it
-
-function showMessage(messageHTML, type = 'error', redirectUrl = null) {
-    const container = document.getElementById('messageContainer');
-
-    const messageBox = document.createElement('div');
-    messageBox.className = 'message-box';
-
-    if (type === 'success') messageBox.classList.add('success-message');
-    else if (type === 'info') messageBox.classList.add('info-message');
-    else messageBox.classList.add('error-message');
-
-    const id = `message-${++messageIdCounter}`;
-    messageBox.id = id;
-
-    const span = document.createElement('span');
-    span.innerHTML = messageHTML;
-
-    const closeBtn = document.createElement('button');
-    closeBtn.innerHTML = '<i class="fa-solid fa-close"></i>';
-    closeBtn.className = 'close-btn';
-    closeBtn.onclick = () => hideMessage(id);
-
-    messageBox.appendChild(span);
-    messageBox.appendChild(closeBtn);
-    container.appendChild(messageBox);
-
-    requestAnimationFrame(() => {
-        messageBox.classList.add('show');
+  <script>
+    // Global error handling for better user feedback
+    window.addEventListener("error", function (e) {
+      showMessage(
+        `<strong>Unexpected Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
+        "error"
+      );
     });
 
-    if (redirectUrl) {
+    window.addEventListener("unhandledrejection", function (e) {
+      showMessage(
+        `<strong>App Error:</strong> Please contact <a href="support.html" style="text-decoration:underline;">Technical Support</a>.`,
+        "error"
+      );
+    });
+
+    let messageIdCounter = 0; // Declare at top before any function uses it
+
+    // Function to display dynamic messages (success, error, info)
+    function showMessage(messageHTML, type = 'error', redirectUrl = null) {
+      const container = document.getElementById('messageContainer');
+
+      const messageBox = document.createElement('div');
+      messageBox.className = 'message-box';
+
+      if (type === 'success') messageBox.classList.add('success-message');
+      else if (type === 'info') messageBox.classList.add('info-message');
+      else messageBox.classList.add('error-message');
+
+      const id = `message-${++messageIdCounter}`;
+      messageBox.id = id;
+
+      const span = document.createElement('span');
+      span.innerHTML = messageHTML;
+
+      const closeBtn = document.createElement('button');
+      closeBtn.innerHTML = '<i class="fa-solid fa-close"></i>';
+      closeBtn.className = 'close-btn';
+      closeBtn.onclick = () => hideMessage(id);
+
+      messageBox.appendChild(span);
+      messageBox.appendChild(closeBtn);
+      container.appendChild(messageBox);
+
+      requestAnimationFrame(() => {
+        messageBox.classList.add('show');
+      });
+
+      if (redirectUrl) {
         messageBox.style.cursor = 'pointer';
         messageBox.addEventListener('click', () => {
-            window.location.href = redirectUrl;
+          window.location.href = redirectUrl;
         });
+      }
+
+      setTimeout(() => hideMessage(id), 10000); // auto-dismiss after 10 seconds
     }
 
-    setTimeout(() => hideMessage(id), 10000); // auto-dismiss
-}
-
-function hideMessage(id) {
-    const el = document.getElementById(id);
-    if (el) {
+    // Function to hide a specific message box
+    function hideMessage(id) {
+      const el = document.getElementById(id);
+      if (el) {
         el.classList.remove('show');
         setTimeout(() => {
-            if (el.parentNode) el.parentNode.removeChild(el);
-        }, 300);
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, 300); // Allow transition to complete before removal
+      }
     }
-}
 
-function logout() {
-   showMessage(
-  "<strong>Status:</strong> Logout done successfully",
-  "success"
-            );
-  ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user', 'userInfo'].forEach(k => localStorage.removeItem(k));
-            setTimeout(() => {
-                    window.location.href = 'index.html';
-            }, 1000);
-}
+    // Function to handle user logout
+    function logout() {
+      showMessage(
+        "<strong>Status:</strong> Logout done successfully",
+        "success"
+      );
+      // Clear relevant localStorage items
+      ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user', 'userInfo'].forEach(k => localStorage.removeItem(k));
+      setTimeout(() => {
+        window.location.href = 'index.html'; // Redirect to home page after logout
+      }, 1000);
+    }
 
-function isWebView() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    return (
+    // Function to detect if the page is running inside a WebView
+    function isWebView() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      return (
         ua.includes("wv") || // Android WebView
         (ua.includes("Android") && ua.includes("Version/")) || // Old Android WebView
         window.navigator.standalone === true // iOS
-    );
-}
+      );
+    }
 
-// Initial setup
-document.addEventListener("DOMContentLoaded", function () {
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const userdisplay = document.getElementById("userdisplay");
-    const profileDropdown = document.getElementById("profileDropdown");
-    const loginMessageDiv = document.getElementById('loginMessage');
-    const loader = document.getElementById("loader"); // Ensure this exists
+    // Initial setup when the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", function () {
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const userdisplay = document.getElementById("userdisplay");
+      const profileDropdown = document.getElementById("profileDropdown");
+      const loader = document.getElementById("loader"); 
+      const heroSection = document.getElementById("home"); // Get the hero section
 
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
+      // Add 'loaded' class to hero section for initial animations
+      heroSection.classList.add('loaded');
 
-    if (!isLoggedIn) {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+      // Handle login state for contact form and profile button
+      if (!isLoggedIn) {
         nameInput.disabled = false;
         emailInput.disabled = false;
         nameInput.required = true;
         emailInput.required = true;
-
-    } else {
-        loader.classList.add('show');
+      } else {
+        loader.classList.add('show'); // Show loader while user data is being processed
         document.getElementById("profileButton").style.display = "inline-block";
         document.getElementById("loginpage").style.display = "none";
 
@@ -398,192 +342,231 @@ document.addEventListener("DOMContentLoaded", function () {
         emailInput.required = false;
 
         if (localStorage.getItem('usergd')) {          
-         showMessage(
-                "<strong>Hello,..</strong> Your login was successfull.",
-                "success"
-            );
+          showMessage(
+            "<strong>Hello,..</strong> Your login was successful.",
+            "success"
+          );
           localStorage.removeItem('usergd');
           setTimeout(() => {
-                profileDropdown.style.display = 'block';
-            }, 10000);
+            profileDropdown.style.display = 'block'; // Show dropdown briefly after successful login
+          }, 10000);
         }
-    }
+      }
 
-    // If inside WebView, hide download banner
-    if (isWebView()) {
+      // If inside WebView, hide download banner
+      if (isWebView()) {
         document.getElementById("download-app").style.display = "none";
-    }
+      }
 
-    // Show popup notification if query params are present
-    const params = new URLSearchParams(window.location.search);
-    const title = params.get("title");
-    const msg = params.get("msg");
+      // Show popup notification if query parameters are present
+      const params = new URLSearchParams(window.location.search);
+      const title = params.get("title");
+      const msg = params.get("msg");
 
-    if (title && msg) {
+      if (title && msg) {
         document.getElementById("notifTitle").textContent = title;
         document.getElementById("notifMessage").textContent = msg;
         document.getElementById("notificationBox").style.display = "block";
-    }
+      }
 
-    // Load stored user data
-    const storedData = localStorage.getItem("userInfo");
-    if (storedData) {
+      // Load stored user data and update UI
+      const storedData = localStorage.getItem("userInfo");
+      if (storedData) {
         const userInfo = JSON.parse(storedData);
         userdisplay.textContent = userInfo.username;
         document.getElementById("userPname").textContent = userInfo.username;
         document.querySelector("input[name='name']").value = userInfo.username;
         document.querySelector("input[name='email']").value = userInfo.email;
-      loader.classList.remove('show');
-    } else {
-      loader.classList.remove('show');
+        loader.classList.remove('show'); // Hide loader once user data is loaded
+      } else {
+        loader.classList.remove('show'); // Hide loader if no user data
         showMessage(
-            "<strong>Note:</strong> If you're a new user, please click to <a href='#' id='registerMessageLink'>Register</a>, if not then <a href='login/login.html'>Login</a>.",
-            "info"
+          "<strong>Note:</strong> If you're a new user, please click to <a href='#' id='registerMessageLink'>Register</a>, if not then <a href='login/login.html'>Login</a>.",
+          "info"
         );
-        window.location.href = '#';
-    }
-
-    // Register click handler
-    document.body.addEventListener("click", function (e) {
-        if (e.target && e.target.id === "registerMessageLink") {
-            e.preventDefault();
-            localStorage.setItem("showRegister", "true");
-            window.location.href = "login/login.html";
-        }
-    });
-
-    // Profile toggle
-    const profileBtn = document.getElementById('profileButton');
-    if (profileBtn) {
-        profileBtn.addEventListener('click', () => {
-            profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.style.display = 'none';
-                localStorage.removeItem('usergd');
-            }
-        });
-    }
-
-    // Logout button
-    const logoutBtn = document.getElementById('logoutButton');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            if (confirm("Are you sure you want to log out?")) {
-                logout();
-            }
-        });
-    }
-
-    // Download popup + redirect
-    const downloadAppBtn = document.getElementById("download-app");
-    if (downloadAppBtn) {
-        downloadAppBtn.addEventListener("click", function (e) {
-            const popup = document.getElementById("super-popup");
-            popup.style.display = "flex";
-
-            setTimeout(() => {
-                window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';
-            }, 800);
-
-            setTimeout(() => {
-                popup.style.display = "none";
-            }, 7000);
-        });
-    }
-});
-
-
-const serviceCards = document.querySelectorAll(".service-card");
-
-  serviceCards.forEach(card => {
-    card.addEventListener("click", () => {
-      const serviceName = card.dataset.service;
-      const message = `I need ${serviceName} service from your side, please reply to this`;
-      const textarea = document.getElementById("requestInput");
-      textarea.value = message;
-        showMessage(
-            "<strong>Note:</strong>Request message updated.<br>Feel free to edit it if needed.</a>.",
-            "info"
-        );
-
-            });
-  });
-  
-  
-  document.getElementById('youtube').addEventListener('touchstart', function () {
-    const touch = localStorage.getItem("touch");
-    if(!touch){
-  showMessage("Click to Watch on Youtube!", "info");
-      localStorage.setItem("touch","true");
-    }
-    return;
-    });
-
-  
-
-</script>
-<script>
-  const iframe = document.getElementById("scrollingIframe");
-  const wrapper = document.getElementById("iframeWrapper");
-
-  let scrollInterval;
-  let scrollDirection = 1; // 1 = down, -1 = up
-  let isPaused = false;
-
-  function startAutoScroll() {
-    const iframeWin = iframe.contentWindow;
-
-    scrollInterval = setInterval(() => {
-      if (isPaused) return;
-
-      // Scroll in current direction
-      iframeWin.scrollBy(0, scrollDirection);
-
-      const doc = iframeWin.document.documentElement;
-      const scrollTop = doc.scrollTop;
-      const scrollHeight = doc.scrollHeight;
-      const clientHeight = doc.clientHeight;
-
-      // Reverse scroll direction when top or bottom reached
-      if (scrollTop + clientHeight >= scrollHeight) {
-        scrollDirection = -1;
-      } else if (scrollTop <= 0) {
-        scrollDirection = 1;
+        window.location.href = '#'; // Scroll to top
       }
-    }, 20);
-  }
 
-  function stopAutoScroll() {
-    clearInterval(scrollInterval);
-  }
+      // Register click handler for the "Register" link in the message
+      document.body.addEventListener("click", function (e) {
+        if (e.target && e.target.id === "registerMessageLink") {
+          e.preventDefault();
+          localStorage.setItem("showRegister", "true"); // Flag to show register form
+          window.location.href = "login/login.html";
+        }
+      });
 
-  // Pause on hover
-  wrapper.addEventListener("mouseenter", () => isPaused = true);
-  wrapper.addEventListener("mouseleave", () => isPaused = false);
+      // Profile dropdown toggle functionality
+      const profileBtn = document.getElementById('profileButton');
+      if (profileBtn) {
+        profileBtn.addEventListener('click', (event) => {
+          event.stopPropagation(); // Prevent document click from closing it immediately
+          profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
 
-  // Stop on touch, scroll, or mouse interaction
-  function stopOnInteraction(win) {
-    ["mousedown", "wheel", "touchstart"].forEach(event =>
-      win.addEventListener(event, () => stopAutoScroll(), { once: true })
-    );
-  }
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+            localStorage.removeItem('usergd'); // Clear usergd flag
+          }
+        });
+      }
 
-  // Wait until iframe content is loaded
-  iframe.addEventListener("load", () => {
-    try {
-      const win = iframe.contentWindow;
+      // Logout button functionality
+      const logoutBtn = document.getElementById('logoutButton');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+          if (confirm("Are you sure you want to log out?")) {
+            logout();
+          }
+        });
+      }
 
-      startAutoScroll();
-      stopOnInteraction(win);
-    } catch (err) {
-      console.warn("⚠️ Cannot access iframe content (cross-origin)", err);
+      // Download app button functionality with popup
+      const downloadAppBtn = document.getElementById("download-app");
+      if (downloadAppBtn) {
+        downloadAppBtn.addEventListener("click", function (e) {
+          const popup = document.getElementById("super-popup");
+          popup.style.display = "flex"; // Show download popup
+
+          setTimeout(() => {
+            // Redirect to download link after a short delay
+            window.location.href = 'https://www.dropbox.com/scl/fi/qe0t7iwtd4aq7uz84khod/Sachethan-Salian.apk?rlkey=7mndyfbtwp09tucfgi6gp74tu&st=ipkcm6hv&dl=1';
+          }, 800);
+
+          setTimeout(() => {
+            popup.style.display = "none"; // Hide popup after a longer delay
+          }, 7000);
+        });
+      }
+
+      // Populate contact form message based on service card click
+      const serviceCards = document.querySelectorAll(".service-card");
+      serviceCards.forEach(card => {
+        card.addEventListener("click", () => {
+          const serviceName = card.dataset.service;
+          const message = `I need ${serviceName} service from your side, please reply to this`;
+          const textarea = document.getElementById("requestInput");
+          textarea.value = message;
+          showMessage(
+            "<strong>Note:</strong>Request message updated.<br>Feel free to edit it if needed.",
+            "info"
+          );
+        });
+      });
+      
+      // Show "Click to Watch on Youtube!" message only once on first touch
+      document.getElementById('youtube').addEventListener('touchstart', function () {
+        const touch = localStorage.getItem("touch");
+        if(!touch){
+          showMessage("Click to Watch on Youtube!", "info");
+          localStorage.setItem("touch","true");
+        }
+        return;
+      });
+
+      // Intersection Observer for scroll animations
+      const animatedSections = document.querySelectorAll('.animated-section');
+
+      const observerOptions = {
+        root: null, // viewport
+        rootMargin: '0px',
+        threshold: 0.1 // Trigger when 10% of the item is visible
+      };
+
+      const sectionObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target); // Stop observing once visible
+          }
+        });
+      }, observerOptions);
+
+      // Observe each animated section
+      animatedSections.forEach(section => {
+        sectionObserver.observe(section);
+      });
+    });
+
+    // Iframe auto-scrolling logic
+    const iframe = document.getElementById("scrollingIframe");
+    const wrapper = document.getElementById("iframeWrapper");
+
+    let scrollInterval;
+    let scrollDirection = 1; // 1 = down, -1 = up
+    let isPaused = false;
+
+    function startAutoScroll() {
+      const iframeWin = iframe.contentWindow;
+
+      scrollInterval = setInterval(() => {
+        if (isPaused) return;
+
+        // Scroll in current direction
+        iframeWin.scrollBy(0, scrollDirection);
+
+        const doc = iframeWin.document.documentElement;
+        const scrollTop = doc.scrollTop;
+        const scrollHeight = doc.scrollHeight;
+        const clientHeight = doc.clientHeight;
+
+        // Reverse scroll direction when top or bottom reached
+        if (scrollTop + clientHeight >= scrollHeight) {
+          scrollDirection = -1;
+        } else if (scrollTop <= 0) {
+          scrollDirection = 1;
+        }
+      }, 20);
     }
-  });
+
+    function stopAutoScroll() {
+      clearInterval(scrollInterval);
+    }
+
+    // Pause on hover
+    wrapper.addEventListener("mouseenter", () => isPaused = true);
+    wrapper.addEventListener("mouseleave", () => isPaused = false);
+
+    // Stop on touch, scroll, or mouse interaction
+    function stopOnInteraction(win) {
+      ["mousedown", "wheel", "touchstart"].forEach(event =>
+        win.addEventListener(event, () => stopAutoScroll(), { once: true })
+      );
+    }
+
+    // Wait until iframe content is loaded
+    iframe.addEventListener("load", () => {
+      try {
+        const win = iframe.contentWindow;
+
+        startAutoScroll();
+        stopOnInteraction(win);
+      } catch (err) {
+        console.warn("⚠️ Cannot access iframe content (cross-origin)", err);
+      }
+    });
+
+  </script>
+<script>
+  function loadPosterEditor(url) {
+    // Hide all sections except header/footer
+    document.querySelectorAll('section').forEach(sec => {
+      if (sec.id !== 'posterEditorContainer') sec.style.display = 'none';
+    });
+
+    // Show the poster editor
+    const editorSection = document.getElementById('posterEditorContainer');
+    const editorIframe = document.getElementById('posterEditorIframe');
+    editorIframe.src = url;
+    editorSection.style.display = 'block';
+
+    // Scroll to top smoothly
+    window.scrollTo({ top: 20, behavior: 'smooth' });
+  }
 </script>
 
 
-  </body>
+</body>
 </html>
