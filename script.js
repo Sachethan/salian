@@ -122,4 +122,13 @@ function navigateWithLoader(url, delay = 800) {
     document.getElementById("popupOverlay").style.display = "none";
   }
 
+  // Show popup
+  document.getElementById("gdrive").addEventListener("click", function () {
+    document.getElementById("popupOverlay").style.display = "flex";
+  });
+
+  // Close popup
+  document.getElementById("closePopup").addEventListener("click", function () {
+    document.getElementById("popupOverlay").style.display = "none";
+  });
 

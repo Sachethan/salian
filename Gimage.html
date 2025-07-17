@@ -1,45 +1,43 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Masonry Style Google Drive Gallery</title>
+  <title>Masonry Style Google Drive Gallery with Popup</title>
   <style>
-  
-  :root {
-  --bg:linear-gradient(90deg,rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgba(255, 241, 214, 1) 100%);
-  --text: #222;
-  --nav-bg: #111;
-  --accent: #764ba2;
-  --card-bg: #fff;
-  --section-bg: #fff;
-  --accent: #007bff;
-  --accent-hover: #0056b3;
-  --input-bg: #f9f9f9;
-  --input-border: #ccc;
-  --dbg: #fff;
-  --logout: #d00;
-}
-body.dark {
-  --bg: #121212;
-  --text: #eee;
-  --nav-bg: #1f1f1f;
-  --card-bg: #1e1e1e;
-  --section-bg: #111;
-  --input-bg: #222;
-  --input-border: #555;
-  --dbg: #121212;
-  --logout: #007bff;
-}
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  transition: background 0.3s, color 0.3s;
-}  
-  
-    body {
+    :root {
+      --bg: linear-gradient(90deg, rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgba(255, 241, 214, 1) 100%);
+      --text: #222;
+      --nav-bg: #111;
+      --accent: #007bff;
+      --accent-hover: #0056b3;
+      --card-bg: #fff;
+      --section-bg: #fff;
+      --input-bg: #f9f9f9;
+      --input-border: #ccc;
+      --dbg: #fff;
+      --logout: #d00;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #eee;
+      --nav-bg: #1f1f1f;
+      --card-bg: #1e1e1e;
+      --section-bg: #111;
+      --input-bg: #222;
+      --input-border: #555;
+      --dbg: #121212;
+      --logout: #007bff;
+    }
+
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body {
       padding: 30px;
       font-family: sans-serif;
       background: var(--bg);
@@ -52,8 +50,8 @@ body.dark {
     }
 
     .masonry {
-      column-count: 4;         /* 🧱 Number of columns */
-      column-gap: 15px;        /* space between columns */
+      column-count: 4;
+      column-gap: 15px;
       max-width: 1200px;
       margin: 0 auto;
     }
@@ -72,19 +70,20 @@ body.dark {
       height: auto;
       display: block;
       transition: transform 0.3s ease;
+      cursor: pointer;
     }
 
     .masonry-item img:hover {
       transform: scale(1.03);
     }
-.image-caption {
-  text-align: center;
-  font-size: 14px;
-  color: var(--text);
-  margin-top: 8px;
-  word-break: break-word;
-}
 
+    .image-caption {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text);
+      margin-top: 8px;
+      word-break: break-word;
+    }
 
     @media screen and (max-width: 800px) {
       .masonry {
@@ -97,72 +96,157 @@ body.dark {
         column-count: 3;
       }
     }
+
+    /* Popup Styles */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+  .popup-overlay.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+  
+    .popup-content {
+      position: relative;
+      width: 70%;
+      height: auto;
+      padding: 10px;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0.8);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+
+    }
+.popup-overlay.active .popup-content {
+  transform: scale(1);
+  opacity: 1;
+}
+    .popup-content img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      background: #6366f1;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10000;
+    }
   </style>
 </head>
 <body>
   <div class="masonry" id="gallery"></div>
 
-<script>
-window.addEventListener("message", (event) => {
-    if (event.data.theme === "dark") {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
+  <!-- Popup HTML -->
+  <div id="imagePopup" class="popup-overlay">
+    <div class="popup-content">
+      <span class="popup-close" id="popupClose">&times;</span>
+      <img id="popupImage" src="" alt="Full View">
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener("message", (event) => {
+      if (event.data.theme === "dark") {
+        document.body.classList.add("dark");
+      } else {
+        document.body.classList.remove("dark");
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const currentTheme = localStorage.getItem('theme');
+      if (currentTheme === 'dark') {
+        document.body.classList.add('dark');
+      }
+    });
+
+    const folderId = '1MO9c9601Y9CzbKMfyZzGYjp_y--8rfCW';
+    const apiKey = 'AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks';
+
+    async function loadImages() {
+      const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents and trashed=false&key=${apiKey}&fields=files(id,name,mimeType)`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = '';
+
+        data.files.forEach(file => {
+          if (file.mimeType.startsWith('image/')) {
+            const div = document.createElement('div');
+            div.className = 'masonry-item';
+
+            const img = document.createElement('img');
+            img.src = `https://lh3.googleusercontent.com/d/${file.id}=s800`;
+            img.alt = file.name;
+
+            // Click to open popup
+            img.addEventListener('click', () => {
+              const popup = document.getElementById('imagePopup');
+              const popupImg = document.getElementById('popupImage');
+              popupImg.src = `https://lh3.googleusercontent.com/d/${file.id}=s1600`;
+              popup.classList.add('active');
+            });
+
+            const caption = document.createElement('p');
+            const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, '');
+            caption.textContent = nameWithoutExtension;
+            caption.className = 'image-caption';
+
+            div.appendChild(img);
+            div.appendChild(caption);
+            gallery.appendChild(div);
+          }
+        });
+      } catch (err) {
+        console.error('Failed to load images:', err);
+      }
     }
-  });  
-  
-    // Function to apply theme on page load
-window.addEventListener('DOMContentLoaded', () => {
-  const currentTheme = localStorage.getItem('theme');
-  if (currentTheme === 'dark') {
-    document.body.classList.add('dark');
+
+    loadImages();
+
+document.getElementById('popupClose').addEventListener('click', () => {
+  document.getElementById('imagePopup').classList.remove('active');
+});
+
+document.getElementById('imagePopup').addEventListener('click', (e) => {
+  if (e.target.id === 'imagePopup') {
+    document.getElementById('imagePopup').classList.remove('active');
   }
 });
-  
-  
-  
-  const folderId = '1MO9c9601Y9CzbKMfyZzGYjp_y--8rfCW';
-  const apiKey = 'AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks';
-
-  async function loadImages() {
-    const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents and trashed=false&key=${apiKey}&fields=files(id,name,mimeType)`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      const gallery = document.getElementById('gallery');
-      gallery.innerHTML = '';
-
-      data.files.forEach(file => {
-        if (file.mimeType.startsWith('image/')) {
-          const div = document.createElement('div');
-          div.className = 'masonry-item';
-
-          const img = document.createElement('img');
-          img.src = `https://lh3.googleusercontent.com/d/${file.id}=s800`;
-          img.alt = file.name;
-
-          const caption = document.createElement('p');
-          // Remove extension from filename
-          const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, '');
-          caption.textContent = nameWithoutExtension;
-
-          caption.className = 'image-caption';
-
-          div.appendChild(img);
-          div.appendChild(caption);
-          gallery.appendChild(div);
-        }
-      });
-    } catch (err) {
-      console.error('Failed to load images:', err);
-    }
-  }
-
-  // ✅ Call the function
-  loadImages();
-</script>
-
-
+  </script>
 </body>
 </html>

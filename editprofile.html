@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,136 +5,220 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Profile</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-light: #f3f4f6;
+      --text-light: #1f2937;
+      --card-bg-light: rgba(255, 255, 255, 0.6);
+      --input-bg-light: rgba(255, 255, 255, 0.7);
+      --input-border-light: #d1d5db;
+      --accent-light: #4f46e5;
+      --accent-hover-light: #4338ca;
+      --danger-light: #dc2626;
+      --danger-hover-light: #b91c1c;
 
-:root {
-  --text: #222;
-  --bg: #f7fafc;
-  --accent: #764ba2;
-  --card-bg: #fff;
-  --section-bg: #fff;
-  --text: #111;
-  --accent: #007bff;
-  --accent-hover: #0056b3;
-  --input-bg: #f9f9f9;
-  --input-border: #ccc;
-  --dbg: #fff;
-  --logout: #d00;
-}
-body.dark {
-  --box: #121212;
-  --text: #eee;
-  --bg: #121212;
-  --card-bg: #1e1e1e;
-  --section-bg: #111;
-  --text: #fff;
-  --input-bg: #222;
-  --input-border: #555;
-  --dbg: #121212;
-  --logout: #007bff;
-}
-      
+      --bg-dark: #111827;
+      --text-dark: #f3f4f6;
+      --card-bg-dark: rgba(31, 41, 55, 0.5);
+      --input-bg-dark: rgba(55, 65, 81, 0.5);
+      --input-border-dark: #4b5563;
+      --accent-dark: #6366f1;
+      --accent-hover-dark: #818cf8;
+      --danger-dark: #ef4444;
+      --danger-hover-dark: #f87171;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
-      background-color: var(--bg);
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
+
+    body.dark {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    
+    .animated-gradient {
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .form-container {
+      background-color: var(--card-bg-light);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: background-color 0.3s ease;
+      animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    }
+    
+    .dark .form-container {
+      background-color: var(--card-bg-dark);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-input {
+      background-color: var(--input-bg-light) !important;
+      border-color: var(--input-border-light) !important;
+      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease;
+    }
+    
+    .dark .form-input {
+      background-color: var(--input-bg-dark) !important;
+      border-color: var(--input-border-dark) !important;
+      color: var(--text-dark);
+    }
+    .dark .form-input::placeholder {
+        color: #9ca3af;
+    }
+
+    .btn-primary {
+        background-color: var(--accent-light);
+    }
+    .btn-primary:hover {
+        background-color: var(--accent-hover-light);
+    }
+    .dark .btn-primary {
+        background-color: var(--accent-dark);
+    }
+    .dark .btn-primary:hover {
+        background-color: var(--accent-hover-dark);
+    }
+
+    .btn-danger {
+        background-color: var(--danger-light);
+    }
+    .btn-danger:hover {
+        background-color: var(--danger-hover-light);
+    }
+    .dark .btn-danger {
+        background-color: var(--danger-dark);
+    }
+    .dark .btn-danger:hover {
+        background-color: var(--danger-hover-dark);
+    }
+
     .spinner {
-      border: 4px solid rgba(0, 0, 0, 0.1);
-      width: 24px;
-      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      border-left-color: #09f;
+      border-left-color: #fff;
       animation: spin 1s ease infinite;
     }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
     .close-icon {
       position: absolute;
+      top: 1rem;
+      right: 1rem;
       background: none;
       border: none;
       padding: 0.5rem;
       cursor: pointer;
       line-height: 1;
       z-index: 10;
-      transition: transform 0.2s ease, opacity 0.2s ease;
+      transition: transform 0.2s ease;
     }
     .close-icon svg {
-      width: 1.25rem;
-      height: 1.25rem;
-      stroke: #718096;
-      transition: stroke 0.2s ease;
+      width: 1.5rem;
+      height: 1.5rem;
+      stroke: currentColor;
+      opacity: 0.7;
+      transition: opacity 0.2s ease, transform 0.2s ease;
     }
     .close-icon:hover svg {
-      stroke: #4f46e5;
-    }
-    .close-icon:active {
-      transform: scale(0.9);
-    }
-    .close-icon-top-right {
-      top: 1rem;
-      right: 1rem;
+      opacity: 1;
+      transform: rotate(90deg);
     }
 
-bgclr{
-  background-color: var(--input-bg);
-}
+    .modal-container {
+        animation: modalFadeIn 0.3s ease-out;
+    }
+    @keyframes modalFadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="bgclr flex items-center justify-center min-h-screen p-4 sm:p-6">
-  <div class="absolute bg-white p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-md">
-    <button onclick="history.back()" class="close-icon close-icon-top-right" aria-label="Close login form">
+<body class="flex items-center justify-center min-h-screen p-4 sm:p-6">
+  <div class="animated-gradient"></div>
+  <div class="form-container p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
+    <button onclick="history.back()" class="close-icon" aria-label="Close edit form">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
-    <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">Edit Your Details</h2>
+    <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">Edit Your Details</h2>
     <form id="editUserForm" class="space-y-6">
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
+        <label for="useremail" class="block text-sm font-medium mb-1">Your Email</label>
         <input type="text" id="useremail" placeholder="Auto Filled"
-               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out" disabled>
+               class="form-input w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-opacity-50 transition duration-150 ease-in-out" disabled>
       </div>
       <div>
-        <label for="NewUsername" class="block text-sm font-medium text-gray-700 mb-1">New Username</label>
+        <label for="NewUsername" class="block text-sm font-medium mb-1">New Username</label>
         <input type="text" id="NewUsername" placeholder="Enter new username"
-               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+               class="form-input w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-opacity-50 transition duration-150 ease-in-out">
       </div>
       <div>
-        <label for="NewPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+        <label for="NewPassword" class="block text-sm font-medium mb-1">Password</label>
         <div class="relative">
           <input type="password" id="NewPassword" placeholder="Enter new password or view current"
-                 class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out pr-10">
-          <button type="button" id="togglePasswordVisibility" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
+                 class="form-input w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-opacity-50 transition duration-150 ease-in-out pr-10">
+          <button type="button" id="togglePasswordVisibility" class="absolute inset-y-0 right-0 px-3 flex items-center opacity-60 hover:opacity-100 focus:outline-none transition">
             <i id="eyeIcon" class="fa-solid fa-eye"></i>
             <i id="eyeSlashIcon" class="fa-solid fa-eye-slash hidden"></i>
           </button>
         </div>
-        <p class="mt-1 text-xs text-gray-500">You can view your current password or enter a new one to change it.</p>
+        <p class="mt-1 text-xs opacity-70">You can view your current password or enter a new one to change it.</p>
       </div>
       <button type="submit" id="updateButton"
-              class="w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+              class="btn-primary w-full flex items-center justify-center px-4 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-150 ease-in-out transform hover:scale-105 active:scale-100">
         <span id="buttonText">Update Details</span>
         <div id="loadingSpinner" class="spinner ml-2 hidden"></div>
       </button>
-      <button type="button" id="deleteButton" style="display:none" class="w-full flex items-center justify-center px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+      <button type="button" id="deleteButton" style="display:none" class="btn-danger w-full flex items-center justify-center px-4 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-150 ease-in-out transform hover:scale-105 active:scale-100">
         <span>Delete Account Permanently</span>
-        </button>
-      <div id="popupMessage" class="text-center mt-4 text-sm"></div>
+      </button>
+      <div id="popupMessage" class="text-center mt-4 text-sm font-medium"></div>
     </form>
   </div>
 
   <!-- Modal -->
-  <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-      <h2 class="text-xl font-semibold text-red-600 mb-4">Confirm Deletion</h2>
-      <p class="mb-2 text-gray-700">To delete your account, type <strong class="text-red-500">delete</strong> below:</p>
-      <input type="text" id="deleteInput" class="w-full border border-gray-300 rounded px-3 py-2 mb-4" placeholder="Type 'delete' to confirm">
+  <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50 p-4">
+    <div class="modal-container form-container p-6 w-full max-w-sm">
+      <h2 class="text-xl font-semibold text-red-500 mb-4">Confirm Deletion</h2>
+      <p class="mb-2 opacity-80">To delete your account, type <strong class="text-red-500">delete</strong> below:</p>
+      <input type="text" id="deleteInput" class="form-input w-full border rounded px-3 py-2 mb-4 focus:ring-2 focus:ring-red-500" placeholder="Type 'delete' to confirm">
       <div class="flex justify-end space-x-3">
-        <button id="closedeleteModal" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
-        <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Confirm</button>
+        <button id="closedeleteModal" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500 transition">Cancel</button>
+        <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Confirm</button>
       </div>
     </div>
   </div>
@@ -147,7 +230,7 @@ import {getAuth, onAuthStateChanged, updatePassword, deleteUser} from "https://w
 import{getFirestore, getDoc, doc, updateDoc, deleteDoc} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"
 
 const firebaseConfig = {
-apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
+    apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
     authDomain: "editech-93e95.firebaseapp.com",
     projectId: "editech-93e95",
     storageBucket: "editech-93e95.firebasestorage.app",
@@ -158,152 +241,116 @@ apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
  
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-
-  const auth=getAuth();
-  const db=getFirestore();
+  const auth = getAuth();
+  const db = getFirestore();
   
-const email = localStorage.getItem("userEmail");
-const editUserForm = document.getElementById("editUserForm");
-const newUsernameInput = document.getElementById("NewUsername");
-const newPasswordInput = document.getElementById("NewPassword");
-const popupMessage = document.getElementById("popupMessage");
-const updateButton = document.getElementById("updateButton");
-const deleteButton = document.getElementById("deleteButton");
-const buttonText = document.getElementById("buttonText");
-const loadingSpinner = document.getElementById("loadingSpinner");
-const togglePasswordVisibilityButton = document.getElementById("togglePasswordVisibility");
-const eyeIcon = document.getElementById("eyeIcon");
-const eyeSlashIcon = document.getElementById("eyeSlashIcon");
-const useremail = document.getElementById("useremail");
-const closedeleteModal = document.getElementById("closedeleteModal");
-const confirmDeleteBtn = document.getElementById("confirmDelete");
+  const editUserForm = document.getElementById("editUserForm");
+  const newUsernameInput = document.getElementById("NewUsername");
+  const newPasswordInput = document.getElementById("NewPassword");
+  const popupMessage = document.getElementById("popupMessage");
+  const updateButton = document.getElementById("updateButton");
+  const deleteButton = document.getElementById("deleteButton");
+  const buttonText = document.getElementById("buttonText");
+  const loadingSpinner = document.getElementById("loadingSpinner");
+  const togglePasswordVisibilityButton = document.getElementById("togglePasswordVisibility");
+  const eyeIcon = document.getElementById("eyeIcon");
+  const eyeSlashIcon = document.getElementById("eyeSlashIcon");
+  const useremailInput = document.getElementById("useremail");
+  const deleteModal = document.getElementById('deleteModal');
+  const closedeleteModalBtn = document.getElementById("closedeleteModal");
+  const confirmDeleteBtn = document.getElementById("confirmDelete");
 
   // Utility Functions
-function showPopupMessage(message, isError = false) {
-  popupMessage.textContent = message;
-  popupMessage.className = `text-center mt-4 text-sm ${isError ? 'text-red-600' : 'text-green-600'} font-medium`;
-}
-function clearPopupMessage() {
-  popupMessage.textContent = "";
-  popupMessage.className = "text-center mt-4 text-sm";
-}
-  
-function setLoadingState(isLoading) {
-  if (isLoading) {
-    buttonText.textContent = "Processing...";
-    loadingSpinner.classList.remove("hidden");
-    updateButton.disabled = true;
-    updateButton.classList.add("opacity-75", "cursor-not-allowed");
-  } else {
-    buttonText.textContent = "Update Details";
-    loadingSpinner.classList.add("hidden");
-    updateButton.disabled = false;
-    updateButton.classList.remove("opacity-75", "cursor-not-allowed");
+  function showPopupMessage(message, isError = false) {
+    popupMessage.textContent = message;
+    popupMessage.className = `text-center mt-4 text-sm font-medium ${isError ? 'text-red-500' : 'text-green-500'}`;
   }
-}
+  function clearPopupMessage() {
+    popupMessage.textContent = "";
+  }
   
-function togglePasswordVisibility() {
-  const type = newPasswordInput.type === "password" ? "text" : "password";
-  newPasswordInput.type = type;
-  eyeIcon.classList.toggle("hidden");
-  eyeSlashIcon.classList.toggle("hidden");
-}
+  function setLoadingState(isLoading) {
+    if (isLoading) {
+      buttonText.textContent = "Processing...";
+      loadingSpinner.classList.remove("hidden");
+      updateButton.disabled = true;
+      updateButton.classList.add("opacity-75", "cursor-not-allowed");
+    } else {
+      buttonText.textContent = "Update Details";
+      loadingSpinner.classList.add("hidden");
+      updateButton.disabled = false;
+      updateButton.classList.remove("opacity-75", "cursor-not-allowed");
+    }
+  }
+  
+  function togglePasswordVisibility() {
+    const type = newPasswordInput.type === "password" ? "text" : "password";
+    newPasswordInput.type = type;
+    eyeIcon.classList.toggle("hidden");
+    eyeSlashIcon.classList.toggle("hidden");
+  }
 
-// Load user data
-async function loadUserData() {
-  const storedData = localStorage.getItem("userInfo");
-  if (!storedData) return;
+  // Load user data
+  async function loadUserData() {
+    setLoadingState(true);
+    clearPopupMessage();
 
-  setLoadingState(true);
-  clearPopupMessage();
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
 
-  // Step 1: Load from localStorage first
-  const userInfo = JSON.parse(storedData);
-  useremail.value = userInfo.email;
-  newUsernameInput.value = userInfo.username;
-  newPasswordInput.value = "";
-  deleteButton.style.display = "block";
-  showPopupMessage("Loaded from local storage. Checking for updates...");
-
-  // Step 2: Fetch fresh data from Firestore
-  try {
-    onAuthStateChanged(auth, (user) => {
-      const loggedInUserId = localStorage.getItem("loggedInUserId");
-
-      if (user && loggedInUserId) {
-        const docRef = doc(db, "users", loggedInUserId);
-
-        getDoc(docRef)
-          .then((docSnap) => {
-            if (docSnap.exists()) {
-              const userData = docSnap.data();
-
-              // ✅ Correct placement
-              useremail.value = user.email; // Firebase Auth
-              newUsernameInput.value = userData.username; // Firestore
-              setLoadingState(false);
-              showPopupMessage("Updated with fresh data from Firestore.");
-            } else {
-              console.log("No document found matching ID");
-              setLoadingState(false);
-            }
-          })
-          .catch((error) => {
-            console.error("Error getting document:", error.message);
-            setLoadingState(false);
-          });
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            useremailInput.value = user.email;
+            newUsernameInput.value = userData.username;
+            deleteButton.style.display = "flex";
+            showPopupMessage("Your details are loaded.", false);
+          } else {
+            showPopupMessage("User data not found in database.", true);
+          }
+        } catch (error) {
+          console.error("Error getting document:", error.message);
+          showPopupMessage("Error loading your data.", true);
+        } finally {
+          setLoadingState(false);
+        }
       } else {
-        console.log("User or User ID not found in local storage");
-        setLoadingState(false);
+        showPopupMessage("You are not logged in. Redirecting...", true);
+        setTimeout(() => window.location.href = 'index.html', 2000);
       }
     });
-  } catch (err) {
-    console.error("Unexpected error:", err.message);
-    setLoadingState(false);
-  }
-}
-
-// Update user details
-async function modifyUserDetails(e) {
-  e.preventDefault();
-  clearPopupMessage();
-
-  const username = newUsernameInput.value.trim();
-  const password = newPasswordInput.value;
-
-  if (!username) {
-    showPopupMessage("Username cannot be empty.", true);
-    return;
   }
 
-  setLoadingState(true);
+  // Update user details
+  async function modifyUserDetails(e) {
+    e.preventDefault();
+    clearPopupMessage();
 
-  onAuthStateChanged(auth, async (user) => {
+    const username = newUsernameInput.value.trim();
+    const password = newPasswordInput.value;
+
+    if (!username) {
+      showPopupMessage("Username cannot be empty.", true);
+      return;
+    }
+
+    setLoadingState(true);
+    const user = auth.currentUser;
+
     if (user) {
       try {
-        // Update Firestore username
         const userDocRef = doc(db, "users", user.uid);
-        await updateDoc(userDocRef, {
-          username: username
-        });
+        await updateDoc(userDocRef, { username: username });
 
-        // Update password (if provided)
         if (password.trim() !== "") {
           await updatePassword(user, password);
         }
-
-        // Update localStorage
-        const userInfo = {
-          username: username,
-          email: user.email,
-          uid: user.uid
-        };
-        localStorage.setItem("userInfo", JSON.stringify(userInfo));
-
-        showPopupMessage("User details updated successfully!");
+        showPopupMessage("Details updated successfully!");
       } catch (error) {
         console.error("Update error:", error.message);
-        showPopupMessage("Failed to update: " + error.message, true);
+        showPopupMessage(`Failed to update: ${error.message}`, true);
       } finally {
         setLoadingState(false);
       }
@@ -311,88 +358,71 @@ async function modifyUserDetails(e) {
       showPopupMessage("User not logged in.", true);
       setLoadingState(false);
     }
-  });
-}
+  }
 
   // Delete user
-function openModal() {
-  if (confirm("Are you sure you want to delete your account?")) {
-    document.getElementById('deleteModal').classList.remove('hidden');
+  function openModal() {
+    deleteModal.classList.remove('hidden');
   }
-}
-function closeModal() {
-  document.getElementById('deleteModal').classList.add('hidden');
-  document.getElementById('deleteInput').value = '';
-}
-  
-function confirmDelete() {
-  const input = document.getElementById('deleteInput').value.trim().toLowerCase();
-  if (input === 'delete') {
-    deleteFirebaseUser();
-    closeModal();
-  } else {
-    alert("Please type 'delete' to confirm.");
+  function closeModal() {
+    deleteModal.classList.add('hidden');
+    document.getElementById('deleteInput').value = '';
   }
-}
   
-function deleteFirebaseUser() {
-  onAuthStateChanged(auth, async (user) => {
+  async function confirmDelete() {
+    const input = document.getElementById('deleteInput').value.trim().toLowerCase();
+    if (input !== 'delete') {
+      alert("Please type 'delete' to confirm.");
+      return;
+    }
+
+    const user = auth.currentUser;
     if (user) {
       try {
-        const userId = user.uid;
-
-        // Delete Firestore user document
-        await deleteDoc(doc(db, "users", userId));
-
-        // Delete Firebase Auth account
+        await deleteDoc(doc(db, "users", user.uid));
         await deleteUser(user);
-
-        // Clear localStorage and reload
-        localStorage.clear();
-        localStorage.setItem("deletedaccount", "true");
+        alert("Account deleted successfully.");
         logout();
       } catch (error) {
         console.error("Delete error:", error.message);
-        alert("Failed to delete account: " + error.message);
+        alert(`Failed to delete account: ${error.message}`);
+        closeModal();
       }
-    } else {
-      console.error("User not logged in.");
     }
+  }
+
+  // Logout
+  function logout() {
+    // A more robust way to clear relevant local storage
+    Object.keys(localStorage).forEach(key => {
+        if (key.includes('firebase') || ['isLoggedIn', 'userEmail', 'username'].includes(key)) {
+            localStorage.removeItem(key);
+        }
+    });
+    window.location.href = 'index.html'; // Or your main portfolio page
+  }
+
+  // Initial Checks
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!localStorage.getItem('isLoggedIn')) {
+        setTimeout(() => window.location.href = 'index.html', 100);
+    } else {
+        loadUserData();
+    }
+
+    // Theme
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark');
+    }
+
+    // Events
+    if (editUserForm) editUserForm.addEventListener("submit", modifyUserDetails);
+    if (deleteButton) deleteButton.addEventListener("click", openModal);
+    if (closedeleteModalBtn) closedeleteModalBtn.addEventListener("click", closeModal);
+    if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", confirmDelete);
+    if (togglePasswordVisibilityButton) togglePasswordVisibilityButton.addEventListener("click", togglePasswordVisibility);
   });
-}
-
-// Logout
-function logout() {
-  ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user'].forEach(k => localStorage.removeItem(k));
-  window.location.href = 'index.html';
-}
-
-// Initial Checks
-document.addEventListener('DOMContentLoaded', () => {
-  if (localStorage.getItem('deletedaccount')) {
-    alert("Your account was successfully deleted.");
-    logout();
-  } else if (!localStorage.getItem('isLoggedIn')) {
-    window.location.href = 'index.html';
-  } else {
-    loadUserData();
-  }
-
-  // Theme
-  const currentTheme = localStorage.getItem('theme');
-  if (currentTheme === 'dark') {
-    document.body.classList.add('dark');
-  }
-
-  // Events
-  if (editUserForm) editUserForm.addEventListener("submit", modifyUserDetails);
-  if (deleteButton) deleteButton.addEventListener("click", openModal);
-  if (closedeleteModal) closedeleteModal.addEventListener("click", closeModal);
-  if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", confirmDelete);
-  if (togglePasswordVisibilityButton) togglePasswordVisibilityButton.addEventListener("click", togglePasswordVisibility);
-});
 </script>
-
-
 </body>
 </html>
