@@ -78,6 +78,12 @@
             <!-- Search and Tabs Section -->
             <div class="mb-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <!-- Search Input -->
+<button onclick="window.history.back()" 
+    class="absolute z-10 bottom-0 right-1 m-0 opacity-75 items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-gray-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95">
+    &larr; Back
+</button>
+
+
                 <div class="relative w-full sm:w-1/2 md:w-1/3">
                     <input type="text" id="search-input" placeholder="Search templates..."
                         class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
@@ -123,6 +129,11 @@
             </div>
             <iframe id="viewer" src="about:blank" title="Editor" class="w-full h-full border-0"></iframe>
         </div>
+
+        <!-- Primary Button: "Download" -->
+            <button class="flex items-center gap-2 px-2 py-2 pt-3 text-sm font-medium text-white bg-sky-500 rounded-lg hover:bg-sky-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-sky-400 shadow-md hover:shadow-sky-500/40">
+                Back to Home
+            </button>
     </main>
 
     <!-- Confirmation Modal -->
