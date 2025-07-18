@@ -179,10 +179,10 @@
             <div class="space-y-2">
               <p contenteditable="false" class="font-bold">ಜ್ಞಾನಮಂದಿರ ಕಟ್ಟಡ ನಿರ್ಮಾಣ ಮಾಡುವ ಉದ್ದೇಶದಿಂದ ನಡೆಸಲಾಗುವ ವಾರದ ಶುಕ್ರವಾರ ಮನೆ ಮನೆ ಭಜನೆ</p>
               <p id="change1" contenteditable="true" class="font-semibold bg-orange-800 bg-opacity-50 rounded-md px-3 py-1 pt-2 inline-block">(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) 11-07-2025</p>
-              <p class="font-bold">ಶುಕ್ರವಾರ ಸಂಜೆ <span contenteditable="true" >7.00</span>ಕ್ಕೆ ಸರಿಯಾಗಿ</p>
+              <p class="font-bold">ಶುಕ್ರವಾರ ಸಂಜೆ <span id="change4" contenteditable="true" >7.00</span>ಕ್ಕೆ ಸರಿಯಾಗಿ</p>
               <div class="text-body-md pt-1">
-                <p id="change2" contenteditable="true" class="font-bold">ಶ್ರೀಮತಿ ಮತ್ತು ಶ್ರೀ ಹೆಸರು ಮತ್ತು ಮಕ್ಕಳು</p>
-                <p id="change3" contenteditable="true" class="font-semibold">ಊರಿನ / ಮನೆ ಹೆಸರು</p>
+                <p id="change2" contenteditable="true" class="font-bold text-yellow-200">ಶ್ರೀಮತಿ ಮತ್ತು ಶ್ರೀ ಹೆಸರು ಮತ್ತು ಮಕ್ಕಳು</p>
+                <p id="change3" contenteditable="true" class="font-semibold text-yellow-200">ಊರಿನ / ಮನೆ ಹೆಸರು</p>
               </div>
             </div>
           </div>
@@ -334,7 +334,7 @@
   });
   </script>
 <script>
-  const editableIds = ['change2', 'change3'];
+  const editableIds = ['change2', 'change3', 'change4'];
   let fridayDateFormatted = ''; // Global variable to store Friday date
 
   // Set default next Friday in #change1 and store date
