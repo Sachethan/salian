@@ -46,23 +46,36 @@ document.querySelectorAll('.nav-links a').forEach(link => {
 });
 
 // Function to apply theme on page load
-window.addEventListener('DOMContentLoaded', () => {
-  const currentTheme = localStorage.getItem('theme');
-  if (currentTheme === 'dark') {
-    document.body.classList.add('dark');
-  }
-});
+window.addEventListener("DOMContentLoaded", () => {
+  // Hide Elfsight branding
+  hideElfsightBranding();
 
-const toggle = document.getElementById('themeToggle');
+    // Detect #poster-edit and load poster editor
+  const hash = window.location.hash;
+  if (hash === '#poster-edit') {
+    loadPosterEditor('bajane/blog.html');
+  }
+});  
+  // Apply saved theme
+  const savedTheme = localStorage.getItem("theme");
+  const isDarkMode = savedTheme === "dark";
+  document.body.classList.toggle("dark", isDarkMode);
+  const toggle = document.getElementById("themeToggle");
+  if (toggle) toggle.checked = isDarkMode;
 
-// Load theme and update switch on page load
-window.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = localStorage.getItem('theme');
-  const isDarkMode = savedTheme === 'dark';
+    // Load saved name/email
+  const savedName = localStorage.getItem("username");
+  const savedEmail = localStorage.getItem("userEmail");
+  if (savedName) {
+    document.querySelector("input[name='name']").value = savedName;
+    document.getElementById("userdisplay").textContent = savedName;
+    document.getElementById("userPname").textContent = savedName;
+  }
+  if (savedEmail) {
+    document.querySelector("input[name='email']").value = savedEmail;
+  }
+    
 
-  document.body.classList.toggle('dark', isDarkMode);
-  toggle.checked = isDarkMode;
-});
 
 // Toggle theme and save preference
 toggle.addEventListener('change', () => {

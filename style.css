@@ -1,8 +1,10 @@
 :root {
-  --bg:linear-gradient(90deg,rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgba(255, 241, 214, 1) 100%);
+  --bgnr:linear-gradient(90deg,rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgba(255, 241, 214, 1) 100%);
+    --bg:#fff;
   --text: #222;
   --htext: #6366f1;
   --nav-bg: #111;
+  --nav-br: rgba(243, 244, 246, 0.5);
   --accent: #764ba2;
   --card-bg: #fff;
   --section-bg: #fff;
@@ -21,6 +23,7 @@ body.dark {
   --bg: #121212;
   --text: #eee;
   --nav-bg: #1f1f1f;
+  --nav-br: rgba(17, 24, 39, 0.1);
   --card-bg: #1e1e1e;
   --section-bg: #111;
   --text: #fff;
@@ -37,7 +40,7 @@ body.dark {
 }
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 10%;
+  scroll-padding-top: 20%;
 }
 
 body {
@@ -90,14 +93,23 @@ body.dark .loader {
   padding: 20px;
 }
 
+
 /* Navigation */
 header {
-  background: var(--nav-bg);
-  color: #fff;
+  background: var(--nav-br);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text);
   position: sticky;
   top: 0;
   z-index: 999;
+   border-bottom: 1px solid var(--text);
 }
+
+header i{
+  color:var(--text);
+}
+
 .nav-container {
   display: flex;
   justify-content: space-between;
@@ -109,6 +121,11 @@ header {
 .logo img {
   height: 20px;
   vertical-align: middle;
+  filter: invert(1);
+}
+
+.dark .logo img {
+  filter: invert(0);
 }
 
 .nav-links {
@@ -119,7 +136,7 @@ header {
   list-style: none;
 }
 .nav-links a {
-  color: #fff;
+  color: var(--text);
   text-decoration: none;
   font-weight: 500;
   position: relative;
@@ -146,7 +163,7 @@ header {
 #themeToggle, #profileButton {
   background: none;
   border: none;
-  color: #fff;
+  color: var(--text);
   font-size: 1.2rem;
   cursor: pointer;
 }
@@ -154,7 +171,7 @@ header {
   display: none;
   font-size: 2rem;
   cursor: pointer;
-  color: #fff;
+  color: var(--text);
 }
 
 #profileDropdown {
@@ -206,13 +223,15 @@ header {
 .hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
   color: #fff;
   text-align: center;
   padding: 100px 20px;
   z-index: 1;
+  margin-top: -80px; /* Adjust this to match your header height */
+  padding-top: 180px;
 }
 
 .hero::before {
@@ -465,9 +484,11 @@ h2 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--nav-bg);
-  position: absolute;
-  top: 70px;
+  background: var(--nav-br);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: fixed;
+  top: 85px;
   left: 0;
   width: 100%;
   max-height: 0;
@@ -476,6 +497,7 @@ h2 {
   padding: 0 20px;
   text-align: center;
   z-index: 1000;
+  border: 1px solid var(--text);
   transition: max-height 0.4s ease, opacity 0.4s ease;
 }
 
