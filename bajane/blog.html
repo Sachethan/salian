@@ -301,10 +301,7 @@
                     `;
                     templateGrid.appendChild(card);
                 });
-            if (window.top && typeof window.top.showMessage === "function") {
-    window.top.showMessage(`<strong>This is the Editing Panel. Click on 'Open Editor' to edit a poster.</strong>`, "info");
-}
-    
+                top.showMessage(`<strong>This is the Editing Panel. Click on 'Open Editor' to edit a poster.</strong>`,"info");
             }
 
             /**

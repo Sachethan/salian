@@ -385,19 +385,13 @@
 
           downloadButton.textContent = 'Downloaded';
           downloadButton.disabled = false;
-
-          if (top.showMessage) {
             top.showMessage(`<strong>${filename} - Downloaded successfully!</strong>`, "success");
-          }
         })
         .catch(error => {
           console.error('Error downloading:', error);
           downloadButton.textContent = 'Download Again';
           downloadButton.disabled = false;
-
-          if (top.showMessage) {
             top.showMessage(`<strong>Download failed. Please try again.</strong>`, "error");
-          }
         });
     });
   });
