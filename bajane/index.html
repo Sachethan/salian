@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="light">
-  <base href=""/>
+  <base href="https://sachethan.github.io/salian/bajane/"/>
   <title>ಅನ್ನಪೂರ್ಣ Poster Editor</title>
 
   <!-- Google tag (gtag.js) -->
@@ -339,7 +339,7 @@
         fontModal.classList.add('hidden');
       });
     });
-  
+  
   // On click Download
   downloadButton.addEventListener("click", async () => {
     downloadButton.textContent = 'Downloading...';
@@ -385,13 +385,36 @@
 
           downloadButton.textContent = 'Downloaded';
           downloadButton.disabled = false;
-            top.showMessage(`<strong>${filename} - Downloaded successfully!</strong>`, "success");
+
+window.parent.postMessage({
+  type: "showMessage",
+  message: `<strong>${filename} - Downloaded successfully!</strong>`,
+  variant: "success"
+}, "*");
+
+gtag('event', 'download', {
+  event_category: 'poster',
+  event_label: filename,
+  value: 1
+});          
         })
         .catch(error => {
           console.error('Error downloading:', error);
           downloadButton.textContent = 'Download Again';
           downloadButton.disabled = false;
-            top.showMessage(`<strong>Download failed. Please try again.</strong>`, "error");
+
+ window.parent.postMessage({
+  type: "showMessage",
+  message: `<strong>Download failed. Please try again.</strong>`,
+  variant: "error"
+}, "*");
+          
+gtag('event', 'download_failed', {
+  event_category: 'poster',
+  event_label: `Failed: Bajane_${formattedDate || 'date'}.jpg`,
+  value: 0
+});          
+
         });
     });
   });

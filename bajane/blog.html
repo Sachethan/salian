@@ -301,7 +301,11 @@
                     `;
                     templateGrid.appendChild(card);
                 });
-                top.showMessage(`<strong>This is the Editing Panel. Click on 'Open Editor' to edit a poster.</strong>`,"info");
+window.parent.postMessage({
+  type: "showMessage",
+  message: `<strong>This is the Editing Panel. Click on 'Open Editor' to edit a poster.</strong>`,
+  variant: "info"
+}, "*");
             }
 
             /**
