@@ -5,8 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="light">
   <base href=""/>
-  <title>Kannada Poster Editor</title>
+  <title>ಅನ್ನಪೂರ್ಣ Poster Editor</title>
 
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YQHKJTNHKG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-YQHKJTNHKG');
+</script>
+  
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -96,48 +107,6 @@
     width: 60px;
   }
 }
-
-@media screen and (min-width: 360px) and (max-width: 369px) {
-  .text-title {
-    font-size: 1rem;
-  }
-  .ctm-Content{
-    bottom: 59px;
-    font-size: 0.85rem;
-  }
-  .ctm-Content #change1{
- font-size: 0.65rem;  
- }
-.text-header{
-    top:21px;
-  }
-    .text-footer{
-    font-size: 0.65rem;
-    bottom: 25px;
-  }
-  
-}
-@media screen and (min-width: 370px) and (max-width: 390px) {
-  .text-title {
-    font-size: 1rem;
-  }
-  .ctm-Content{
-    bottom: 75px;
-    font-size: 0.85rem;
-  }
-  .ctm-Content #change1{
- font-size: 0.65rem;  
- }
-.text-header{
-    top:21px;
-  }
-    .text-footer{
-    font-size: 0.75rem;
-    bottom: 25px;
-  }
-  
-}
-
 @media screen and (min-width: 437px) and (max-width: 450px) {
 .ctm-Content{
     bottom: 75px;
@@ -275,6 +244,17 @@
         </div>
     </div>
 
+<!-- Controls -->
+   <div class="w-full max-w-md">
+        <!-- Controls Container -->
+        <div class="bg-slate-800/80 backdrop-blur-sm p-3 rounded-xl shadow-lg flex justify-center items-center gap-4 border border-slate-700">
+            <!-- Primary Button: "Saved Data" -->
+            <button onclick="window.location.href ='settings.html'" class="flex items-center gap-2 px-2 py-2 pt-3 text-sm font-medium text-black bg-white rounded-lg hover:bg-sky-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-sky-400 shadow-md hover:shadow-sky-500/40">
+                Show Saved Data
+            </button>
+        </div>
+    </div>
+
 
 
   <!-- Font Modal -->
@@ -309,14 +289,34 @@
   <a href="resolution.html" class="font-bold text-orange-700">Test Resolution</a>
 </div>
 <!-- dom-to-image-more -->
-  <script>
+<!-- Firebase + Save Data + Download Poster -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  import * as htmlToImage from "https://cdn.skypack.dev/html-to-image";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCZejpQv-Ru-OlzWsjzFF_37e8b8DIC3u8",
+    authDomain: "posterdata-113da.firebaseapp.com",
+    projectId: "posterdata-113da",
+    storageBucket: "posterdata-113da.appspot.com",
+    messagingSenderId: "702186025024",
+    appId: "1:702186025024:web:488eec752f7f6c382cefa5",
+    measurementId: "G-YQHKJTNHKG"
+  };
+
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
     const fontModalButton = document.getElementById('font-modal-button');
     const downloadButton = document.getElementById('download-button');
     const fontModal = document.getElementById('font-modal');
     const closeModalButton = document.getElementById('close-modal-button');
     const fontOptions = document.querySelectorAll('.font-option');
     const invitationCard = document.getElementById('invitation-card');
-
+  
     // Font Modal
     fontModalButton.addEventListener('click', () => {
       fontModal.classList.remove('hidden');
@@ -339,88 +339,113 @@
         fontModal.classList.add('hidden');
       });
     });
-
-    // Auto shrink text if overflowing
-    function autoFitText(selector, minFontSize = 12, step = 1) {
-      const elements = document.querySelectorAll(selector);
-      elements.forEach(el => {
-        let size = parseFloat(window.getComputedStyle(el).fontSize);
-        while ((el.scrollHeight > el.offsetHeight || el.scrollWidth > el.offsetWidth) && size > minFontSize) {
-          size -= step;
-          el.style.fontSize = size + "px";
-        }
-      });
-    }
-
-    // Trigger autoFitText on blur
-    document.querySelectorAll('[contenteditable="true"]').forEach(el => {
-      el.addEventListener('blur', () => autoFitText('[contenteditable="true"]'));
-    });
-  // Download using html-to-image
-  downloadButton.addEventListener('click', () => {
+  
+  // On click Download
+  downloadButton.addEventListener("click", async () => {
     downloadButton.textContent = 'Downloading...';
     downloadButton.disabled = true;
 
+    const dateText = document.getElementById("change1")?.textContent || "";
+    const name = document.getElementById("change2")?.textContent || "";
+    const address = document.getElementById("change3")?.textContent || "";
+    const time = document.getElementById("change4")?.textContent || "";
+
+    // Extract date and season
+    const dateMatch = dateText.match(/\)\s*(\d{2}-\d{2}-\d{4})/);
+    const rawDate = dateMatch ? dateMatch[1] : '';
+    const season = dateText.split(")")[0]?.replace("(", "") || '';
+
+    const formattedDate = formatDate(rawDate); // dd-MMM-yyyy
+
+    // Save to Firestore
+    try {
+      await addDoc(collection(db, "annapoorna_poster1"), {
+        name: name.trim(),
+        address: address.trim(),
+        time: time.trim(),
+        date: formattedDate,
+        season: season.trim()
+      });
+      console.log("🔥 Data stored in Firebase:", name, address, time, formattedDate);
+    } catch (err) {
+      console.error("❌ Error storing data:", err);
+    }
+
+    // Convert to image
     document.fonts.ready.then(() => {
       autoFitText('[contenteditable="true"]');
 
-      htmlToImage.toJpeg(invitationCard, {
-        quality: 1,
-        cacheBust: true
-      })
-      .then(dataUrl => {
-        const link = document.createElement('a');
-        const filename = `Bajane_${fridayDateFormatted || 'date'}.jpg`;
-        link.download = filename;
-        link.href = dataUrl;
-        link.click();
-        downloadButton.textContent = 'Downloaded';
-        downloadButton.disabled = false;
-        top.showMessage(
-      `<strong>${filename} - Downloaded successfully!.</strong><br>`,
-      "success"
-    );
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        const filename = `Bajane_${fridayDateFormatted || 'date'}.jpg`;
-       top.showMessage(
-      `<strong>${filename} - Downloading failed. Please Try Again</strong><br>`,
-      "error"
-    );
-        downloadButton.textContent = 'Download Again';
-        downloadButton.disabled = false;
-      });
+      htmlToImage.toJpeg(invitationCard, { quality: 1, cacheBust: true })
+        .then(dataUrl => {
+          const link = document.createElement('a');
+          const filename = `Bajane_${formattedDate || 'date'}.jpg`;
+          link.download = filename;
+          link.href = dataUrl;
+          link.click();
+
+          downloadButton.textContent = 'Downloaded';
+          downloadButton.disabled = false;
+
+          if (top.showMessage) {
+            top.showMessage(`<strong>${filename} - Downloaded successfully!</strong>`, "success");
+          }
+        })
+        .catch(error => {
+          console.error('Error downloading:', error);
+          downloadButton.textContent = 'Download Again';
+          downloadButton.disabled = false;
+
+          if (top.showMessage) {
+            top.showMessage(`<strong>Download failed. Please try again.</strong>`, "error");
+          }
+        });
     });
   });
-  </script>
-<script>
-  const editableIds = ['change2', 'change3', 'change4'];
-  let fridayDateFormatted = ''; // Global variable to store Friday date
 
-  // Set default next Friday in #change1 and store date
+  // Date Formatter → dd-MMM-yyyy
+  function formatDate(ddmmyyyy) {
+    const [dd, mm, yyyy] = ddmmyyyy.split("-");
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = months[parseInt(mm, 10) - 1] || "Month";
+    return `${dd}-${month}-${yyyy}`;
+  }
+
+  // Resize text if overflow
+  function autoFitText(selector, minFontSize = 12, step = 1) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      let size = parseFloat(window.getComputedStyle(el).fontSize);
+      while ((el.scrollHeight > el.offsetHeight || el.scrollWidth > el.offsetWidth) && size > minFontSize) {
+        size -= step;
+        el.style.fontSize = size + "px";
+      }
+    });
+  }
+
+  // Auto set upcoming Friday on load
   window.addEventListener('DOMContentLoaded', () => {
     const change1 = document.getElementById('change1');
     if (change1) {
       const today = new Date();
       const nextFriday = new Date();
-      const dayOfWeek = today.getDay();
-      const daysUntilFriday = (5 - dayOfWeek + 7) % 7 || 7;
-      nextFriday.setDate(today.getDate() + daysUntilFriday);
+      const day = today.getDay();
+      const diff = (5 - day + 7) % 7 || 7;
+      nextFriday.setDate(today.getDate() + diff);
 
       const dd = String(nextFriday.getDate()).padStart(2, '0');
       const mm = String(nextFriday.getMonth() + 1).padStart(2, '0');
       const yyyy = nextFriday.getFullYear();
+      const rawDate = `${dd}-${mm}-${yyyy}`;
 
-      fridayDateFormatted = `${dd}-${mm}-${yyyy}`; // Save for download
-
+      const defaultText = `(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) ${rawDate}`;
       if (change1.textContent.trim() === '' || change1.textContent.includes('11-07-2025')) {
-        change1.textContent = `(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) ${fridayDateFormatted}`;
+        change1.textContent = defaultText;
       }
     }
 
-    // Load saved name/place (change2/3)
-    editableIds.forEach(id => {
+    // Restore local storage
+    ['change2', 'change3', 'change4'].forEach(id => {
       const saved = localStorage.getItem(`poster_${id}`);
       if (saved) {
         const el = document.getElementById(id);
@@ -429,8 +454,8 @@
     });
   });
 
-  // Save change2 and change3 only
-  editableIds.forEach(id => {
+  // Save locally
+  ['change2', 'change3', 'change4'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('blur', () => {
@@ -438,11 +463,7 @@
       });
     }
   });
-
-
 </script>
-
-
 
 </body>
 </html>
