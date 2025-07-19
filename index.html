@@ -237,6 +237,17 @@
       );
     });
 
+// ✅ Listen for cross-origin messages (e.g., from bajene/index.html)
+window.addEventListener("message", function (event) {
+  // Optional: Allow only from GitHub Pages
+  // if (event.origin !== "https://sachethan.github.io") return;
+
+  const data = event.data;
+  if (typeof data === 'object' && data.type === "showMessage" && typeof showMessage === "function") {
+    showMessage(data.message, data.variant || "info", data.redirectUrl || null);
+  }
+});
+
     let messageIdCounter = 0; // Declare at top before any function uses it
 
     // Function to display dynamic messages (success, error, info)
