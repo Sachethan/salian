@@ -318,7 +318,7 @@ const firebaseConfig = {
         }
       } else {
         showPopupMessage("You are not logged in. Redirecting...", true);
-        setTimeout(() => window.location.href = 'index.html', 2000);
+        setTimeout(() => window.location.href = '../../index.html', 2000);
       }
     });
   }
@@ -399,13 +399,13 @@ const firebaseConfig = {
             localStorage.removeItem(key);
         }
     });
-    window.location.href = 'index.html'; // Or your main portfolio page
+    window.location.href = '../../index.html'; // Or your main portfolio page
   }
 
   // Initial Checks
   document.addEventListener('DOMContentLoaded', () => {
     if (!localStorage.getItem('isLoggedIn')) {
-        setTimeout(() => window.location.href = 'index.html', 100);
+        setTimeout(() => window.location.href = '../../index.html', 100);
     } else {
         loadUserData();
     }

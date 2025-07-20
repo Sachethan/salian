@@ -175,7 +175,7 @@ getDoc(docRef)
             stopLoading(loginBtn, originalText);
             showMessage(loginMessageDiv, `Welcome back, ${userData.username || 'User'}!`, 'success');            loginForm.reset();
             setTimeout(() => {
-                window.location.href = '../index.html';
+                window.location.href = '../../index.html';
             }, 1500);
 
         } catch (err) {
