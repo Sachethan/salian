@@ -285,7 +285,7 @@
 3. ಇಂದು ಮಾಡಿದ ಬದಲಾವಣೆಗಳು <span class="font-semibold text-orange-600">ಈ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್ನಲ್ಲಿ ಮಾತ್ರ</span> ಸಂರಕ್ಷಿಸಲಾಗುತ್ತದೆ. ಮುಂದಿನ ಬಾರಿ ಭೇಟಿ ನೀಡುವಾಗ ನೀವು ಕೊನೆಯ ಬದಲಾವಣೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ನೋಡಬಹುದು. 
   </div>
 </div>
-<!-- dom-to-image-more -->
+
 <!-- Firebase + Save Data + Download Poster -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
@@ -437,26 +437,35 @@ gtag('event', 'download_failed', {
     });
   }
 
-  // Auto set upcoming Friday on load
-  window.addEventListener('DOMContentLoaded', () => {
-    const change1 = document.getElementById('change1');
-    if (change1) {
-      const today = new Date();
-      const nextFriday = new Date();
-      const day = today.getDay();
+// Auto set upcoming Friday on load
+window.addEventListener('DOMContentLoaded', () => {
+  const change1 = document.getElementById('change1');
+  if (change1) {
+    const today = new Date();
+    const nextFriday = new Date();
+    const day = today.getDay();
+
+    // If today is Friday (5), use todays date; else find next Friday
+    if (day === 5) {
+      nextFriday.setTime(today.getTime());
+    } else {
       const diff = (5 - day + 7) % 7 || 7;
       nextFriday.setDate(today.getDate() + diff);
-
-      const dd = String(nextFriday.getDate()).padStart(2, '0');
-      const mm = String(nextFriday.getMonth() + 1).padStart(2, '0');
-      const yyyy = nextFriday.getFullYear();
-      const rawDate = `${dd}-${mm}-${yyyy}`;
-
-      const defaultText = `(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) ${rawDate}`;
-      if (change1.textContent.trim() === '' || change1.textContent.includes('11-07-2025')) {
-        change1.textContent = defaultText;
-      }
     }
+
+    const dd = String(nextFriday.getDate()).padStart(2, '0');
+    const mm = String(nextFriday.getMonth() + 1).padStart(2, '0');
+    const yyyy = nextFriday.getFullYear();
+    const rawDate = `${dd}-${mm}-${yyyy}`;
+
+    const defaultText = `(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) ${rawDate}`;
+    
+    // You can change '11-07-2025' to your default/fallback if needed
+    if (change1.textContent.trim() === '' || change1.textContent.includes('11-07-2025')) {
+      change1.textContent = defaultText;
+    }
+  }
+
 
     // Restore local storage
     ['change2', 'change3', 'change4'].forEach(id => {
