@@ -1,0 +1,167 @@
+body {
+      font-family: 'Noto Sans Kannada', sans-serif;
+    }
+    
+button[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .aspect-ratio-box {
+      position: relative;
+      width: 100%;
+      padding-top: 125%; /* 4:5 aspect */
+    }
+@keyframes blink {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+
+    #invitation-card {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      background-image: url('image/bg.png');
+      background-size: cover;
+      flex-direction: column;
+     /* container-type: inline-size;*/
+    }
+
+  .gradient-text {
+background: radial-gradient(circle,rgba(255, 36, 36, 1) 0%, rgba(255, 255, 255, 1) 0%, rgba(255, 54, 54, 1) 0%, rgba(150, 17, 17, 1) 0%, rgba(214, 87, 13, 1) 50%, rgba(128, 17, 17, 1) 100%, rgba(173, 12, 12, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+    .text-header { font-size: clamp(0.5rem, 2.2cqw, 1rem); }
+    .text-title { font-size: clamp(1.2rem, 4vw, 2.2rem); }
+    .text-subtitle { font-size: clamp(0.8rem, 3.5cqw, 1.5rem); }
+    .text-body-xl { font-size: clamp(0.9rem, 3.8cqw, 1.8rem); }
+    .text-body-lg { font-size: clamp(0.8rem, 3.2cqw, 1.5rem); }
+    .text-body-md { font-size: clamp(0.7rem, 2.8cqw, 1.2rem); }
+    
+    .text-footer { 
+        font-size: clamp(0.9rem, 2.2cqw, 1rem);
+        bottom: 25px;
+    }
+
+    [contenteditable="true"]:hover {
+      outline: 2px dashed rgba(255,255,255,0.5);
+      background-color: rgba(0,0,0,0.05);
+    }
+    [contenteditable="true"]:focus {
+      outline: 2px solid #fbbf24;
+      background-color: rgba(0,0,0,0.1);
+    }
+
+.ctm-TopContent{
+font-size: auto;
+ top: 50%;
+  left: 50%;
+  transform: translate(-50%, 55%);
+  }
+  .ctm-Content{
+    font-size: 0.85rem;
+    border: 1px solid red;
+  }
+
+   .address{
+     height: auto;
+     width: 100%;
+     border: 1px solid red;
+     font-size: 0.7rem;
+     bottom: 0px;
+   }
+  .ಸೇವೆ{
+    font-size: 1rem;
+  }
+
+@media screen and (max-width: 360px) {
+  .text-title {
+    font-size: 1rem;
+  }
+
+  .text-footer{
+    font-size: 0.75rem;
+    bottom: 25px;
+  }
+  .ctm-Content{
+    bottom: 70px;
+    font-size: 0.74rem;
+  }
+  .text-header{
+    top:18px;
+    font-size: 8px;
+  }
+  .devi img{
+    height: 60px;
+    width: 60px;
+  }
+}
+@media screen and (min-width: 437px) and (max-width: 450px) {
+
+  
+}
+
+@media screen and (min-width: 393px) and (max-width: 400px) {
+  .text-title {
+    font-size: 1rem;
+  }
+  .ctm-Content{
+    bottom: 75px;
+    font-size: 0.85rem;
+    border: 1px solid red;
+  }
+  
+ .friday{
+   font-size: 0.9rem;
+ }
+  
+  .ctm-Content #change1{
+ font-size: 0.65rem;  
+ }
+.text-header{
+    top:21px;
+  }
+  
+}
+
+@media screen and (min-width: 436px) and (max-width: 437px) {
+.ctm-Content{
+  font-size: 0.9rem;
+  height: auto;
+  border: 1px solid red;
+  }
+   .address{
+     height: auto;
+     width: 100%;
+     border: 1px solid red;
+     font-size: 1rem;
+     bottom: 0px;
+   }
+  
+  .ctm-TopContent{
+  font-size: 1.3rem;
+ top: 50%;
+  left: 50%;
+  transform: translate(-50%, 55%);
+  }
+  
+ .friday{
+   font-size: 0.9rem;
+ }
+  .ಸೇವೆ{
+    font-size: 1.2rem;
+  }
+ .ctm-Content #change1{
+ font-size: 1rem;  
+ }
+.text-header{
+    top:21px;
+  }
+  
+}
+
