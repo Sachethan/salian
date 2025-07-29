@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="color-scheme" content="light">
+  <base href=""/>
+  <title>ಅನ್ನಪೂರ್ಣ Poster Editor</title>
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YQHKJTNHKG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-YQHKJTNHKG');
+</script>
+  
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;700;900&family=Tiro+Kannada&family=Baloo+Tamma+2&family=Mallanna&display=swap" rel="stylesheet" />
+
+   <script src="https://unpkg.com/html-to-image"></script>
+ <style>
+    body {
+      font-family: 'Noto Sans Kannada', sans-serif;
+    }
+    
+
+    .aspect-ratio-box {
+      position: relative;
+      width: 100%;
+      padding-top: 125%; /* 4:5 aspect */
+    }
+
+    #invitation-card {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      background-image: url('image/bg.jpg');
+      background-size: cover;
+      flex-direction: column;
+     /* container-type: inline-size;*/
+    }
+
+    .garland-border {
+      min-height: 4%;
+      background: repeating-linear-gradient(
+        90deg,
+        #f97316 0, #f97316 10px,
+        #fbbf24 10px, #fbbf24 20px,
+        #16a34a 20px, #16a34a 30px
+      );
+      border-top: 3px solid #c2410c;
+      border-bottom: 3px solid #c2410c;
+    }
+    .text-header { font-size: clamp(0.5rem, 2.2cqw, 1rem); }
+    .text-title { font-size: clamp(1.2rem, 4vw, 2.2rem); }
+    .text-subtitle { font-size: clamp(0.8rem, 3.5cqw, 1.5rem); }
+    .text-body-xl { font-size: clamp(0.9rem, 3.8cqw, 1.8rem); }
+    .text-body-lg { font-size: clamp(0.8rem, 3.2cqw, 1.5rem); }
+    .text-body-md { font-size: clamp(0.7rem, 2.8cqw, 1.2rem); }
+    
+    .text-footer { 
+        font-size: clamp(0.9rem, 2.2cqw, 1rem);
+        bottom: 25px;
+    }
+
+    [contenteditable="true"]:hover {
+      outline: 2px dashed rgba(255,255,255,0.5);
+      background-color: rgba(0,0,0,0.05);
+    }
+    [contenteditable="true"]:focus {
+      outline: 2px solid #fbbf24;
+      background-color: rgba(0,0,0,0.1);
+    }
+
+
+@media screen and (max-width: 362px) {
+  .text-title {
+    font-size: 1rem;
+  }
+
+  .text-footer{
+    font-size: 0.75rem;
+    bottom: 25px;
+  }
+  .ctm-Content{
+    bottom: 70px;
+    font-size: 0.74rem;
+  }
+  .text-header{
+    top:18px;
+    font-size: 8px;
+  }
+  .devi img{
+    height: 60px;
+    width: 60px;
+  }
+}
+@media screen and (min-width: 437px) and (max-width: 450px) {
+.ctm-Content{
+    bottom: 75px;
+  }
+  
+ .friday{
+   font-size: 0.9rem;
+ }
+      
+ .ctm-Content {
+ font-size: 0.8rem;  
+ }
+
+.text-header{
+    top:21px;
+  }
+  
+}
+
+@media screen and (min-width: 393px) and (max-width: 400px) {
+  .text-title {
+    font-size: 1rem;
+  }
+  .ctm-Content{
+    bottom: 75px;
+    font-size: 0.85rem;
+  }
+  
+ .friday{
+   font-size: 0.9rem;
+ }
+  
+  .ctm-Content{
+ font-size: 0.65rem;  
+ }
+.text-header{
+    top:21px;
+  }
+  
+}
+
+@media screen and (min-width: 436px) and (max-width: 437px) {
+.ctm-Content{
+    bottom: 5%;
+  font-size: 1.3rem;
+  }
+  
+ .friday{
+   font-size: 0.9rem;
+ }
+  
+ .ctm-Content {
+ font-size: 1rem;  
+ }
+.text-header{
+    top:21px;
+  }
+  
+}
+
+  </style>
+</head>
+<body class="bg-gray-800">
+
+  <div class="w-full max-w-3xl mx-auto p-4 md:p-8">
+ 
+    <!-- Poster Container -->
+    <div class="aspect-ratio-box max-w-[640px] mx-auto">
+      <div id="invitation-card" class="bg-gradient-radial from-orange-400 to-orange-600 shadow-2xl overflow-hidden">
+   <div class="absolute overflow-hidden z-50 pointer-events-none opacity-50">
+     <img src="image/boder.png"/>
+   </div>
+
+        <div class="absolute garland-border w-full"></div>
+
+        <div class="absolute bg-red p-0 md:p-0 w-full text-center text-white flex flex-col items-center justify-between">
+          <!-- Header -->
+          <div class="relative mt-0 mb-[75px] p-0 font-semibold text-yellow-100 text-header flex flex-col items-center justify-between">
+            <p contenteditable="false" class="m-0">||ಶ್ರೀ ಗುರುಭ್ಯೋ ನಮಃ || ಶ್ರೀ ಶರಭೇಶ್ವರಾಯ ನಮಃ ||</p>
+            <p contenteditable="false">|| ಶ್ರೀ ಅಂಬಿಕಾ ಅನ್ನಪೂರ್ಣೇಶ್ವರಿ ನಮಃ ||</p>
+
+
+          <!-- Image -->
+<div class="absolute mt-6 z-50">
+  <img src="image/devi.jpeg"
+       class="rounded-full border-2 md:border-4 border-yellow-400 shadow-lg w-[15cqw] h-[15cqw] max-w-[100px] max-h-[100px]"
+       alt="Error"
+       onerror="this.onerror=null;this.src='https://placehold.co/100x100/000000/FFFFFF?text=Error';">
+</div>
+</div>
+          <!-- Title -->
+          <div class="relative mt-1 p-0 bg-gradient-to-b from-orange-500 to-orange-600 rounded-[20px] shadow-xl border-2 border-orange-400 w-11/12">
+            <h1 contenteditable="false" class="m-0 font-black text-yellow-200 whitespace-nowrap pt-2">ಆಶೀರ್ವಾದ ಗೆಳೆಯರ ಬಳಗ (ರಿ.) ಸೇವಾ ಟ್ರಸ್ಟ್</h1>
+            <p contenteditable="false" class="font-semibold text-[10px] text-yellow-100">ಪೆರ್ಲ ಬಿಯಪಾದೆ</p>
+          </div>
+           <div class="relative mt-1 p-0 bg-gradient-to-b from-red-500 to-red-600 rounded-[10px] shadow-xl border-2 border-orange-400 w-auto p-2 pb-1 pt-1 mb-2">
+           <h1 contenteditable="false" class="m-0 font-black text-yellow-200 whitespace-nowrap pt-2">ಅನ್ನಪೂರ್ಣ ಆಶೀರ್ವಾದ ಸೇವಾ ಸಮಿತಿ</h1>
+            <p contenteditable="false" class="relative font-semibold text-[12px] m-0 text-white">ಇದರ ವತಿಯಿಂದ</p>
+           </div>
+          <!-- Content -->
+          <div class="relative bg-black border-[1px] border-white backdrop-blur-[1px] bg-opacity-20 rounded-2xl p-3 md:p-4 w-11/12 flex flex-col justify-center items-center text-yellow-50 shadow-inner-lg">
+            <div class="space-y-2">
+              <p contenteditable="false" class="font-bold text-[fit] mt-2">ಜ್ಞಾನಮಂದಿರ ಕಟ್ಟಡ ನಿರ್ಮಾಣ ಮಾಡುವ</br>ಉದ್ದೇಶದಿಂದ ನಡೆಸಲಾಗುವ ವಾರದ ಶುಕ್ರವಾರ </br>ಮನೆ ಮನೆ ಭಜನೆ</p>
+              <p id="change1" contenteditable="true" class="font-semibold bg-orange-800 bg-opacity-50 text-[12px] rounded-md px-3 py-1 pt-2 inline-block">(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) 11-07-2025</p>
+              <p class="font-bold friday"><span contenteditable="true"> ಶುಕ್ರವಾರ ಸಂಜೆ </span><span id="change4" contenteditable="true">7.00</span>ಕ್ಕೆ ಸರಿಯಾಗಿ</p>
+              <div class="text-body-md pt-1 address">
+                <p id="change2" contenteditable="true" class="font-bold text-yellow-200 text-[15px]">ಶ್ರೀಮತಿ ಮತ್ತು ಶ್ರೀ ಹೆಸರು ಮತ್ತು ಮಕ್ಕಳು</p>
+              </div>
+            </div>
+              <div class="absolute bottom-[-35px] place-self-center rounded-lg border-white border-b-2 w-[90%] flex justify-center">
+          <div class="border-white h-2 rounded-xl border-b-2 mb-1 w-[50%]"></div>
+        </div>      
+          </div>
+
+          <!-- Footer 
+          <div class="absolute text-footer font-semibold text-yellow-100 opacity-90">
+            <p contenteditable="false" class="bg-orange-800 rounded-md px-3 py-1 pt-2 footer-text"> </p>
+          </div>-->
+        </div>
+
+        <div class="absolute bottom-0 garland-border w-full"></div>
+      </div>
+    </div>
+  </div>
+
+<!-- Controls -->
+   <div class="w-full max-w-md">
+        <!-- Controls Container -->
+        <div class="bg-slate-800/80 backdrop-blur-sm p-3 rounded-xl shadow-lg flex justify-center items-center gap-4 border border-slate-700">
+            <!-- Secondary Button: "Change Font" -->
+            <button id="font-modal-button" class="flex items-center gap-2 px-2 py-2 pt-3 text-sm font-medium text-slate-200 bg-slate-700 rounded-lg hover:bg-slate-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-sky-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-80"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+                Change Font
+            </button>
+            <!-- Primary Button: "Download" -->
+            <button id="download-button" class="flex items-center gap-2 px-2 py-2 pt-3 text-sm font-medium text-white bg-sky-500 rounded-lg hover:bg-sky-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-sky-400 shadow-md hover:shadow-sky-500/40">
+                Download
+            </button>
+        </div>
+    </div>
+
+<!-- Controls -->
+   <div class="w-full max-w-md">
+        <!-- Controls Container -->
+        <div class="bg-slate-800/80 backdrop-blur-sm p-3 rounded-xl shadow-lg flex justify-center items-center gap-4 border border-slate-700">
+            <!-- Primary Button: "Saved Data" -->
+            <button onclick="window.location.href ='report.html'" class="flex items-center gap-2 px-2 py-2 pt-3 text-sm font-medium text-black bg-white rounded-lg hover:bg-sky-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-sky-400 shadow-md hover:shadow-sky-500/40">
+                Show Saved Data
+            </button>
+        </div>
+    </div>
+<!-- Controls -->
+   <div class="w-full max-w-md">
+        <!-- Controls Container -->
+        <div class="bg-slate-800/80 backdrop-blur-sm p-3 rounded-xl shadow-lg flex justify-center items-center gap-4 border border-slate-700">
+            <!-- Primary Button: "Saved Data" -->
+            <button onclick="window.location.href ='annapoorna1.html'" class="flex items-center gap-2 px-2 py-2 pt-3 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-sky-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-sky-400 shadow-md hover:shadow-sky-500/40">
+                Back to ORG
+            </button>
+        </div>
+    </div>
+
+
+
+  <!-- Font Modal -->
+  <div id="font-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
+      <h3 class="text-2xl font-bold mb-4 text-gray-800">Select a Font</h3>
+      <div id="font-options" class="space-y-2">
+        <button data-font="'Noto Sans Kannada', sans-serif" class="font-option w-full text-left p-2 rounded hover:bg-gray-200" style="font-family: 'Noto Sans Kannada', sans-serif;">Noto Sans Kannada</button>
+        <button data-font="'Tiro Kannada', serif" class="font-option w-full text-left p-2 rounded hover:bg-gray-200" style="font-family: 'Tiro Kannada', serif;">Tiro Kannada</button>
+        <button data-font="'Baloo Tamma 2', cursive" class="font-option w-full text-left p-2 rounded hover:bg-gray-200" style="font-family: 'Baloo Tamma 2', cursive;">Baloo Tamma 2</button>
+        <button data-font="'Mallanna', sans-serif" class="font-option w-full text-left p-2 rounded hover:bg-gray-200" style="font-family: 'Mallanna', sans-serif;">Mallanna</button>
+      </div>
+      <button id="close-modal-button" class="mt-6 w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">
+        Close
+      </button>
+    </div>
+  </div>
+<div class="mt-8 bg-gradient-to-br from-yellow-200 via-yellow-100 to-white text-gray-900 rounded-2xl shadow-xl border border-yellow-300 px-6 py-5 space-y-1 text-[clamp(0.8rem,2.2cqw,1.1rem)] leading-relaxed tracking-wide font-[500]">
+  <div class="text-xl font-bold text-orange-700 underline decoration-dotted underline-offset-4">
+    ಗಮನಿಸಿ:
+  </div>
+
+  <div>
+1. ಈ ಪೋಸ್ಟರ್‌ನಲ್ಲಿ ಈ ವಾರದ <span class="font-semibold text-orange-600">ಶುಕ್ರವಾರದ ದಿನಾಂಕ</span>ವು ಆಟೋಮ್ಯಾಟಿಕ್ ಅಪ್ಡೇಟ್ಗೊಳಿಸಲಾಗಿದೆ. ದಿನಾಂಕವನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ ಬದಲಾಯಿಸಬುದು.<br>
+    <br>
+2. <span class="font-semibold text-orange-600">ಹೆಸರು ಮತ್ತು ಸ್ಥಳ</span>ವನ್ನು ಕ್ಲಿಕ್ ಮಾಡುವ ಮೂಲಕ ಬದಲಾಯಿಸಬಹುದು.<br>
+    <br>
+3. ಇಂದು ಮಾಡಿದ ಬದಲಾವಣೆಗಳು <span class="font-semibold text-orange-600">ಈ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್ನಲ್ಲಿ ಮಾತ್ರ</span> ಸಂರಕ್ಷಿಸಲಾಗುತ್ತದೆ. ಮುಂದಿನ ಬಾರಿ ಭೇಟಿ ನೀಡುವಾಗ ನೀವು ಕೊನೆಯ ಬದಲಾವಣೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ನೋಡಬಹುದು. 
+  </div>
+</div>
+
+<!-- Firebase + Save Data + Download Poster -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  import * as htmlToImage from "https://cdn.skypack.dev/html-to-image";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCZejpQv-Ru-OlzWsjzFF_37e8b8DIC3u8",
+    authDomain: "posterdata-113da.firebaseapp.com",
+    projectId: "posterdata-113da",
+    storageBucket: "posterdata-113da.appspot.com",
+    messagingSenderId: "702186025024",
+    appId: "1:702186025024:web:488eec752f7f6c382cefa5",
+    measurementId: "G-YQHKJTNHKG"
+  };
+
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+    const fontModalButton = document.getElementById('font-modal-button');
+    const downloadButton = document.getElementById('download-button');
+    const fontModal = document.getElementById('font-modal');
+    const closeModalButton = document.getElementById('close-modal-button');
+    const fontOptions = document.querySelectorAll('.font-option');
+    const invitationCard = document.getElementById('invitation-card');
+  
+    // Font Modal
+    fontModalButton.addEventListener('click', () => {
+      fontModal.classList.remove('hidden');
+      fontModal.classList.add('flex');
+    });
+    closeModalButton.addEventListener('click', () => {
+      fontModal.classList.add('hidden');
+    });
+    fontModal.addEventListener('click', e => {
+      if (e.target === fontModal) fontModal.classList.add('hidden');
+    });
+
+    fontOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const selectedFont = option.getAttribute('data-font');
+        invitationCard.style.fontFamily = selectedFont;
+        document.fonts.ready.then(() => {
+          autoFitText('[contenteditable="true"]');
+        });
+        fontModal.classList.add('hidden');
+      });
+    });
+  
+  // On click Download
+  downloadButton.addEventListener("click", async () => {
+    downloadButton.textContent = 'Downloading...';
+    downloadButton.disabled = true;
+
+    const dateText = document.getElementById("change1")?.textContent || "";
+    const name = document.getElementById("change2")?.textContent || "";
+    const time = document.getElementById("change4")?.textContent || "";
+
+    // Extract date and season
+    const dateMatch = dateText.match(/\)\s*(\d{2}-\d{2}-\d{4})/);
+    const rawDate = dateMatch ? dateMatch[1] : '';
+    const season = dateText.split(")")[0]?.replace("(", "") || '';
+
+    const formattedDate = formatDate(rawDate); // dd-MMM-yyyy
+
+    // Save to Firestore
+    try {
+      await addDoc(collection(db, "annapoorna_poster1"), {
+        name: name.trim(),
+        time: time.trim(),
+        date: formattedDate,
+        season: season.trim()
+      });
+      console.log("🔥 Data stored in Firebase:", name, time, formattedDate);
+    } catch (err) {
+      console.error("❌ Error storing data:", err);
+    }
+
+    // Convert to image
+    document.fonts.ready.then(() => {
+      autoFitText('[contenteditable="true"]');
+
+      htmlToImage.toJpeg(invitationCard, { quality: 1, cacheBust: true })
+        .then(dataUrl => {
+          const link = document.createElement('a');
+          const filename = `Bajane_${formattedDate || 'date'}.jpg`;
+          link.download = filename;
+          link.href = dataUrl;
+          link.click();
+
+          downloadButton.textContent = 'Downloaded';
+          downloadButton.disabled = false;
+
+window.parent.postMessage({
+  type: "showMessage",
+  message: `<strong>${filename} - Downloaded successfully!</strong>`,
+  variant: "success"
+}, "*");
+
+gtag('event', 'download', {
+  event_category: 'poster',
+  event_label: filename,
+  value: 1
+});          
+        })
+        .catch(error => {
+          console.error('Error downloading:', error);
+          downloadButton.textContent = 'Download Again';
+          downloadButton.disabled = false;
+
+ window.parent.postMessage({
+  type: "showMessage",
+  message: `<strong>Download failed. Please try again.</strong>`,
+  variant: "error"
+}, "*");
+          
+gtag('event', 'download_failed', {
+  event_category: 'poster',
+  event_label: `Failed: Bajane_${formattedDate || 'date'}.jpg`,
+  value: 0
+});          
+
+        });
+    });
+  });
+
+  // Date Formatter → dd-MMM-yyyy
+  function formatDate(ddmmyyyy) {
+    const [dd, mm, yyyy] = ddmmyyyy.split("-");
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = months[parseInt(mm, 10) - 1] || "Month";
+    return `${dd}-${month}-${yyyy}`;
+  }
+
+  // Resize text if overflow
+  function autoFitText(selector, minFontSize = 12, step = 1) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+      let size = parseFloat(window.getComputedStyle(el).fontSize);
+      while ((el.scrollHeight > el.offsetHeight || el.scrollWidth > el.offsetWidth) && size > minFontSize) {
+        size -= step;
+        el.style.fontSize = size + "px";
+      }
+    });
+  }
+
+// Auto set upcoming Friday on load
+window.addEventListener('DOMContentLoaded', () => {
+  const change1 = document.getElementById('change1');
+  if (change1) {
+    const today = new Date();
+    const nextFriday = new Date();
+    const day = today.getDay();
+
+    // If today is Friday (5), use todays date; else find next Friday
+    if (day === 5) {
+      nextFriday.setTime(today.getTime());
+    } else {
+      const diff = (5 - day + 7) % 7 || 7;
+      nextFriday.setDate(today.getDate() + diff);
+    }
+
+    const dd = String(nextFriday.getDate()).padStart(2, '0');
+    const mm = String(nextFriday.getMonth() + 1).padStart(2, '0');
+    const yyyy = nextFriday.getFullYear();
+    const rawDate = `${dd}-${mm}-${yyyy}`;
+
+    const defaultText = `(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) ${rawDate}`;
+    
+    // You can change '11-07-2025' to your default/fallback if needed
+    if (change1.textContent.trim() === '' || change1.textContent.includes('11-07-2025')) {
+      change1.textContent = defaultText;
+    }
+  }
+
+
+    // Restore local storage
+    ['change2', 'change4'].forEach(id => {
+      const saved = localStorage.getItem(`poster_${id}`);
+      if (saved) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = saved;
+      }
+    });
+  });
+
+  // Save locally
+  ['change2', 'change4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('blur', () => {
+        localStorage.setItem(`poster_${id}`, el.textContent);
+      });
+    }
+  });
+</script>
+<script>
+function fitTextToTwoLines() {
+  const el = document.getElementById('change2');
+  el.style.fontSize = ""; // Reset font-size first
+  const originalFontSize = 15;
+  let fontSize = originalFontSize;
+  
+  // Compute allowed height for 2 lines
+  const computedStyle = window.getComputedStyle(el);
+  const lineHeight = parseFloat(computedStyle.lineHeight);
+  const maxHeight = lineHeight * 2;
+  
+  el.style.fontSize = fontSize + "px";
+  
+  while (el.scrollHeight > maxHeight && fontSize > 7) { // Don't go too small!
+    fontSize -= 1;
+    el.style.fontSize = fontSize + "px";
+  }
+}
+window.addEventListener('load', fitTextToTwoLines);
+document.getElementById('change2').addEventListener('input', fitTextToTwoLines);
+</script>
+
+
+</body>
+</html>
