@@ -936,3 +936,57 @@ input:checked + .slider .knob::before {
     display: block;
   }
 }
+
+
+  /* Floating chat button */
+  #chat-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
+    z-index: 1000;
+  }
+
+  /* Popup chat container */
+  #chat-popup {
+    display: none;
+    position: fixed;
+    bottom: 70px;
+    right: 30px;
+    width: 90%;
+    height: 80%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    z-index: 1001;
+  }
+
+  #chat-popup iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* Close button */
+  #close-chat {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: red;
+    color: white;
+    border: none;
+    font-size: 14px;
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 10;
+  }

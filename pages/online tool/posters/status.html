@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Recharge Status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tailwind CSS for modern styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Load Inter font for a clean look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Custom CSS for a subtle fade-in animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn { animation: fadeIn 0.6s ease-out forwards; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-slate-100 p-4 min-h-screen">
+  
+  <div class="max-w-3xl mx-auto space-y-6 opacity-0 animate-fadeIn">
+    
+    <div class="text-center sm:text-left">
+      <h1 class="text-3xl font-extrabold text-slate-900">Template Recharge Status</h1>
+      <p class="text-slate-500 font-medium mt-1">Your current access status for all templates.</p>
+    </div>
+
+    <!-- Main container for status cards -->
+    <div id="statusContainer" class="bg-white p-6 rounded-xl border border-slate-200 shadow-lg space-y-4">
+      <!-- Loading state will be shown here initially -->
+      <div class="p-4 text-center text-slate-500 italic flex items-center justify-center">
+        <svg class="animate-spin h-5 w-5 text-indigo-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Loading...
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+    // ---- Firebase Configuration ----
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
+      authDomain: "editech-93e95.firebaseapp.com",
+      projectId: "editech-93e95",
+      storageBucket: "editech-93e95.firebasestorage.app",
+      messagingSenderId: "337897717681",
+      appId: "1:337897717681:web:99a1c9344d6a4acf6dc790",
+      measurementId: "G-3CGVLC34XD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore(app);
+    const statusContainer = document.getElementById("statusContainer");
+
+    // Helper function to render a single status card
+    function renderStatusCard(templateId, status, expiryText, daysLeft) {
+      let statusClasses, statusIcon;
+
+      if (status === 'active') {
+        statusClasses = 'bg-green-100 text-green-800';
+        statusIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`;
+      } else if (status === 'pending') {
+        statusClasses = 'bg-yellow-100 text-yellow-800';
+        statusIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>`;
+      } else { // expired or not active
+        statusClasses = 'bg-red-100 text-red-800';
+        statusIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-11.293a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 10-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z" clip-rule="evenodd" /></svg>`;
+      }
+
+      return `
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-semibold text-slate-900">${templateId}</h3>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${statusClasses} gap-1">
+              ${statusIcon}
+              <span>${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+            </span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4 text-sm text-slate-600">
+            <div>
+              <span class="font-medium text-slate-500">Expiry:</span>
+              <div class="font-semibold text-slate-800">${expiryText}</div>
+            </div>
+            <div>
+              <span class="font-medium text-slate-500">Days Left:</span>
+              <div class="font-semibold text-slate-800">${daysLeft}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        statusContainer.innerHTML = `<div class="p-4 text-center text-red-500 font-bold">You are not logged in.</div>`;
+        return;
+      }
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        statusContainer.innerHTML = `<div class="p-4 text-center text-red-500 font-bold">User data not found.</div>`;
+        return;
+      }
+
+      const access = userSnap.data().access || {};
+      if (Object.keys(access).length === 0) {
+        statusContainer.innerHTML = `<div class="p-4 text-center text-slate-500 italic">No recharges or requests found.</div>`;
+        return;
+      }
+
+      const now = new Date();
+      let rows = "";
+
+      for (const [templateId, info] of Object.entries(access)) {
+        const isRecharged = info.isRecharged || false;
+        const rechargeExpiry = info.rechargeExpiry ? new Date(info.rechargeExpiry) : null;
+        const requested = info.requested || false;
+
+        let status = 'not active';
+        let daysLeft = '–';
+        let expiryText = '–';
+
+        if (isRecharged && rechargeExpiry) {
+          const diffDays = Math.ceil((rechargeExpiry - now) / (1000 * 60 * 60 * 24));
+          status = diffDays > 0 ? 'active' : 'expired';
+          daysLeft = diffDays > 0 ? diffDays : 'Expired';
+          expiryText = rechargeExpiry.toDateString();
+        } else if (requested) {
+          status = 'pending';
+          expiryText = '–';
+        }
+
+        rows += renderStatusCard(templateId, status, expiryText, daysLeft);
+      }
+
+      statusContainer.innerHTML = rows;
+    });
+  </script>
+</body>
+</html>

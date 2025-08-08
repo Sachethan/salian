@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="light">
+  <!--    -->
   <base href=""/>
+
   <title>Sharabeswara Poster Editor</title>
 
   <!-- Google tag (gtag.js) -->
@@ -36,22 +38,24 @@
  
     <!-- Poster Container -->
     <div class="aspect-ratio-box max-w-[640px] mx-auto">
+                    <!-- Scanning Overlay -->
+            <div id="scanningOverlay" class="scanning-overlay"></div>    
       <div id="invitation-card" class=" absolute bg-gradient-radial from-orange-400 to-orange-600 shadow-2xl overflow-hidden">
-        <div class="relative md:p-4 text-center text-white flex flex-col items-center">
+        <div class="relative text-center text-white flex flex-col items-center">
           <!-- Content -->
-<div class="absolute ctm-TopContent p-0 md:p-0 w-11/12 flex flex-col items-center text-yellow-50 shadow-inner-lg">
-    <p  class="font-semibold rounded-md p-0 m-0 block gradient-text">ದಿನಾಂಕ: <span id="change1" contenteditable="true">11-07-2025</span></p>
-    <p class="font-semibold gradient-text rounded-md p-0 m-0 block">ಶುಕ್ರವಾರ ಸಂಜೆ <span id="change4" contenteditable="true">7.00</span>ಕ್ಕೆ ಸರಿಯಾಗಿ</p>
+<div class="absolute ctm-TopContent w-11/12 flex flex-col items-center text-yellow-50 shadow-inner-lg">
+    <p  class="font-semibold rounded-md p-0 m-0 block gradient-text">ದಿನಾಂಕ: <span id="change1" contenteditable="true"></span></p>
+    <p class="font-semibold gradient-text rounded-md p-0 m-0 block"><span id="change4" contenteditable="true">ಸಂಜೆ 5.30</span> ರಿಂದ <span id="change5" contenteditable="true">6.30 </span>ವರೆಗೆ</p>
     <p id="change3" contenteditable="false" class="font-semibold rounded-md p-0 m-0 block gradient-text">ಸ್ಥಳ: ಶ್ರೀ ಶರಭೇಶ್ವರ ದೇವಸ್ಥಾನ ಸರಪಾಡಿ</p>
           
-          <div class="relative ctm-Content bg-yellow-500 bg-opacity-50 rounded-2xl p-3 mt-3 md:p-4 w-11/12 flex flex-col items-center text-yellow-50 shadow-inner-lg">
+          <div class="relative ctm-Content bg-yellow-500 bg-opacity-50 rounded-2xl w-11/12 flex flex-col items-center text-yellow-50 shadow-inner-lg">
             <div class="relative h-[auto] flex flex-col items-center">
               <p contenteditable="false" class="font-bold mb-[2%] text-[auto] gradient-text">
                 "ಶ್ರೀ ಶರಭೇಶ್ವರ ಭಜನೆ ಮಂಡಳಿಯ" ನೇತೃತ್ವದಲ್ಲಿ ಭಜನೆ ಕಾರ್ಯಕ್ರಮವು ತಮ್ಮೆಲ್ಲರ ಉಪಸ್ಥಿತಿಯಿಂದ ನಡೆಯಲ್ಲಿರುವುದರಿಂದ ಭಜನೆಗೆ ಹೆಚ್ಚಿನ ಸಂಖ್ಯೆಯಲ್ಲಿ ತಾವೆಲ್ಲರೂ ಬಂದು ಪಾಲ್ಗೊಳ್ಳಬೇಕಾಗಿ ಈ ಮೂಲಕ ವಿನಮ್ರತೆಯಿಂದ ಕೇಳಿಕೊಳ್ಳುತ್ತೇವೆ
               </p>
               <div class="relative bg-white bg-opacity-20 rounded-2xl p-1 flex flex-col justify-center items-center address">
-                <p contenteditable="false" class="absolute ಸೇವೆ gradient-text font-bold top-1 text-yellow-200">ಇಂದಿನ ಭಜನೆ ಸೇವೆ:</p>                
-                <p id="change2" contenteditable="true" class="gradient-text font-bold mt-6 mb-0 text-yellow-200">ಶ್ರೀಮತಿ ಮತ್ತು ಶ್ರೀ ಹೆಸರು ಮತ್ತು ಮಕ್ಕಳು</p>
+                <p contenteditable="false" class="absolute seve gradient-text font-bold top-1 text-yellow-200">ಇಂದಿನ ಭಜನೆ ಸೇವೆ:</p>                
+                <p id="change2" contenteditable="true" class="gradient-text font-bold mb-0 text-yellow-200">ಶ್ರೀಮತಿ ಮತ್ತು ಶ್ರೀ ಹೆಸರು ಮತ್ತು ಮಕ್ಕಳು</p>
               </div>
             </div>
           </div>
@@ -60,9 +64,10 @@
       </div>
     </div>
   </div>
+  <!--
   <div class="absolute font-bold bg-white text-red-800 p-1 pt-2 top-[30%] left-[0] w-full z-99 flex justify-center items-center">
 <h1 style="animation: blink 1s infinite;">Under maintenance</h1>
-</div>
+</div> -->
     <!-- Controls -->
    <div class="w-full max-w-md">
         <!-- Controls Container -->
@@ -107,6 +112,7 @@
       </button>
     </div>
   </div>
+  <!--
 <div class="mt-8 bg-gradient-to-br from-yellow-200 via-yellow-100 to-white text-gray-900 rounded-2xl shadow-xl border border-yellow-300 px-6 py-5 space-y-1 text-[clamp(0.8rem,2.2cqw,1.1rem)] leading-relaxed tracking-wide font-[500]">
   <div class="text-xl font-bold text-orange-700 underline decoration-dotted underline-offset-4">
     ಗಮನಿಸಿ:
@@ -120,7 +126,7 @@
 3. ಇಂದು ಮಾಡಿದ ಬದಲಾವಣೆಗಳು <span class="font-semibold text-orange-600">ಈ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್ನಲ್ಲಿ ಮಾತ್ರ</span> ಸಂರಕ್ಷಿಸಲಾಗುತ್ತದೆ. ಮುಂದಿನ ಬಾರಿ ಭೇಟಿ ನೀಡುವಾಗ ನೀವು ಕೊನೆಯ ಬದಲಾವಣೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ನೋಡಬಹುದು. 
   </div>
 </div>
-<!-- Rule
+ Rule
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -231,7 +237,8 @@ service cloud.firestore {
     const closeModalButton = document.getElementById('close-modal-button');
     const fontOptions = document.querySelectorAll('.font-option');
     const invitationCard = document.getElementById('invitation-card');
-  
+    const scanningOverlay = document.getElementById('scanningOverlay');
+
     // Font Modal
     fontModalButton.addEventListener('click', () => {
       fontModal.classList.remove('hidden');
@@ -257,6 +264,7 @@ service cloud.firestore {
   
   // On click Download
   downloadButton.addEventListener("click", async () => {
+    scanningOverlay.classList.add('active');
     downloadButton.textContent = 'Downloading...';
     downloadButton.disabled = true;
 
@@ -318,14 +326,14 @@ gtag('event', 'file_download', {
   value: 1
 });
 
-
+scanningOverlay.classList.remove('active'); 
      
         })
         .catch(error => {
           console.error('Error downloading:', error);
           downloadButton.textContent = 'Download Again';
           downloadButton.disabled = false;
-
+scanningOverlay.classList.remove('active'); 
  window.parent.postMessage({
   type: "showMessage",
   message: `<strong>Download failed. Please try again.</strong>`,
@@ -361,43 +369,35 @@ gtag('event', 'Download Failed - ' + filename, {
     });
   }
 
-  // Auto set upcoming Friday on load
-window.addEventListener('DOMContentLoaded', () => {
-  const change1 = document.getElementById('change1');
-  if (change1) {
-    const today = new Date();
-    const nextFriday = new Date();
-    const day = today.getDay();
-    const diff = (5 - day + 7) % 7 || 7;
-    nextFriday.setDate(today.getDate() + diff);
+// Auto set next day (tomorrow)
+const change1 = document.getElementById('change1');
+if (change1) {
+  const today = new Date();
+  const nextDay = new Date(today);
+  nextDay.setDate(today.getDate() + 1);
 
-    const dd = String(nextFriday.getDate()).padStart(2, '0');
-    const mm = String(nextFriday.getMonth() + 1).padStart(2, '0');
-    const yyyy = nextFriday.getFullYear();
-    const rawDate = `${dd}-${mm}-${yyyy}`;
+  const dd = String(nextDay.getDate()).padStart(2, '0');
+  const mm = String(nextDay.getMonth() + 1).padStart(2, '0');
+  const yyyy = nextDay.getFullYear();
+  change1.textContent = `${dd}-${mm}-${yyyy}`;
+}
 
-    change1.textContent = rawDate;
+// Restore + Save
+['change2', 'change4', 'change5'].forEach(id => {
+  const saved = localStorage.getItem(`poster_${id}`);
+  const el = document.getElementById(id);
+
+  if (el && saved) {
+    el.textContent = saved;
   }
 
-    // Restore local storage
-    ['change2', 'change4'].forEach(id => {
-      const saved = localStorage.getItem(`poster_${id}`);
-      if (saved) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = saved;
-      }
+  if (el) {
+    el.addEventListener('blur', () => {
+      localStorage.setItem(`poster_${id}`, el.textContent);
     });
-  });
+  }
+});
 
-  // Save locally
-  ['change2', 'change4'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('blur', () => {
-        localStorage.setItem(`poster_${id}`, el.textContent);
-      });
-    }
-  });
 </script>
 
 </body>

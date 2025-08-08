@@ -73,7 +73,7 @@ function processConfigs(configs) {
   const config = configs.find(c => String(c.hash).trim() === hash);
   if (!config) {
     logProgress(`Hash '${hash}' not found in config list.`, 2);
-    loader.classList.add('show');
+    loader.classList.remove('show');
     return;
   }
 
@@ -94,17 +94,19 @@ function processConfigs(configs) {
     blogUrl += `?open=${encodeURIComponent(config.templateId)}`;
     if (config.url) {
       blogUrl += `&override=${encodeURIComponent(config.url)}`;
+        loader.classList.remove('show');
     }
   }
 
   logProgress("Calling loadPosterEditor with resolved blogUrl.", 5);
-  if (loader) loader.classList.remove('show');
+  loader.classList.remove('show');
   loadPosterEditor(blogUrl);
 }
 
 // ✅ If no hash — show message
 if (!hash) {
   logProgress("No #tag found. Showing default info message.", 1);
+    loader.classList.remove('show');
   showMessage(
     "<strong>Note:</strong> If you're a new user, please click to <a href='#' id='registerMessageLink'>Register</a>, if not then <a href='pages/login/login.html'>Login</a>.",
     "info"
@@ -125,17 +127,20 @@ try {
     useLoader = true;
     useCache = false;
     logProgress("No localStorage found. Will fetch fresh data.", 1);
+      loader.classList.remove('show');
   }
 } catch (e) {
   useLoader = true;
   useCache = false;
   logProgress("Invalid cache. Will fetch fresh data.", 1);
+    loader.classList.remove('show');
 }
 
 if (isRootRedirect) {
   useLoader = true;
   useCache = false;
   logProgress("Detected #root- tag. Forcing fresh fetch with loader.", 1);
+    loader.classList.remove('show');
 }
 
 if (useLoader && loader) {
@@ -176,7 +181,7 @@ fetch(SCRIPT_URL, { method: "GET", cache: "no-store" })
   })
   .catch(err => {
     console.error("[ERROR] Fetch failed:", err);
-    if (loader) loader.classList.remove('show');
+    loader.classList.remove('show');
   });
 
 });  

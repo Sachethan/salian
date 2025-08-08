@@ -138,7 +138,12 @@
       </div>
     <div id="poster" class="servicesdiv2">
     <div class="grid">
-                <div onclick="loadPosterEditor('pages/online tool/posters/template.html')" class="scroll-animation card">
+                <div 
+    onclick="
+        window.location.hash = 'poster-edit';
+        loadPosterEditor('pages/online tool/posters/template.html');
+    " 
+    class="scroll-animation card">
                     <img src="src/image/content-creator.png" style="width:100px;;" alt="Concept Icon">
                     <h3 class="text-xl font-bold text-main mb-2">1. Poster Editor</h3>
                     <p class="text-secondary">We start by editing your vision with a solid plan.</p>
@@ -212,7 +217,14 @@
 <section id="posterEditorContainer" style="display: none; padding: 0; margin: 0;">
   <iframe id="posterEditorIframe" src="" style="width: 100%; height: 100vh; border: none; margin: 0; padding: 0;"></iframe>
 </section>
+<!-- Chat Button -->
+<button id="chat-btn">💬</button>
 
+<!-- Chat Popup -->
+<div id="chat-popup">
+  <button id="close-chat">X</button>
+  <iframe id="chat-iframe" src="pages/waste/user.html"></iframe> <!-- Change chat.html to your chat page -->
+</div>
 
   <footer id="footer" class="footer">
     <p>© 2025 Sachethan Salian. All rights reserved.</p><br>
@@ -307,8 +319,15 @@ window.addEventListener("message", function (event) {
         "<strong>Status:</strong> Logout done successfully",
         "success"
       );
-      // Clear relevant localStorage items
-      ['deletedaccount', 'isLoggedIn', 'userEmail', 'username', 'tempname', 'tempemail', 'user', 'userInfo'].forEach(k => localStorage.removeItem(k));
+  // Clear all stored data
+  localStorage.removeItem('loggedInUserId');
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('usergd');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userInfo');
+  localStorage.removeItem('hashConfigCache');
+
+  console.log("User logged out successfully");
       setTimeout(() => {
         window.location.href = 'index.html'; // Redirect to home page after logout
       }, 1000);
@@ -337,6 +356,9 @@ window.addEventListener("message", function (event) {
       heroSection.classList.add('loaded');
 
       const isLoggedIn = localStorage.getItem("isLoggedIn");
+// Get current URL
+const currentUrl = window.location.href;
+
 
       // Handle login state for contact form and profile button
       if (!isLoggedIn) {
@@ -502,6 +524,17 @@ window.addEventListener("message", function (event) {
   </script>
 <script>
   function loadPosterEditor(url) {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+// Get current URL
+const currentUrl = window.location.href;
+    // If user is not logged in
+if (!isLoggedIn) {
+  // Save the URL in localStorage
+  localStorage.setItem("redirectUrl", currentUrl);
+
+  // Redirect to login page
+  window.location.href = "pages/login/login.html"; // Change to your login page path
+}
     // Hide all sections except header/footer
     document.querySelectorAll('section').forEach(sec => {
       if (sec.id !== 'posterEditorContainer') sec.style.display = 'none';
@@ -516,6 +549,23 @@ window.addEventListener("message", function (event) {
     // Scroll to top smoothly
     window.scrollTo({ top: 20, behavior: 'smooth' });
   }
+
+const chatBtn = document.getElementById("chat-btn");
+  const chatPopup = document.getElementById("chat-popup");
+  const closeChat = document.getElementById("close-chat");
+  const chatIframe = document.getElementById("chat-iframe");
+
+  // Preload chat page when website loads
+  window.addEventListener("load", () => {
+    chatIframe.src = "pages/waste/user.html"; // Chat page loads in background
+  });
+  chatBtn.addEventListener("click", () => {
+    chatPopup.style.display = "block";
+  });
+
+  closeChat.addEventListener("click", () => {
+    chatPopup.style.display = "none";
+  });
 
 </script>
 

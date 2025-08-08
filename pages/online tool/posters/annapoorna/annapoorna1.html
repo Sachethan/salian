@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="light">
-  <base href=""/>
+  <!--  <base href="https://sachethan.github.io/salian/pages/online tool/posters/annapoorna/"/>-->
   <title>ಅನ್ನಪೂರ್ಣ Poster Editor</title>
 
   <!-- Google tag (gtag.js) -->
@@ -16,8 +16,8 @@
 
   gtag('config', 'G-YQHKJTNHKG');
 </script>
-
-
+  
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -32,7 +32,7 @@
     body {
       font-family: 'Noto Sans Kannada', sans-serif;
     }
-
+    
 
     .aspect-ratio-box {
       position: relative;
@@ -69,7 +69,7 @@
     .text-body-xl { font-size: clamp(0.9rem, 3.8cqw, 1.8rem); }
     .text-body-lg { font-size: clamp(0.8rem, 3.2cqw, 1.5rem); }
     .text-body-md { font-size: clamp(0.7rem, 2.8cqw, 1.2rem); }
-
+    
     .text-footer { 
         font-size: clamp(0.9rem, 2.2cqw, 1rem);
         bottom: 25px;
@@ -85,7 +85,7 @@
     }
 
 
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 362px) {
   .text-title {
     font-size: 1rem;
   }
@@ -107,23 +107,50 @@
     width: 60px;
   }
 }
+/* Client */
+@media screen and (min-width: 360px) and (max-width: 362px) {
+ .Header-cust{
+    margin-bottom: 60px;
+    font-size: 6px;
+  }
+
+   .Header-cust-img{
+    margin-top: 20px;
+  }
+
+  .Content-cust-a{
+font-size: 12px;
+  }
+
+.Content-cust-b{
+font-size: 12px;
+  }
+
+.Content-cust-c{
+font-size: 12px;
+  }
+.Content-cust-d{
+font-size: 10px;
+  }
+  .last-line{
+    bottom: -25px;
+  }
+}
+
+/* Me */
 @media screen and (min-width: 437px) and (max-width: 450px) {
-.ctm-Content{
-    bottom: 75px;
+ .Header-cust{
+    margin-bottom: 50px;
+    margin-top: 5%;
   }
 
- .friday{
-   font-size: 0.9rem;
- }
-
- .ctm-Content #change1{
- font-size: 0.8rem;  
- }
-
-.text-header{
-    top:21px;
+.Header-cust-img{
+    margin-top: 28px;
   }
-
+  
+  .last-line{
+    bottom: -35px;
+  }
 }
 
 @media screen and (min-width: 393px) and (max-width: 400px) {
@@ -134,93 +161,141 @@
     bottom: 75px;
     font-size: 0.85rem;
   }
-
+  
  .friday{
    font-size: 0.9rem;
  }
-
-  .ctm-Content #change1{
+  
+  .ctm-Content{
  font-size: 0.65rem;  
  }
 .text-header{
     top:21px;
   }
-
+  
 }
 
 @media screen and (min-width: 436px) and (max-width: 437px) {
-.ctm-Content{
-    bottom: 75px;
-  font-size: 1.3rem;
+ .Header-cust{
+    margin-bottom: 75px;
   }
-
+  
  .friday{
    font-size: 0.9rem;
  }
-
- .ctm-Content #change1{
+  
+ .ctm-Content {
  font-size: 1rem;  
  }
 .text-header{
     top:21px;
   }
-
+  
 }
+
+
+        /* Custom CSS for the scanning animation */
+        @keyframes scan-animation {
+            0% {
+                background-position: 0 -200%, 0 0; /* Initial position for scan line (top) and stars */
+            }
+            100% {
+                background-position: 0 200%, 0 100%; /* Final position for scan line (bottom) and stars */
+            }
+        }
+
+        .scanning-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          z-index:1;
+            /* Layer 1: Professional blue scan line (top-to-bottom) */
+            background-image: linear-gradient(180deg, transparent,
+                                             rgba(100, 180, 255, 0.3),  /* Light blue with transparency */
+                                             rgba(100, 180, 255, 0.6),  /* Slightly darker blue with transparency */
+                                             rgba(100, 180, 255, 0.3),
+                                             transparent),
+                            /* Layer 2: Stars - small white radial gradients repeated */
+                            radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.9) 1px, transparent 2px);
+
+            background-size: 100% 200%, 60px 60px; /* Scan line size (100% width, 200% height for vertical sweep), Star pattern size (60x60px grid) */
+            background-repeat: no-repeat, repeat; /* Scan line doesnt repeat, stars repeat to fill */
+            animation: scan-animation 2s infinite linear; /* Adjust duration as needed */
+            pointer-events: none; /* Allows clicks to pass through to elements below */
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .scanning-overlay.active {
+            opacity: 1;
+        }
 
   </style>
 </head>
 <body class="bg-gray-800">
 
   <div class="w-full max-w-3xl mx-auto p-4 md:p-8">
-
+ 
     <!-- Poster Container -->
     <div class="aspect-ratio-box max-w-[640px] mx-auto">
+                  <!-- Scanning Overlay -->
+            <div id="scanningOverlay" class="scanning-overlay"></div>
+
       <div id="invitation-card" class="bg-gradient-radial from-orange-400 to-orange-600 shadow-2xl overflow-hidden">
    <div class="absolute overflow-hidden z-50 pointer-events-none opacity-50">
      <img src="image/boder.png"/>
    </div>
+   <div class="absolute overflow-hidden border-1 z-50 bottom-0 w-[75%] pointer-events-none">
+     <img src="image/1.png"/>
+   </div>
 
         <div class="absolute garland-border w-full"></div>
 
-        <div class="flex-center p-2 md:p-4 text-center text-white flex flex-col items-center justify-between">
+        <div class="absolute bg-red p-0 md:p-0 w-full text-center text-white flex flex-col items-center justify-between">
           <!-- Header -->
-          <div class="absolute m-0 p-0 font-semibold text-yellow-100 text-header">
+          <div class="relative Header-cust p-0 font-semibold text-yellow-100 text-header flex flex-col items-center justify-between">
             <p contenteditable="false" class="m-0">||ಶ್ರೀ ಗುರುಭ್ಯೋ ನಮಃ || ಶ್ರೀ ಶರಭೇಶ್ವರಾಯ ನಮಃ ||</p>
             <p contenteditable="false">|| ಶ್ರೀ ಅಂಬಿಕಾ ಅನ್ನಪೂರ್ಣೇಶ್ವರಿ ನಮಃ ||</p>
-          </div>
+
 
           <!-- Image -->
-<div class="absolute left-1/2 transform -translate-x-1/2 top-[10%] z-50 devi">
+<div class="absolute Header-cust-img z-50">
   <img src="image/devi.jpeg"
        class="rounded-full border-2 md:border-4 border-yellow-400 shadow-lg w-[15cqw] h-[15cqw] max-w-[100px] max-h-[100px]"
        alt="Error"
        onerror="this.onerror=null;this.src='https://placehold.co/100x100/000000/FFFFFF?text=Error';">
 </div>
-
-
+</div>
           <!-- Title -->
-          <div class="absolute bg-gradient-to-b from-orange-500 to-orange-600 rounded-full px-1 py-1 shadow-xl border-2 border-orange-400 w-11/12 top-[21%]">
-            <h1 contenteditable="false" class="text-title m-0 font-black text-yellow-200 whitespace-nowrap pt-2">ಅನ್ನಪೂರ್ಣ ಆಶೀರ್ವಾದ ಸೇವಾ ಸಮಿತಿ</h1>
-            <p contenteditable="false" class="text-subtitle text-yellow-100">ಇದರ ವತಿಯಿಂದ</p>
+          <div class="relative mt-1 p-0 bg-gradient-to-b from-orange-500 to-orange-600 rounded-[20px] shadow-xl border-2 border-orange-400 w-11/12">
+            <h1 contenteditable="false" class="m-0 font-black text-yellow-200 whitespace-nowrap pt-2">ಆಶೀರ್ವಾದ ಗೆಳೆಯರ ಬಳಗ (ರಿ.) ಸೇವಾ ಟ್ರಸ್ಟ್</h1>
+            <p contenteditable="false" class="font-semibold text-[10px] text-yellow-100">ಪೆರ್ಲ ಬಿಯಪಾದೆ</p>
           </div>
-
+           <div class="relative mt-1 p-0 bg-gradient-to-b from-red-500 to-red-600 rounded-[10px] shadow-xl border-2 border-orange-400 w-auto p-2 pb-1 pt-1 mb-2">
+           <h1 contenteditable="false" class="m-0 font-black text-yellow-200 whitespace-nowrap pt-0">ಅನ್ನಪೂರ್ಣ ಆಶೀರ್ವಾದ ಸೇವಾ ಸಮಿತಿ</h1>
+            <p contenteditable="false" class="relative font-semibold text-[12px] m-0 text-white">ಇದರ ವತಿಯಿಂದ</p>
+           </div>
           <!-- Content -->
-          <div class="absolute ctm-Content bg-black bg-opacity-20 rounded-2xl p-3 md:p-4 w-11/12 flex flex-col justify-center items-center text-yellow-50 shadow-inner-lg">
+          <div class="relative bg-black Content-cust border-[1px] border-white backdrop-blur-[1px] bg-opacity-20 rounded-2xl p-2 md:p-4 w-11/12 flex flex-col justify-center items-center text-yellow-50 shadow-inner-lg">
             <div class="space-y-2">
-              <p contenteditable="false" class="font-bold">ಜ್ಞಾನಮಂದಿರ ಕಟ್ಟಡ ನಿರ್ಮಾಣ ಮಾಡುವ ಉದ್ದೇಶದಿಂದ ನಡೆಸಲಾಗುವ ವಾರದ ಶುಕ್ರವಾರ ಮನೆ ಮನೆ ಭಜನೆ</p>
-              <p id="change1" contenteditable="true" class="font-semibold bg-orange-800 bg-opacity-50 rounded-md px-3 py-1 pt-2 inline-block">(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) 11-07-2025</p>
-              <p class="font-bold friday">ಶುಕ್ರವಾರ ಸಂಜೆ <span id="change4" contenteditable="true" >7.00</span>ಕ್ಕೆ ಸರಿಯಾಗಿ</p>
+              <p contenteditable="false" class="font-bold Content-cust-a mt-0">ಜ್ಞಾನಮಂದಿರ ಕಟ್ಟಡ ನಿರ್ಮಾಣ ಮಾಡುವ</br>ಉದ್ದೇಶದಿಂದ ನಡೆಸಲಾಗುವ ವಾರದ ಶುಕ್ರವಾರ </br>ಮನೆ ಮನೆ ಭಜನೆ</p>
+              <p id="change1" contenteditable="true" class="font-semibold bg-orange-800 bg-opacity-50 Content-cust-b rounded-md px-3 py-1 pt-2 inline-block">[5ನೇ ವರ್ಷದ 190ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ] 11-07-2025</p>
+              <p class="font-bold Content-cust-c"><span contenteditable="true"> ಶುಕ್ರವಾರ ಸಂಜೆ </span><span id="change4" contenteditable="true">7.00</span>ಕ್ಕೆ ಸರಿಯಾಗಿ</p>
               <div class="text-body-md pt-1 address">
-                <p id="change2" contenteditable="true" class="font-bold text-yellow-200">ಶ್ರೀಮತಿ ಮತ್ತು ಶ್ರೀ ಹೆಸರು ಮತ್ತು ಮಕ್ಕಳು</p>
-                <p id="change3" contenteditable="true" class="font-semibold text-yellow-200">ಊರಿನ / ಮನೆ ಹೆಸರು</p>
+                <p id="change2" contenteditable="true" class="font-bold text-yellow-200 Content-cust-d">ಶ್ರೀಮತಿ ಮತ್ತು ಶ್ರೀ ಹೆಸರು ಮತ್ತು ಮಕ್ಕಳು</p>
               </div>
             </div>
+              <div class="absolute last-line place-self-center rounded-lg border-white border-b-2 w-[90%] flex justify-center">
+          <div class="border-white h-2 rounded-xl border-b-2 mb-1 w-[50%]"></div>
+        </div>      
           </div>
 
-          <!-- Footer -->
+          <!-- Footer 
           <div class="absolute text-footer font-semibold text-yellow-100 opacity-90">
-            <p contenteditable="false" class="bg-orange-800 rounded-md px-3 py-1 pt-2 footer-text">ಆಶೀರ್ವಾದ ಗೆಳೆಯರ ಬಳಗ (ರಿ.) ಸೇವಾ ಟ್ರಸ್ಟ್ ಪೆರ್ಲ ಬಿಯಪಾದೆ</p>
-          </div>
+            <p contenteditable="false" class="bg-orange-800 rounded-md px-3 py-1 pt-2 footer-text"> </p>
+          </div>-->
         </div>
 
         <div class="absolute bottom-0 garland-border w-full"></div>
@@ -254,17 +329,6 @@
             </button>
         </div>
     </div>
-<!-- Controls -->
-   <div class="w-full max-w-md">
-        <!-- Controls Container -->
-        <div class="bg-slate-800/80 backdrop-blur-sm p-3 rounded-xl shadow-lg flex justify-center items-center gap-4 border border-slate-700">
-            <!-- Primary Button: "Saved Data" -->
-            <button onclick="window.location.href ='annapoorna1_beta.html'" class="flex items-center gap-2 px-2 py-2 pt-3 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-sky-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-sky-400 shadow-md hover:shadow-sky-500/40">
-                New (beta)
-            </button>
-        </div>
-    </div>
-
 
   <!-- Font Modal -->
   <div id="font-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
@@ -322,7 +386,8 @@
     const closeModalButton = document.getElementById('close-modal-button');
     const fontOptions = document.querySelectorAll('.font-option');
     const invitationCard = document.getElementById('invitation-card');
-
+        const scanningOverlay = document.getElementById('scanningOverlay');
+  
     // Font Modal
     fontModalButton.addEventListener('click', () => {
       fontModal.classList.remove('hidden');
@@ -345,15 +410,15 @@
         fontModal.classList.add('hidden');
       });
     });
-
+  
   // On click Download
   downloadButton.addEventListener("click", async () => {
+    scanningOverlay.classList.add('active');
     downloadButton.textContent = 'Downloading...';
     downloadButton.disabled = true;
 
     const dateText = document.getElementById("change1")?.textContent || "";
     const name = document.getElementById("change2")?.textContent || "";
-    const address = document.getElementById("change3")?.textContent || "";
     const time = document.getElementById("change4")?.textContent || "";
 
     // Extract date and season
@@ -367,12 +432,11 @@
     try {
       await addDoc(collection(db, "annapoorna_poster1"), {
         name: name.trim(),
-        address: address.trim(),
         time: time.trim(),
         date: formattedDate,
         season: season.trim()
       });
-      console.log("🔥 Data stored in Firebase:", name, address, time, formattedDate);
+      console.log("🔥 Data stored in Firebase:", name, time, formattedDate);
     } catch (err) {
       console.error("❌ Error storing data:", err);
     }
@@ -399,28 +463,30 @@ window.parent.postMessage({
 }, "*");
 
 gtag('event', 'download', {
-  event_category: 'poster',
-  event_label: filename,
-  value: 1
-});          
+  event_category: 'poster',
+  event_label: filename,
+  value: 1
+});  
+          
+ scanningOverlay.classList.remove('active');          
         })
         .catch(error => {
           console.error('Error downloading:', error);
           downloadButton.textContent = 'Download Again';
           downloadButton.disabled = false;
+          scanningOverlay.classList.remove('active'); 
 
  window.parent.postMessage({
   type: "showMessage",
   message: `<strong>Download failed. Please try again.</strong>`,
   variant: "error"
 }, "*");
-
+          
 gtag('event', 'download_failed', {
-  event_category: 'poster',
-  event_label: `Failed: Bajane_${formattedDate || 'date'}.jpg`,
-  value: 0
+  event_category: 'poster',
+  event_label: `Failed: Bajane_${formattedDate || 'date'}.jpg`,
+  value: 0
 });          
-
         });
     });
   });
@@ -435,7 +501,7 @@ gtag('event', 'download_failed', {
   }
 
   // Resize text if overflow
-  function autoFitText(selector, minFontSize = 12, step = 1) {
+  function autoFitText(selector, minFontSize = 10, step = 1) {
     const elements = document.querySelectorAll(selector);
     elements.forEach(el => {
       let size = parseFloat(window.getComputedStyle(el).fontSize);
@@ -467,8 +533,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const yyyy = nextFriday.getFullYear();
     const rawDate = `${dd}-${mm}-${yyyy}`;
 
-    const defaultText = `(5ನೇ ವರ್ಷದ 186ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) ${rawDate}`;
-
+    const defaultText = `[5ನೇ ವರ್ಷದ 190ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ] ${rawDate}`;
+    
     // You can change '11-07-2025' to your default/fallback if needed
     if (change1.textContent.trim() === '' || change1.textContent.includes('11-07-2025')) {
       change1.textContent = defaultText;
@@ -477,7 +543,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     // Restore local storage
-    ['change2', 'change3', 'change4'].forEach(id => {
+    ['change2', 'change4'].forEach(id => {
       const saved = localStorage.getItem(`poster_${id}`);
       if (saved) {
         const el = document.getElementById(id);
@@ -487,7 +553,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Save locally
-  ['change2', 'change3', 'change4'].forEach(id => {
+  ['change2', 'change4'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('blur', () => {
@@ -496,6 +562,29 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 </script>
+<script>
+function fitTextToTwoLines() {
+  const el = document.getElementById('change2');
+  el.style.fontSize = ""; // Reset font-size first
+  const originalFontSize = 12;
+  let fontSize = originalFontSize;
+  
+  // Compute allowed height for 2 lines
+  const computedStyle = window.getComputedStyle(el);
+  const lineHeight = parseFloat(computedStyle.lineHeight);
+  const maxHeight = lineHeight * 3;
+  
+  el.style.fontSize = fontSize + "px";
+  
+  while (el.scrollHeight > maxHeight && fontSize > 7) { // Dont go too small!
+    fontSize -= 1;
+    el.style.fontSize = fontSize + "px";
+  }
+}
+window.addEventListener('load', fitTextToTwoLines);
+document.getElementById('change2').addEventListener('input', fitTextToTwoLines);
+</script>
+
 
 </body>
 </html>

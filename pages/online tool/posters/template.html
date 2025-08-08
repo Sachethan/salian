@@ -52,6 +52,16 @@
         main::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+.blink {
+    animation: blinkAnim 2s infinite;
+}
+
+@keyframes blinkAnim {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+}
+
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col h-screen">
@@ -155,8 +165,52 @@
         </div>
     </div>
 
-    <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
+      authDomain: "editech-93e95.firebaseapp.com",
+      projectId: "editech-93e95",
+      storageBucket: "editech-93e95.firebasestorage.app",
+      messagingSenderId: "337897717681",
+      appId: "1:337897717681:web:99a1c9344d6a4acf6dc790",
+      measurementId: "G-3CGVLC34XD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+      
         document.addEventListener('DOMContentLoaded', () => {
+          
+            onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          alert("Please login first");
+          return;
+        }
+
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        let accessData = {};
+
+if (snap.exists()) {
+  const data = snap.data();
+  accessData = data.access || {};
+}
+
+   function hasAccess(templateId) {
+  const templateAccess = accessData[templateId];
+  return (
+    templateAccess &&
+    templateAccess.isRecharged === true &&
+    new Date(templateAccess.rechargeExpiry) > new Date()
+  );
+}
+                 
+          
             // --- DATA ---
             // To add a new template, just add a new object to this array.
             const templates = [
@@ -171,14 +225,16 @@
                 },
                 {
                     id: 'poster-sarapady',
-                    title: 'Sarapady event.',
+                    title: 'ಶ್ರೀ ಶರಭೇಶ್ವರ ಭಜನೆ ಮಂಡಳಿ - Poster.',
                     description: 'A poster editor for the Sarapady event.',
                     previewImage: 'sharabeswara/image/preview.png',
                     url: 'sharabeswara/sharabeswara.html',
                     category: 'devotional',
                     isFavorite: false
                 },
-                {
+            ];
+
+              /**     {
                     id: 'form-volunteer',
                     title: 'Volunteer Sign-up Sheet',
                     description: 'Create a form for new volunteers to sign up.',
@@ -204,9 +260,8 @@
                     url: '../../admin tool/hash.html"',
                     category: 'general',
                     isFavorite: false
-                },
-            ];
-
+                }, */
+              
             // --- DOM Element Selection ---
             const mainContent = document.querySelector('main');
             const templateSelector = document.getElementById('template-selector');
@@ -242,7 +297,6 @@ const openId = urlParams.get('open');
 const overrideUrl = urlParams.get('override');
 
 if (openId) {
-    // If override is passed, apply it to the template before opening
     const template = templates.find(t => t.id === openId);
     if (template) {
         if (overrideUrl) {
@@ -250,10 +304,15 @@ if (openId) {
         }
 
         if (template.url !== 'about:blank') {
-            showEditor(template.url, template.title);
+            if (!hasAccess(openId)) {
+                window.location.href = `payment.html?open=${openId}`;
+            } else {
+                showEditor(template.url, template.title);
+            }
         }
     }
 }
+
 
 
             /**
@@ -278,41 +337,97 @@ if (openId) {
              * Renders the template cards into the grid based on the provided array.
              * @param {Array} templatesToRender - The array of templates to display.
              */
-            function renderTemplates(templatesToRender) {
-                templateGrid.innerHTML = ''; // Clear existing templates
-                if (templatesToRender.length === 0) {
-                    templateGrid.innerHTML = `
-                        <div class="col-span-full text-center py-10">
-                            <p class="text-slate-500 text-lg">No templates found matching your criteria.</p>
-                            <p class="text-slate-400 text-sm mt-2">Try adjusting your search or selecting a different category.</p>
-                        </div>
-                    `;
-                    return;
-                }
+function renderTemplates(templatesToRender) {
+  templateGrid.innerHTML = ''; // Clear existing templates
 
-                templatesToRender.forEach(template => {
-                    const card = document.createElement('div');
-                    card.className = 'group relative flex flex-col bg-white border border-slate-200 rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1';
+  if (!templatesToRender || templatesToRender.length === 0) {
+    templateGrid.innerHTML = `
+      <div class="col-span-full text-center py-10">
+        <p class="text-slate-500 text-lg">No templates found matching your criteria.</p>
+        <p class="text-slate-400 text-sm mt-2">Try adjusting your search or selecting a different category.</p>
+      </div>
+    `;
+    return;
+  }
 
-                    const isDisabled = template.url === 'about:blank';
+  templatesToRender.forEach(template => {
+    const card = document.createElement('div');
+    card.className = 'group relative flex flex-col bg-white border border-slate-200 rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1';
 
-                    card.innerHTML = `
-                        <div class="aspect-w-16 aspect-h-9 bg-slate-100">
-                            <img src="${template.previewImage}" alt="${template.title} Preview" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+Not+Found';">
-                        </div>
-                        <div class="p-5 flex-grow flex flex-col">
-                            <h3 class="text-xl font-semibold text-slate-900 mb-2">${template.title}</h3>
-                            <p class="text-sm text-slate-600 flex-grow mb-4">${template.description}</p>
-                            <div class="flex items-center justify-between mt-auto">
-                                <button
-                                    class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-lg shadow-sm text-white
-                                    ${isDisabled ? 'bg-slate-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95'}"
-                                    data-url="${template.url}"
-                                    data-title="${template.title}"
-                                    ${isDisabled ? 'disabled' : ''}>
-                                    ${isDisabled ? 'Coming Soon' : 'Open Editor'}
-                                </button>
-                                <button
+    const isDisabled = template.url === 'about:blank';
+
+// --- Days left / Expired text ---
+let daysLeftHtml = "";
+const tAccess = accessData?.[template.id];
+
+if (tAccess?.rechargeExpiry) {
+    const expiry = new Date(tAccess.rechargeExpiry);
+    const now = new Date();
+    const diffDays = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 0) {
+        if (diffDays <= 3) {
+            // Blinking for expiring soon
+            daysLeftHtml = `<p class="text-sm text-orange-500 blink">Expires in ${diffDays} day${diffDays > 1 ? "s" : ""}</p>`;
+        } else {
+            daysLeftHtml = `<p class="text-sm text-green-600">Expires in ${diffDays} day${diffDays > 1 ? "s" : ""}</p>`;
+        }
+    } else {
+        // Blinking for expired
+        daysLeftHtml = `<p class="text-sm font-bold text-red-600 blink">Expired</p>`;
+    }
+}
+
+
+    // --- Button logic: Coming Soon / Open / Pending / Buy ---
+    const now = new Date();
+    const hasAccess = !!(tAccess?.isRecharged && new Date(tAccess.rechargeExpiry) > now);
+    const isPending = !!tAccess?.requested;
+
+    let primaryBtnHTML = "";
+    if (isDisabled) {
+      primaryBtnHTML = `
+        <button class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-slate-400 cursor-not-allowed" disabled>
+          Coming Soon
+        </button>`;
+    } else if (hasAccess) {
+      primaryBtnHTML = `
+        <button
+          class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95"
+          data-url="${template.url}"
+          data-title="${template.title}">
+          Open Editor
+        </button>`;
+    } else if (isPending) {
+      primaryBtnHTML = `
+        <button
+          class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-amber-500 cursor-wait"
+          data-action="buy"
+          data-template-id="${template.id}">
+          Retry
+        </button>`;
+    } else {
+      primaryBtnHTML = `
+        <button
+          class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transform transition-transform duration-150 active:scale-95"
+          data-action="buy"
+          data-template-id="${template.id}">
+          Buy
+        </button>`;
+    }
+
+    card.innerHTML = `
+      <div class="aspect-w-16 aspect-h-9 bg-slate-100">
+        <img src="${template.previewImage}" alt="${template.title} Preview" class="w-full h-48 object-cover"
+             onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+Not+Found';">
+      </div>
+      <div class="p-5 flex-grow flex flex-col">
+        <h3 class="text-xl font-semibold text-slate-900 mb-2">${template.title}</h3>
+        ${daysLeftHtml}
+        <p class="text-sm text-slate-600 flex-grow mb-4">${template.description}</p>
+        <div class="flex items-center justify-between mt-auto">
+          ${primaryBtnHTML}
+<button
                                     class="favorite-button ml-4 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200
                                     ${template.isFavorite ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
                                     data-template-id="${template.id}"
@@ -320,13 +435,14 @@ if (openId) {
                                     <svg class="h-5 w-5 inline-block align-middle" fill="${template.isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${template.isFavorite ? 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z' : 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z'}"></path>
                                     </svg>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    templateGrid.appendChild(card);
-                });
-            }
+                                </button>        </div>
+      </div>
+    `;
+
+    templateGrid.appendChild(card);
+  });
+}
+
 
             /**
              * Filters templates based on current search query and category, then renders them.
@@ -444,14 +560,23 @@ function showTemplateSelector() {
                     return; // Prevent triggering the 'Open Editor' logic
                 }
 
-                const openEditorButton = e.target.closest('button:not(.favorite-button)'); // Exclude favorite button
-                if (openEditorButton && openEditorButton.dataset.url) {
-                    const { url, title } = openEditorButton.dataset;
-                    if (url && url !== blankPageUrl) {
-                        showEditor(url, title);
-                    }
-                }
-            });
+  // BUY
+  const buyBtn = e.target.closest('button[data-action="buy"]');
+  if (buyBtn) {
+    const tid = buyBtn.dataset.templateId;
+    window.location.href = `payment.html?open=${encodeURIComponent(tid)}`;
+    return;
+  }
+
+  // OPEN EDITOR
+  const openEditorButton = e.target.closest('button[data-url]');
+  if (openEditorButton && openEditorButton.dataset.url) {
+    const { url, title } = openEditorButton.dataset;
+    if (url && url !== blankPageUrl) {
+      showEditor(url, title);
+    }
+  }
+});
 
             homeBreadcrumbLink.addEventListener('click', openConfirmationModal);
             confirmBackBtn.addEventListener('click', showTemplateSelector);
@@ -481,20 +606,33 @@ function showTemplateSelector() {
                 filterAndRenderTemplates();
             });
 
-            // Tab functionality
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    currentCategory = button.dataset.category;
-                    updateActiveTab();
-                    filterAndRenderTemplates();
-                });
-            });
+// Tab functionality
+tabButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    currentCategory = button.dataset.category;
 
-            // --- Initial Load ---
-            loadFavorites(); // Load favorite status from local storage
-            updateActiveTab(); // Set initial active tab styling
-            filterAndRenderTemplates(); // Render templates based on initial state
-        });
+    // persist the last chosen category
+    localStorage.setItem('lastCategory', currentCategory);
+
+    updateActiveTab();
+    filterAndRenderTemplates();
+  });
+});
+
+
+// --- Initial Load ---
+loadFavorites();
+
+// restore last selected category (default: 'all')
+const savedCategory = localStorage.getItem('lastCategory');
+currentCategory = savedCategory || 'all';
+
+updateActiveTab();
+filterAndRenderTemplates();
+          
+              }); // 👈 close onAuthStateChanged
+}); // 👈 close DOMContentLoaded
+
 
     window.addEventListener("message", (event) => {
   // Optional origin check
@@ -505,7 +643,6 @@ function showTemplateSelector() {
     window.parent.postMessage(event.data, "*");
   }
 });
-    </script>
-
+ </script>
 </body>
 </html>

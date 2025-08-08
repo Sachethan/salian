@@ -1,7 +1,7 @@
 // --- Firebase Imports ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
 // --- Firebase Config ---
 const firebaseConfig = {
@@ -87,6 +87,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 createdAt: new Date().toISOString()
             });
 
+            
+              // 2) Grant 14-day free trial for exactly 2 templates
+  const TRIAL_TEMPLATES = ["poster-anna-poorna", "poster-sarapady"];
+
+  // end-of-day ISO for the 14th day from today (today counts as day 1)
+  const expiry = (() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + (14 - 1)); // +13 days → total 14 days including today
+    d.setHours(23, 59, 59, 999);       // end of day
+    return d.toISOString();
+  })();
+
+  const userRef = doc(db, "users", user.uid);
+
+  // Build partial update with field paths (doesn't overwrite other access entries)
+  const trialUpdate = {};
+  TRIAL_TEMPLATES.forEach(tid => {
+    trialUpdate[`access.${tid}.isRecharged`] = true;
+    trialUpdate[`access.${tid}.rechargeExpiry`] = expiry;
+    trialUpdate[`access.${tid}.freeTrial`] = true;
+  });
+
+  await updateDoc(userRef, trialUpdate);
+            
                 stopLoading(registerBtn, originalText);
                 showMessage(registerMessageDiv, 'Registration successful! You can now sign in.', 'success');
                 registerForm.reset();
@@ -175,7 +200,20 @@ getDoc(docRef)
             stopLoading(loginBtn, originalText);
             showMessage(loginMessageDiv, `Welcome back, ${userData.username || 'User'}!`, 'success');            loginForm.reset();
             setTimeout(() => {
-                window.location.href = '../../index.html';
+                // Check if redirect URL is saved
+const redirectUrl = localStorage.getItem("redirectUrl");
+
+if (redirectUrl) {
+  // Redirect to saved page
+  window.location.href = redirectUrl;
+
+  // Remove it after redirect to avoid reuse
+  localStorage.removeItem("redirectUrl");
+} else {
+  // If no saved URL, redirect to home page
+  window.location.href = '../../index.html';
+
+}
             }, 1500);
 
         } catch (err) {

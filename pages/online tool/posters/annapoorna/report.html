@@ -420,7 +420,7 @@
   <h2>Poster Saved Data</h2>
 
   <div class="action-bar">
-    <input type="text" id="searchInput" placeholder="Search name, date, address, season...">
+    <input type="text" id="searchInput" placeholder="Search name, date, season...">
     <button class="btn" onclick="downloadExcel()">
       <i class="fas fa-file-excel"></i> Export to Excel
     </button>
@@ -535,6 +535,21 @@
         return ''; // Return empty string for invalid dates
       }
     }
+  
+  function formatDateForDisplay(dateString) {
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date)) return '';
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = date.toLocaleString('default', { month: 'short' }); // e.g., "Jul"
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  } catch (e) {
+    console.warn("Invalid display date format:", dateString, e);
+    return '';
+  }
+}
+
 
     /**
      * Displays a custom modal (message box or filter modal).
@@ -684,13 +699,13 @@
           duplicateDiv.className = "duplicate-info";
           duplicateDiv.setAttribute('onclick', `filterBySpecificDate('${item.date}')`); 
           duplicateDiv.innerHTML = `
-            <p>+ ${item.count} more on ${item.date}</p>
+        <p>+ ${item.count} more on ${formatDateForDisplay(item.date)}</p>
           `;
           container.appendChild(duplicateDiv);
           // Apply 'show' class after a small delay to trigger animation
           setTimeout(() => duplicateDiv.classList.add('show'), index * 100);
         } else {
-          // It's a regular entry card
+          // Its a regular entry card
           const card = appendEntryCard(item); // appendEntryCard now returns the created div
           // Apply 'show' class after a small delay to trigger animation
           setTimeout(() => card.classList.add('show'), index * 100); // 100ms delay per card
@@ -709,7 +724,7 @@
       div.className = "entry-card"; // Initial state handled by CSS
       div.innerHTML = `
         <div class="entry-header" onclick="toggleContent(this)">
-          <strong>${entry.date} - ${entry.name}</strong>
+          <strong>${formatDateForDisplay(entry.date)} - ${entry.name}</strong>
           <button class="toggle-btn"><i class="fas fa-chevron-right"></i></button>
         </div>
         <div class="entry-content">
@@ -720,10 +735,6 @@
           <div class="form-group">
             <label>Name</label>
             <input type="text" value="${entry.name}" data-field="name" data-id="${entry.id}">
-          </div>
-          <div class="form-group">
-            <label>Address</label>
-            <input type="text" value="${entry.address}" data-field="address" data-id="${entry.id}">
           </div>
           <div class="form-group">
             <label>Time</label>
@@ -856,7 +867,6 @@
         filtered = filtered.filter(e => 
           e.name.toLowerCase().includes(searchTerm) || 
           e.date.toLowerCase().includes(searchTerm) ||
-          e.address.toLowerCase().includes(searchTerm) ||
           e.season.toLowerCase().includes(searchTerm)
         );
       }
@@ -930,7 +940,7 @@
       const lineHeight = 7; // Adjusted line height
 
       currentFilteredEntries.forEach((e, i) => {
-        const text = `${i + 1}. Date: ${e.date} | Name: ${e.name} | Address: ${e.address} | Time: ${e.time} | Season: ${e.season}`;
+        const text = `${i + 1}. Date: ${e.date} | Name: ${e.name} | Time: ${e.time} | Season: ${e.season}`;
         
         // Check if content exceeds page height, add new page if needed
         if (y + lineHeight > doc.internal.pageSize.height - 10) { 
