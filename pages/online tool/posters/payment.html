@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Recharge Required</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom Inter font and button focus-visible */
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .btn:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+    }
+    /* Custom CSS animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInFromTop {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    .animate-fadeIn { animation: fadeIn 0.6s ease-out forwards; }
+    .animate-slideInFromTop { animation: slideInFromTop 0.4s ease-out forwards; }
+    .animate-pulse-subtle { animation: pulse 2s ease-in-out infinite; }
+  </style>
+  <!-- Load Inter font from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<!-- A subtle gradient background for a modern feel -->
+<body class="bg-gradient-to-br from-slate-50 to-indigo-100 text-slate-800 p-4 min-h-screen flex items-center justify-center">
+
+  <!-- Main content card with animated entry -->
+  <div class="bg-white max-w-lg w-full rounded-3xl border border-slate-200 shadow-2xl p-8 space-y-6 opacity-0 animate-fadeIn" style="animation-delay: 0.1s;">
+    
+    <!-- Header section with a bit more flair -->
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-slate-900 leading-tight">Recharge Required</h1>
+      <p class="text-lg text-slate-500 mt-2 font-medium">You need to recharge to access this template.</p>
+    </div>
+
+    <!-- Template information section with a dynamic hover effect -->
+    <div id="templateInfo" class="flex items-center justify-center gap-3 bg-indigo-50 text-indigo-800 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-[1.01] hover:shadow-md animate-slideInFromTop" style="animation-delay: 0.3s;">
+      <!-- Loading state for template info -->
+      <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span class="text-base font-semibold">Loading template…</span>
+    </div>
+
+    <!-- Payment details section with a cleaner, elevated look -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-lg animate-slideInFromTop" style="animation-delay: 0.5s;">      
+      <div class="mb-4">
+      <label class="block text-sm font-semibold text-slate-700 mb-2">Amount</label>
+        <!-- The amount is now a simple, large text element -->
+        <div class="text-center font-extrabold text-slate-900 text-5xl">
+          ₹69
+        </div>
+      </div>
+
+      <!-- Status message area, dynamically updated by JavaScript with animation -->
+      <div id="status" class="bg-yellow-50 text-yellow-800 p-4 rounded-xl border border-yellow-200 transition-all duration-300 transform animate-pulse-subtle">
+        <div class="flex items-center gap-3">
+          <!-- Warning Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.487 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+          <span class="font-medium">Please sign in to continue.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Call to action button with a lively gradient and animations -->
+    <div class="animate-slideInFromTop flex" style="animation-delay: 0.7s;">
+      <button id="payBtn" class="btn w-[75%] m-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-extrabold py-5 px-5 rounded-2xl transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] disabled:from-gray-400 disabled:to-gray-500 disabled:shadow-none disabled:cursor-not-allowed">
+        Pay Now
+      </button>
+            <button onclick="window.location.href = 'template.html';" class="btn m-2 w-[25%] bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-extrabold py-5 px-5 rounded-2xl transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] disabled:from-gray-400 disabled:to-gray-500 disabled:shadow-none disabled:cursor-not-allowed">
+        Cancle
+      </button>
+
+    </div>
+    
+    <!-- Note for the user -->
+    <p class="text-xs text-slate-500 text-center mt-4 font-light">
+      After payment, the admin will activate your access. You’ll be able to open the template immediately once approved.
+    </p>
+  </div>
+
+  <script type="module">
+    // Firebase imports and configuration are kept as they were in the original code.
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    // ---- CONFIG (your project) ----
+    // DO NOT change these keys as they are required for the application to function.
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
+      authDomain: "editech-93e95.firebaseapp.com",
+      projectId: "editech-93e95",
+      storageBucket: "editech-93e95.firebasestorage.app",
+      messagingSenderId: "337897717681",
+      appId: "1:337897717681:web:99a1c9344d6a4acf6dc790",
+      measurementId: "G-3CGVLC34XD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // ---- Page Elements ----
+    const payBtn = document.getElementById("payBtn");
+    const statusEl = document.getElementById("status");
+    const templateInfoEl = document.getElementById("templateInfo");
+    
+    // Animate the status message on change
+    const updateStatus = (type, message) => {
+      let icon = '';
+      let classes = '';
+
+      if (type === 'warn') {
+        icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.487 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`;
+        classes = "bg-yellow-50 text-yellow-800 border-yellow-200";
+      } else if (type === 'ok') {
+        icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`;
+        classes = "bg-green-50 text-green-800 border-green-200";
+      }
+      
+      statusEl.className = `p-4 rounded-xl border flex items-center gap-3 transition-all duration-300 transform scale-100 animate-slideInFromTop ${classes}`;
+      statusEl.innerHTML = `<div class="flex items-center gap-3">${icon} <span class="font-medium">${message}</span></div>`;
+    };
+
+    // Template mapping (for nice name on screen)
+    const templateTitles = {
+      "poster-anna-poorna": "ಅನ್ನಪೂರ್ಣ ಆಶೀರ್ವಾದ ಸೇವಾ ಸಮಿತಿ - Poster",
+      "poster-sarapady": "Sarapady event.",
+      "form-volunteer": "Volunteer Sign-up Sheet",
+      "card-event-invite": "Event Invitation Card",
+      "hash-manager": "Hash Manager"
+    };
+
+    // Read template id from URL
+    const params = new URLSearchParams(window.location.search);
+    const templateId = params.get("open");
+
+    // UI: show which template
+    if (templateId) {
+      const title = templateTitles[templateId] || templateId;
+      templateInfoEl.innerHTML = `<div class="flex flex-col items-center justify-center gap-0 bg-indigo-50 text-indigo-800 p-0 rounded-xl animate-slideInFromTop" style="animation-delay: 0.3s;"><span class="font-medium">Template:</span><span class="font-bold">${title}</span></div>`;
+    } else {
+      templateInfoEl.innerHTML = `<div class="flex items-center justify-center gap-3 bg-red-50 text-red-800 px-4 py-3 rounded-xl animate-slideInFromTop" style="animation-delay: 0.3s;"><span class="font-medium">Error:</span><span class="font-bold">No template specified.</span></div>`;
+    }
+    
+    // UPI link (Google Pay / UPI)
+    const upiLink = "upi://pay?pa=sachethansalian-1@oksbi&pn=Digital%20Creator&am=69.00&cu=INR&aid=uGICAgICtgrfuOQ";
+
+    // Main Firebase authentication listener
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        updateStatus("warn", "Please log in to request recharge.");
+        payBtn.disabled = true;
+        return;
+      }
+
+      updateStatus("ok", "Signed in. Click Pay to submit a recharge request.");
+      payBtn.disabled = !templateId;
+
+      payBtn.addEventListener("click", async () => {
+        try {
+          payBtn.disabled = true;
+          // Add a loading spinner to the button
+          payBtn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Submitting…`;
+          updateStatus("ok", "Submitting recharge request…");
+
+          const userRef = doc(db, "users", user.uid);
+
+          await updateDoc(userRef, {
+            [`access.${templateId}.requested`]: true,
+            [`access.${templateId}.timestamp`]: new Date().toISOString()
+          });
+          payBtn.disabled = false;
+          payBtn.innerHTML = `Retry`;
+          window.location.href = upiLink;
+        } catch (err) {
+          console.error(err);
+          updateStatus("warn", "Failed to submit request. Please try again.");
+          payBtn.disabled = false;
+          payBtn.innerHTML = `Pay Now`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
