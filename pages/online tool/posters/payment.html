@@ -41,11 +41,13 @@
 
   <!-- Main content card with animated entry -->
   <div class="bg-white max-w-lg w-full rounded-3xl border border-slate-200 shadow-2xl p-8 space-y-6 opacity-0 animate-fadeIn" style="animation-delay: 0.1s;">
-    
+
     <!-- Header section with a bit more flair -->
     <div class="text-center">
+      <!-- Greeting Section -->
+<div id="userGreeting" class="text-xl font-semibold text-indigo-600 mb-2"></div>
       <h1 class="text-4xl font-extrabold text-slate-900 leading-tight">Recharge Required</h1>
-      <p class="text-lg text-slate-500 mt-2 font-medium">You need to recharge to access this template.</p>
+      <p class="text-lg text-slate-500 mt-2 font-medium">You need to recharge to access this Poster.</p>
     </div>
 
     <!-- Template information section with a dynamic hover effect -->
@@ -64,7 +66,7 @@
       <label class="block text-sm font-semibold text-slate-700 mb-2">Amount</label>
         <!-- The amount is now a simple, large text element -->
         <div class="text-center font-extrabold text-slate-900 text-5xl">
-          ₹69
+          ₹99
         </div>
       </div>
 
@@ -90,7 +92,7 @@
       </button>
 
     </div>
-    
+
     <!-- Note for the user -->
     <p class="text-xs text-slate-500 text-center mt-4 font-light">
       After payment, the admin will activate your access. You’ll be able to open the template immediately once approved.
@@ -123,7 +125,7 @@
     const payBtn = document.getElementById("payBtn");
     const statusEl = document.getElementById("status");
     const templateInfoEl = document.getElementById("templateInfo");
-    
+
     // Animate the status message on change
     const updateStatus = (type, message) => {
       let icon = '';
@@ -136,7 +138,7 @@
         icon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`;
         classes = "bg-green-50 text-green-800 border-green-200";
       }
-      
+
       statusEl.className = `p-4 rounded-xl border flex items-center gap-3 transition-all duration-300 transform scale-100 animate-slideInFromTop ${classes}`;
       statusEl.innerHTML = `<div class="flex items-center gap-3">${icon} <span class="font-medium">${message}</span></div>`;
     };
@@ -161,9 +163,10 @@
     } else {
       templateInfoEl.innerHTML = `<div class="flex items-center justify-center gap-3 bg-red-50 text-red-800 px-4 py-3 rounded-xl animate-slideInFromTop" style="animation-delay: 0.3s;"><span class="font-medium">Error:</span><span class="font-bold">No template specified.</span></div>`;
     }
-    
+
     // UPI link (Google Pay / UPI)
-    const upiLink = "upi://pay?pa=sachethansalian-1@oksbi&pn=Digital%20Creator&am=69.00&cu=INR&aid=uGICAgICtgrfuOQ";
+const title = templateTitles[templateId] || templateId;
+const upiLink = `upi://pay?cu=INR&mc=7392&mode=19&pa=saliancreation430754.rzp@rxairtel&tn=${encodeURIComponent(title)}&tr=R2Hg5QAuQ4T0CWqrv2&am=99.00`;
 
     // Main Firebase authentication listener
     onAuthStateChanged(auth, async (user) => {
@@ -172,8 +175,14 @@
         payBtn.disabled = true;
         return;
       }
-
-      updateStatus("ok", "Signed in. Click Pay to submit a recharge request.");
+  if (user) {
+    // Get username from displayName or email prefix
+    const username = user.displayName || user.email.split("@")[0];
+    userGreeting.textContent = `Hello, ${username}!`;
+  } else {
+    userGreeting.textContent = "Hello, Guest!";
+  }
+      updateStatus("ok", "Click to Pay Now...");
       payBtn.disabled = !templateId;
 
       payBtn.addEventListener("click", async () => {
@@ -181,7 +190,7 @@
           payBtn.disabled = true;
           // Add a loading spinner to the button
           payBtn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Submitting…`;
-          updateStatus("ok", "Submitting recharge request…");
+          updateStatus("ok", "Payment on Process…");
 
           const userRef = doc(db, "users", user.uid);
 
