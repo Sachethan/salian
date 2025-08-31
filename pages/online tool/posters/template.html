@@ -360,7 +360,7 @@ if (openId) {
         }
 
         if (template.url !== 'about:blank') {
-            if (currentUserRole === "admin"){
+            if (currentUserRole === "admin" || currentUserRole === "tempadmin"){
                 showEditor(template.url, template.title);
             } else{
             if (!hasAccess(openId)) {
@@ -419,7 +419,7 @@ function renderTemplates(templatesToRender) {
 // --- Days left / Expired text ---
 let daysLeftHtml = "";
 const tAccess = accessData?.[template.id];
-if (currentUserRole === "admin") {
+if (currentUserRole === "admin" || currentUserRole === "tempadmin") {
     // Show special message for admin
     daysLeftHtml = `<p class="text-sm text-blue-600 font-semibold">You are in Admin Access</p>`;
 } else {
@@ -454,7 +454,7 @@ if (tAccess?.rechargeExpiry) {
         <button class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-slate-400 cursor-not-allowed" disabled>
           Coming Soon
         </button>`;
-    } else if (currentUserRole === "admin") {
+    } else if (currentUserRole === "admin" || currentUserRole === "tempadmin") {
       primaryBtnHTML = `
         <button
           class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95"
