@@ -28,215 +28,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;700;900&family=Tiro+Kannada&family=Baloo+Tamma+2&family=Mallanna&display=swap" rel="stylesheet" />
 
    <script src="https://unpkg.com/html-to-image"></script>
- <style>
-    body {
-      font-family: 'Noto Sans Kannada', sans-serif;
-    }
-    
 
-    .aspect-ratio-box {
-      position: relative;
-      width: 100%;
-      padding-top: 125%; /* 4:5 aspect */
-    }
+  <link rel="stylesheet" href="style.css" />
 
-    #invitation-card {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      background-image: url('image/bg.jpg');
-      background-size: cover;
-      flex-direction: column;
-     /* container-type: inline-size;*/
-    }
-
-    .garland-border {
-      min-height: 4%;
-      background: repeating-linear-gradient(
-        90deg,
-        #f97316 0, #f97316 10px,
-        #fbbf24 10px, #fbbf24 20px,
-        #16a34a 20px, #16a34a 30px
-      );
-      border-top: 3px solid #c2410c;
-      border-bottom: 3px solid #c2410c;
-    }
-    .text-header { font-size: clamp(0.5rem, 2.2cqw, 1rem); }
-    .text-title { font-size: clamp(1.2rem, 4vw, 2.2rem); }
-    .text-subtitle { font-size: clamp(0.8rem, 3.5cqw, 1.5rem); }
-    .text-body-xl { font-size: clamp(0.9rem, 3.8cqw, 1.8rem); }
-    .text-body-lg { font-size: clamp(0.8rem, 3.2cqw, 1.5rem); }
-    .text-body-md { font-size: clamp(0.7rem, 2.8cqw, 1.2rem); }
-    
-    .text-footer { 
-        font-size: clamp(0.9rem, 2.2cqw, 1rem);
-        bottom: 25px;
-    }
-
-    [contenteditable="true"]:hover {
-      outline: 2px dashed rgba(255,255,255,0.5);
-      background-color: rgba(0,0,0,0.05);
-    }
-    [contenteditable="true"]:focus {
-      outline: 2px solid #fbbf24;
-      background-color: rgba(0,0,0,0.1);
-    }
-
-
-@media screen and (max-width: 362px) {
-  .text-title {
-    font-size: 1rem;
-  }
-
-  .text-footer{
-    font-size: 0.75rem;
-    bottom: 25px;
-  }
-  .ctm-Content{
-    bottom: 70px;
-    font-size: 0.74rem;
-  }
-  .text-header{
-    top:18px;
-    font-size: 8px;
-  }
-  .devi img{
-    height: 60px;
-    width: 60px;
-  }
-}
-/* Client */
-@media screen and (min-width: 360px) and (max-width: 362px) {
- .Header-cust{
-    margin-bottom: 60px;
-    font-size: 6px;
-  }
-
-   .Header-cust-img{
-    margin-top: 18px;
-  }
-  
-  .title-cust{
-    font-size: 14px;
-  }
-
-  .Content-cust-a{
-font-size: 12px;
-  }
-
-.Content-cust-b{
-font-size: 10px;
-  }
-
-.Content-cust-c{
-font-size: 12px;
-  }
-.Content-cust-d{
-font-size: 10px;
-  }
-  .last-line{
-    bottom: -25px;
-  }
-}
-
-/* Me */
-@media screen and (min-width: 437px) and (max-width: 450px) {
- .Header-cust{
-    margin-bottom: 50px;
-    margin-top: 5%;
-  }
-
-.Header-cust-img{
-    margin-top: 28px;
-  }
-  
-  .last-line{
-    bottom: -35px;
-  }
-}
-
-@media screen and (min-width: 393px) and (max-width: 400px) {
-  .text-title {
-    font-size: 1rem;
-  }
-  .ctm-Content{
-    bottom: 75px;
-    font-size: 0.85rem;
-  }
-  
- .friday{
-   font-size: 0.9rem;
- }
-  
-  .ctm-Content{
- font-size: 0.65rem;  
- }
-.text-header{
-    top:21px;
-  }
-  
-}
-
-@media screen and (min-width: 436px) and (max-width: 437px) {
- .Header-cust{
-    margin-bottom: 75px;
-  }
-  
- .friday{
-   font-size: 0.9rem;
- }
-  
- .ctm-Content {
- font-size: 1rem;  
- }
-.text-header{
-    top:21px;
-  }
-  
-}
-
-
-        /* Custom CSS for the scanning animation */
-        @keyframes scan-animation {
-            0% {
-                background-position: 0 -200%, 0 0; /* Initial position for scan line (top) and stars */
-            }
-            100% {
-                background-position: 0 200%, 0 100%; /* Final position for scan line (bottom) and stars */
-            }
-        }
-
-        .scanning-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-          z-index:1;
-            /* Layer 1: Professional blue scan line (top-to-bottom) */
-            background-image: linear-gradient(180deg, transparent,
-                                             rgba(100, 180, 255, 0.3),  /* Light blue with transparency */
-                                             rgba(100, 180, 255, 0.6),  /* Slightly darker blue with transparency */
-                                             rgba(100, 180, 255, 0.3),
-                                             transparent),
-                            /* Layer 2: Stars - small white radial gradients repeated */
-                            radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.9) 1px, transparent 2px);
-
-            background-size: 100% 200%, 60px 60px; /* Scan line size (100% width, 200% height for vertical sweep), Star pattern size (60x60px grid) */
-            background-repeat: no-repeat, repeat; /* Scan line doesnt repeat, stars repeat to fill */
-            animation: scan-animation 2s infinite linear; /* Adjust duration as needed */
-            pointer-events: none; /* Allows clicks to pass through to elements below */
-            opacity: 0; /* Hidden by default */
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .scanning-overlay.active {
-            opacity: 1;
-        }
-
-  </style>
 </head>
 <body class="bg-gray-800">
 
@@ -251,7 +45,7 @@ font-size: 10px;
    <div class="absolute overflow-hidden z-50 pointer-events-none opacity-50">
      <img src="image/boder.png"/>
    </div>
-   <div class="absolute overflow-hidden border-1 z-50 bottom-0 w-[75%] pointer-events-none">
+   <div class="absolute overflow-hidden border-1 z-50 bottom-0 w-[75%] bottom-[-10px] left-[-10px] pointer-events-none">
      <img src="image/1.png"/>
    </div>
 
@@ -273,7 +67,7 @@ font-size: 10px;
 </div>
 </div>
           <!-- Title -->
-          <div class="relative mt-1 p-0 bg-gradient-to-b from-orange-500 to-orange-600 rounded-[20px] shadow-xl border-2 border-orange-400 w-11/12">
+          <div class="relative mt-1 p-0 bg-gradient-to-b from-orange-500 to-orange-600 rounded-[15px] shadow-xl border-2 border-orange-400 w-11/12">
             <h1 contenteditable="false" class="m-0 title-cust font-black text-yellow-200 whitespace-nowrap pt-2">ಆಶೀರ್ವಾದ ಗೆಳೆಯರ ಬಳಗ (ರಿ.) ಸೇವಾ ಟ್ರಸ್ಟ್</h1>
             <p contenteditable="false" class="font-semibold text-[10px] text-yellow-100">ಪೆರ್ಲ ಬಿಯಪಾದೆ</p>
           </div>
@@ -285,9 +79,9 @@ font-size: 10px;
           <div class="relative bg-black Content-cust border-[1px] border-white backdrop-blur-[1px] bg-opacity-20 rounded-2xl p-2 md:p-4 w-11/12 flex flex-col justify-center items-center text-yellow-50 shadow-inner-lg">
             <div class="space-y-1">
               <p contenteditable="false" class="font-bold Content-cust-a mt-0">ಜ್ಞಾನಮಂದಿರ ಕಟ್ಟಡ ನಿರ್ಮಾಣ ಮಾಡುವ</br>ಉದ್ದೇಶದಿಂದ ನಡೆಸಲಾಗುವ ವಾರದ ಶುಕ್ರವಾರ </br>ಮನೆ ಮನೆ ಭಜನೆ</p>
-              <p id="change1" contenteditable="true" class="font-semibold bg-orange-800 bg-opacity-50 Content-cust-b rounded-md px-3 py-1 pt-2 inline-block">[5ನೇ ವರ್ಷದ 190ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ] 11-07-2025</p>
+              <p id="change1" contenteditable="true" class="font-semibold bg-orange-800 bg-opacity-50 Content-cust-b rounded-md px-3 py-1 pt-0 inline-block">[5ನೇ ವರ್ಷದ 190ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ] 11-07-2025</p>
               <p class="font-bold Content-cust-c"><span contenteditable="true"> ಶುಕ್ರವಾರ ಸಂಜೆ </span><span id="change4" contenteditable="true">7.00</span>ಕ್ಕೆ ಸರಿಯಾಗಿ</p>
-              <div class="text-body-md pt-1 address">
+              <div class="text-body-md pt-0 address">
                 <p id="change2" contenteditable="true" class="font-bold text-yellow-200 Content-cust-d">ಶ್ರೀಮತಿ ಮತ್ತು ಶ್ರೀ ಹೆಸರು ಮತ್ತು ಮಕ್ಕಳು</p>
               </div>
             </div>
@@ -349,19 +143,31 @@ font-size: 10px;
       </button>
     </div>
   </div>
-<div class="mt-8 bg-gradient-to-br from-yellow-200 via-yellow-100 to-white text-gray-900 rounded-2xl shadow-xl border border-yellow-300 px-6 py-5 space-y-1 text-[clamp(0.8rem,2.2cqw,1.1rem)] leading-relaxed tracking-wide font-[500]">
-  <div class="text-xl font-bold text-orange-700 underline decoration-dotted underline-offset-4">
-    ಗಮನಿಸಿ:
-  </div>
+   <!-- Main container for the content -->
+    <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md text-center">
+        
+        <!-- Header -->
+        <h1 class="text-3xl font-bold mb-6 text-cyan-400">Device Resolution</h1>
+        
+        <!-- Screen Resolution Display -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2 text-gray-300">Screen Resolution</h2>
+            <p class="text-4xl font-bold bg-gray-700/50 p-4 rounded-lg">
+                <span id="screenWidth"></span> x <span id="screenHeight"></span>
+            </p>
+            <p class="text-xs text-gray-500 mt-2">This is the total resolution of your physical screen.</p>
+        </div>
+        
+        <!-- Viewport Size Display -->
+        <div>
+            <h2 class="text-xl font-semibold mb-2 text-gray-300">Browser Viewport Size</h2>
+            <p class="text-4xl font-bold bg-gray-700/50 p-4 rounded-lg">
+                <span id="viewportWidth"></span> x <span id="viewportHeight"></span>
+            </p>
+             <p class="text-xs text-gray-500 mt-2">This is the current size of the browser window. Try resizing it!</p>
+        </div>
 
-  <div>
-1. ಈ ಪೋಸ್ಟರ್‌ನಲ್ಲಿ ಈ ವಾರದ <span class="font-semibold text-orange-600">ಶುಕ್ರವಾರದ ದಿನಾಂಕ</span>ವು ಆಟೋಮ್ಯಾಟಿಕ್ ಅಪ್ಡೇಟ್ಗೊಳಿಸಲಾಗಿದೆ. ದಿನಾಂಕವನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ ಬದಲಾಯಿಸಬುದು.<br>
-    <br>
-2. <span class="font-semibold text-orange-600">ಹೆಸರು ಮತ್ತು ಸ್ಥಳ</span>ವನ್ನು ಕ್ಲಿಕ್ ಮಾಡುವ ಮೂಲಕ ಬದಲಾಯಿಸಬಹುದು.<br>
-    <br>
-3. ಇಂದು ಮಾಡಿದ ಬದಲಾವಣೆಗಳು <span class="font-semibold text-orange-600">ಈ ಮೊಬೈಲ್ ಅಥವಾ ಕಂಪ್ಯೂಟರ್ನಲ್ಲಿ ಮಾತ್ರ</span> ಸಂರಕ್ಷಿಸಲಾಗುತ್ತದೆ. ಮುಂದಿನ ಬಾರಿ ಭೇಟಿ ನೀಡುವಾಗ ನೀವು ಕೊನೆಯ ಬದಲಾವಣೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ನೋಡಬಹುದು. 
-  </div>
-</div>
+    </div>
 
 <!-- Firebase + Save Data + Download Poster -->
 <script type="module">
@@ -537,7 +343,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const yyyy = nextFriday.getFullYear();
     const rawDate = `${dd}-${mm}-${yyyy}`;
 
-    const defaultText = `[5ನೇ ವರ್ಷದ 190ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ] ${rawDate}`;
+    const defaultText = `(5ನೇ ವರ್ಷದ 190ನೇ ಹರಿ ಸಂಕೀರ್ತನೆ) ${rawDate}`;
     
     // You can change '11-07-2025' to your default/fallback if needed
     if (change1.textContent.trim() === '' || change1.textContent.includes('11-07-2025')) {
@@ -589,6 +395,45 @@ window.addEventListener('load', fitTextToTwoLines);
 document.getElementById('change2').addEventListener('input', fitTextToTwoLines);
 </script>
 
+    <script>
+        // --- DOM Element References ---
+        const screenWidthElem = document.getElementById('screenWidth');
+        const screenHeightElem = document.getElementById('screenHeight');
+        const viewportWidthElem = document.getElementById('viewportWidth');
+        const viewportHeightElem = document.getElementById('viewportHeight');
 
+        /**
+         * Updates the displayed viewport dimensions.
+         * This function is called on initial load and whenever the window is resized.
+         */
+        function updateViewportSize() {
+            // Get the inner width and height of the browser window
+            viewportWidthElem.textContent = window.innerWidth;
+            viewportHeightElem.textContent = window.innerHeight;
+        }
+
+        /**
+         * Sets the displayed screen resolution.
+         * This is typically static and doesn't change.
+         */
+        function setScreenResolution() {
+            // Get the width and height of the user's screen
+            screenWidthElem.textContent = screen.width;
+            screenHeightElem.textContent = screen.height;
+        }
+
+        // --- Event Listeners ---
+
+        // Add an event listener to update the viewport size when the window is resized
+        window.addEventListener('resize', updateViewportSize);
+
+        // --- Initial Setup ---
+
+        // Set the initial values when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setScreenResolution();
+            updateViewportSize();
+        });
+    </script>
 </body>
 </html>

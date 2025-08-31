@@ -244,13 +244,17 @@
           return;
         }
 
+        let currentUserRole = "user"; // default
+
         const userRef = doc(db, "users", user.uid);
         const snap = await getDoc(userRef);
         let accessData = {};
 
 if (snap.exists()) {
   const data = snap.data();
+  const userData = snap.data();
   accessData = data.access || {};
+  currentUserRole = userData.role || "user";
 }
 
    function hasAccess(templateId) {
@@ -356,11 +360,15 @@ if (openId) {
         }
 
         if (template.url !== 'about:blank') {
+            if (currentUserRole === "admin"){
+                showEditor(template.url, template.title);
+            } else{
             if (!hasAccess(openId)) {
                 window.location.href = `payment.html?open=${openId}`;
             } else {
                 showEditor(template.url, template.title);
             }
+        }
         }
     }
 }
@@ -411,6 +419,11 @@ function renderTemplates(templatesToRender) {
 // --- Days left / Expired text ---
 let daysLeftHtml = "";
 const tAccess = accessData?.[template.id];
+if (currentUserRole === "admin") {
+    // Show special message for admin
+    daysLeftHtml = `<p class="text-sm text-blue-600 font-semibold">You are in Admin Access</p>`;
+} else {
+
 
 if (tAccess?.rechargeExpiry) {
     const expiry = new Date(tAccess.rechargeExpiry);
@@ -429,8 +442,7 @@ if (tAccess?.rechargeExpiry) {
         daysLeftHtml = `<p class="text-sm font-bold text-red-600 blink">Expired</p>`;
     }
 }
-
-
+  } 
     // --- Button logic: Coming Soon / Open / Pending / Buy ---
     const now = new Date();
     const hasAccess = !!(tAccess?.isRecharged && new Date(tAccess.rechargeExpiry) > now);
@@ -442,7 +454,15 @@ if (tAccess?.rechargeExpiry) {
         <button class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-slate-400 cursor-not-allowed" disabled>
           Coming Soon
         </button>`;
-    } else if (hasAccess) {
+    } else if (currentUserRole === "admin") {
+      primaryBtnHTML = `
+        <button
+          class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95"
+          data-url="${template.url}"
+          data-title="${template.title}">
+          Open Editor
+        </button>`;
+}   else if (hasAccess) {
       primaryBtnHTML = `
         <button
           class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95"
@@ -479,15 +499,16 @@ if (tAccess?.rechargeExpiry) {
         <p class="text-sm text-slate-600 flex-grow mb-4">${template.description}</p>
         <div class="flex items-center justify-between mt-auto">
           ${primaryBtnHTML}
-<button
-                                    class="favorite-button ml-4 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200
-                                    ${template.isFavorite ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
-                                    data-template-id="${template.id}"
-                                    title="${template.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}">
-                                    <svg class="h-5 w-5 inline-block align-middle" fill="${template.isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${template.isFavorite ? 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z' : 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z'}"></path>
-                                    </svg>
-                                </button>        </div>
+        <button
+       class="favorite-button ml-4 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200
+       ${template.isFavorite ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
+       data-template-id="${template.id}"
+       title="${template.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}">
+       <svg class="h-5 w-5 inline-block align-middle" fill="${template.isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${template.isFavorite ? 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z' : 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z'}"></path>
+       </svg>
+       </button>
+       </div>
       </div>
     `;
 
