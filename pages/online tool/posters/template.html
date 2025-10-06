@@ -28,6 +28,29 @@
             opacity: 0;
             transition: opacity 0.5s ease-out;
         }
+.flex-grow {
+    /* Corrected to background-image, and using a shorthand 'background' is often easier */
+    background: linear-gradient(90deg, rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgb(245, 164, 3) 100%);
+    /* Define the animation */
+    animation: gradient-shift 10s ease-in-out infinite alternate;
+    /* Optional: Ensure the background covers the entire element */
+    background-size: 400% 400%; 
+}
+
+@keyframes gradient-shift {
+    0% {
+        /* Start position - the gradient is aligned to the top-left */
+        background-position: 0% 50%;
+    }
+    50% {
+        /* Middle position - the gradient is centered */
+        background-position: 100% 50%;
+    }
+    100% {
+        /* End position - the gradient is aligned to the bottom-right */
+        background-position: 0% 50%;
+    }
+}
         /* Custom height for iframe container to fill available space below the sub-header */
         #iframe-container.dynamic-height {
             height: calc(100% - var(--subheader-height, 41px));
@@ -62,6 +85,30 @@
     25%, 75% { opacity: 0; }
 }
 
+/* Custom CSS to be included in your stylesheet */
+.btn-pulse {
+  /* Initial state: A strong shadow for depth */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  /* Apply the animation */
+  animation: pulse-shadow 2s infinite ease-in-out;
+  /* Optimization */
+  will-change: box-shadow; 
+}
+
+@keyframes pulse-shadow {
+  0% {
+    /* Base shadow: default blue color */
+    box-shadow: 0 0 0 0 rgba(255, 72, 0, 0.7); /* Indigo-600 with high opacity */
+  }
+  50% {
+    /* Maximum pulse: larger and more transparent shadow */
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); /* Same color, fades out */
+  }
+  100% {
+    /* Return to base, ready to repeat */
+    box-shadow: 0 0 0 0 rgb(255, 174, 0);
+  }
+}
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col h-screen">
@@ -435,13 +482,16 @@ if (currentUserRole === "admin" || currentUserRole === "tempadmin") {
           Coming Soon
         </button>`;
     } else {
-      primaryBtnHTML = `
-        <button
-          class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95"
-          data-url="${template.url}"
-          data-title="${template.title}">
-          Open Editor
-        </button>`;
+primaryBtnHTML = `
+  <button
+    class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95 
+    
+    btn-pulse"
+    
+    data-url="${template.url}"
+    data-title="${template.title}">
+    Open Editor
+  </button>`;
 }
 
     card.innerHTML = `
