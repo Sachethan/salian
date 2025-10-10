@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Stock Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for professional colors and typography */
+        body { font-family: 'Inter', sans-serif; background: #f4f6f8; }
+        
+        .section-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        /* Specific classes for recommendation color-coding */
+        .buy-action {
+            background-color: #d1fae5; /* green-100 */
+            color: #059669; /* green-600 */
+        }
+        .sell-action {
+            background-color: #fee2e2; /* red-100 */
+            color: #dc2626; /* red-600 */
+        }
+        .hold-action {
+            background-color: #f3f4f6; /* gray-100 */
+            color: #6b7280; /* gray-600 */
+        }
+        
+        /* List scrollbar for better look */
+        ul.scroll-list::-webkit-scrollbar { width: 8px; }
+        ul.scroll-list::-webkit-scrollbar-thumb {
+            background: #9ca3af; /* gray-400 */
+            border-radius: 4px;
+        }
+        ul.scroll-list::-webkit-scrollbar-track {
+            background: #e5e7eb; /* gray-200 */
+            border-radius: 4px;
+        }
+        
+        /* Tailwind Toggle Switch styles */
+        .toggle-switch-input:checked + .toggle-switch-bg {
+            background-color: #4f46e5; /* indigo-600 */
+        }
+        .toggle-switch-input:checked + .toggle-switch-bg > .toggle-switch-dot {
+            transform: translateX(1.5rem); 
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+<header class="mb-1">
+    <h1 class="text-2xl font-extrabold text-gray-900 flex items-center">
+        <svg class="w-8 h-8 mr-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 3a1 1 0 011-1h2a1 1 0 011 1v13a1 1 0 01-1 1h-2a1 1 0 01-1-1V3z"></path>
+        </svg>
+        Stock Tracker Dashboard
+    </h1>
+</header>
+
+<!-- Main Container: LEFT Control Panel | RIGHT Data/History Panel -->
+<div class="flex flex-col lg:flex-row gap-8">
+    
+    <!-- 1. LEFT PANEL: Configuration & Search (Fixed Width) -->
+    <div class="section-card bg-white p-6 rounded-2xl w-full lg:w-96 flex-shrink-0">
+        <!-- Auto-Refresh Toggle Switch -->
+        <div class="flex items-center justify-between py-1 mb-1">
+            <span class="text-sm font-medium text-gray-700" id="refreshStatusText">
+                Auto-Refresh: ON (5s)
+            </span>
+            <label for="autoRefreshToggle" class="flex items-center cursor-pointer">
+                <div class="relative">
+                    <input type="checkbox" id="autoRefreshToggle" class="sr-only toggle-switch-input" checked>
+                    <div class="block bg-gray-300 w-14 h-8 rounded-full toggle-switch-bg transition-colors duration-200 ease-in-out"></div>
+                    <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-200 ease-in-out shadow toggle-switch-dot"></div>
+                </div>
+            </label>
+        </div>
+        <!-- Stock Search Input and Results -->
+        <div class="relative mb-2">
+            <input type="text" id="search" placeholder="Search stock name or symbol..." 
+                   class="w-full p-3 pr-10 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150" 
+                   autocomplete="off">
+            
+            <!-- Search Results List -->
+            <ul id="results" class="absolute z-10 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg max-h-48 overflow-y-auto scroll-list"></ul>
+
+            <!-- Search Loading Indicator -->
+            <div id="searchLoading" class="hidden absolute z-20 w-full bg-white border border-gray-200 rounded-xl mt-1 shadow-lg p-3">
+                <div class="flex items-center space-x-2 text-indigo-600">
+                    <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.2" />
+                        <path d="M12 4.75V6.25" />
+                    </svg>
+                    <span class="text-sm">Searching...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. RIGHT DATA AREA: Stock Info + Recent Searches (Flexible) -->
+    <div class="flex flex-col lg:flex-row gap-8 lg:flex-1">
+        
+        <!-- 2a. Stock Info Card (Wider - Takes 2/3 space) -->
+        <div id="infoCard" class="section-card bg-white p-6 rounded-2xl w-full lg:flex-2 hidden">
+            <div class="flex items-center justify-center h-48 text-gray-500">
+                Select a stock to view its details.
+            </div>
+        </div>
+        
+        <!-- 2b. Recent Searches (Narrower - Takes 1/3 space) -->
+        <div class="section-card bg-white p-6 rounded-2xl w-full lg:flex-1">
+            <h4 class="text-lg font-bold text-gray-800 mb-3">Recent Searches (Local Storage)</h4>
+            <!-- Adjusted max-h to fit the vertical space better on large screens -->
+            <ul id="recentlySearched" class="space-y-2 max-h-96 lg:max-h-[500px] overflow-y-auto scroll-list">
+                <li class="p-2 text-sm text-gray-500">History will appear here...</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- Configuration ---
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTIOZUee3yeoCVflhScLW_US8vS3uFoRPqRGn1hXobR30LFUvqDhkeowUi2OOdTx-x/exec";
+const MAX_RECENT_SEARCHES = 5;
+const LS_KEY = 'stockDashboardRecentSearches';
+const REFRESH_INTERVAL_MS = 5000;
+
+// --- DOM Elements ---
+const searchInput = document.getElementById("search");
+const resultsList = document.getElementById("results");
+const searchLoading = document.getElementById("searchLoading");
+const card = document.getElementById("infoCard");
+const toggleSwitch = document.getElementById("autoRefreshToggle");
+const refreshStatusText = document.getElementById("refreshStatusText");
+const recentlySearchedList = document.getElementById("recentlySearched");
+
+// --- State Variables ---
+let searchTimeout, currentSymbol = null, currentName = null, autoRefreshTimer = null, autoRefreshOn = true;
+let recentlySearched = [];
+
+// --- Templates (Unchanged) ---
+const loadingContent = `
+    <div class="flex flex-col items-center justify-center p-8 text-indigo-600 h-48">
+        <svg class="animate-spin h-8 w-8 text-indigo-500 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.2" />
+            <path d="M12 4.75V6.25" />
+            <path d="M17.25 6.75l-1.06 1.06" />
+        </svg>
+        <span class="text-lg font-semibold">Fetching real-time data...</span>
+    </div>
+`;
+
+/**
+ * Builds the HTML content for the stock information card.
+ */
+function buildInfoCard(symbol, name, price, action, cls, isRefreshing = false) {
+    return `
+        <div class="space-y-4">
+            <p class="text-sm text-gray-500 font-medium ${isRefreshing ? 'opacity-80' : ''}">
+                ${isRefreshing ? 'Auto-Refreshed' : 'Data Retrieved'}
+            </p>
+            <h4 class="text-3xl font-extrabold text-gray-900 leading-tight">
+                ${name} <span class="text-indigo-500 text-base font-semibold">(${symbol})</span>
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-gray-100 pt-4">
+                <div class="bg-gray-50 p-4 rounded-xl">
+                    <span class="text-sm font-semibold text-gray-500 block">Current Price (INR)</span>
+                    <span class="text-4xl font-bold text-gray-900 mt-1 block">₹${price}</span>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl flex flex-col justify-center">
+                    <span class="text-sm font-semibold text-gray-500 block">Recommendation</span>
+                    <span class="mt-1 px-4 py-2 rounded-full text-lg font-extrabold shadow-md ${cls}">
+                        ${action}
+                    </span>
+                </div>
+            </div>
+            <p class="text-xs pt-2 text-gray-400">
+                The recommendation is based on a simple hardcoded rule for demonstration purposes.
+            </p>
+        </div>
+    `;
+}
+
+// ------------------------------------
+// --- Local Storage History Management ---
+// ------------------------------------
+
+function loadRecentlySearched() {
+    const stored = localStorage.getItem(LS_KEY);
+    if (stored) {
+        try {
+            recentlySearched = JSON.parse(stored);
+        } catch(e) {
+            console.error("Error parsing localStorage history:", e);
+            recentlySearched = [];
+        }
+    }
+    renderRecentlySearched();
+}
+
+function addRecentlySearched(symbol, name) {
+    const newEntry = { symbol, name };
+
+    const index = recentlySearched.findIndex(s => s.symbol === symbol);
+    if (index !== -1) {
+        recentlySearched.splice(index, 1);
+    }
+    recentlySearched.unshift(newEntry);
+    recentlySearched = recentlySearched.slice(0, MAX_RECENT_SEARCHES);
+
+    localStorage.setItem(LS_KEY, JSON.stringify(recentlySearched));
+    renderRecentlySearched();
+}
+
+function renderRecentlySearched() {
+    if (recentlySearched.length === 0) {
+        recentlySearchedList.innerHTML = `<li class="p-2 text-sm text-gray-500">No recent searches yet.</li>`;
+        return;
+    }
+
+    recentlySearchedList.innerHTML = recentlySearched.map(s =>
+        `<li data-symbol="${s.symbol}" data-name="${s.name}" 
+             class="p-2 cursor-pointer bg-gray-50 hover:bg-indigo-100 rounded-lg text-gray-700 text-sm transition duration-150">
+             <span class="font-medium">${s.name}</span> <span class="text-xs text-gray-400">(${s.symbol})</span>
+         </li>`
+    ).join("");
+}
+
+// ------------------------------------
+// --- Core Application Logic ---
+// ------------------------------------
+
+// 🔍 Stock Search (Google Sheet)
+searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim();
+    clearTimeout(searchTimeout);
+    resultsList.innerHTML = "";
+    searchLoading.classList.add("hidden");
+
+    if (query.length < 2) { 
+        return; 
+    }
+    
+    // Show loading indicator
+    searchLoading.classList.remove("hidden");
+
+    searchTimeout = setTimeout(async () => {
+        try {
+            const res = await fetch(`${SCRIPT_URL}?mode=search&q=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            
+            // Hide loading indicator
+            searchLoading.classList.add("hidden");
+
+            resultsList.innerHTML = data.map(q =>
+                `<li data-symbol="${q.symbol}" data-name="${q.name}" 
+                     class="p-3 cursor-pointer hover:bg-indigo-50 border-b border-gray-100 last:border-b-0">
+                     <span class="font-medium">${q.name}</span> 
+                     <span class="text-sm text-gray-500">(${q.symbol})</span>
+                 </li>`
+            ).join("");
+
+        } catch (e) {
+            console.error("Search failed:", e);
+            searchLoading.classList.add("hidden");
+            resultsList.innerHTML = `<li class="p-3 text-sm text-red-500">Error searching stocks.</li>`;
+        }
+    }, 300);
+});
+
+// 📈 Click stock from results
+resultsList.addEventListener("click", e => {
+    const li = e.target.closest("li");
+    if (!li) return;
+    selectStock(li.dataset.symbol, li.dataset.name);
+});
+
+// Click recently searched
+recentlySearchedList.addEventListener("click", e => {
+    const li = e.target.closest("li");
+    if (!li) return;
+    selectStock(li.dataset.symbol, li.dataset.name);
+});
+
+/**
+ * Main function to select a stock, update UI, save history, and start refresh.
+ */
+async function selectStock(symbol, name) {
+    currentSymbol = symbol;
+    currentName = name;
+    searchInput.value = `${name} (${symbol})`;
+    resultsList.innerHTML = ""; 
+    searchLoading.classList.add("hidden"); 
+    
+    // 1. Show the card and display loading content
+    card.classList.remove('hidden');
+    card.innerHTML = loadingContent;
+
+    // 2. Save to Local Storage
+    addRecentlySearched(symbol, name);
+    
+    // 3. Fetch data and update card
+    await showStockInfo(symbol, name);
+    
+    // 4. Start auto-refresh
+    startAutoRefresh();
+}
+
+/**
+ * Fetches stock details and updates the info card.
+ */
+async function showStockInfo(symbol, name, silent = false) {
+    try {
+        const res = await fetch(`${SCRIPT_URL}?mode=details&symbol=${encodeURIComponent(symbol)}`);
+        const data = await res.json();
+        
+        if (data.error) throw new Error(data.error);
+
+        const currentPrice = parseFloat(data.price);
+        let action = "Hold", cls = "hold-action";
+        
+        // Simple recommendation logic
+        if (currentPrice < 1000) { action = "Strong Buy"; cls = "buy-action"; }
+        else if (currentPrice > 2000) { action = "Sell Alert"; cls = "sell-action"; }
+
+        // Update the card content with actual data
+        card.innerHTML = buildInfoCard(
+            symbol, 
+            name, 
+            currentPrice.toFixed(2), 
+            action, 
+            cls, 
+            silent // Use 'silent' to indicate if this is an auto-refresh
+        );
+
+        if (!silent) console.log(`Updated ${symbol}: ${action} at ₹${currentPrice.toFixed(2)}`);
+    } catch (err) {
+        console.error("Failed to fetch stock info:", err);
+        // Display error message in the card
+        card.innerHTML = `
+            <div class="p-8 text-center text-red-600 bg-red-50 rounded-xl">
+                <p class="font-semibold text-lg">Data Error</p>
+                <p class="text-sm mt-2">Could not fetch data for ${name} (${symbol}). Check the external API URL.</p>
+            </div>
+        `;
+    }
+}
+
+// 🔄 Auto-refresh management
+function startAutoRefresh() {
+    clearInterval(autoRefreshTimer);
+    if (!autoRefreshOn) return;
+    autoRefreshTimer = setInterval(() => {
+        if (currentSymbol && currentName) {
+            showStockInfo(currentSymbol, currentName, true); // true for silent/refresh
+        }
+    }, REFRESH_INTERVAL_MS);
+}
+
+// Toggle auto refresh listener
+toggleSwitch.addEventListener("change", () => {
+    autoRefreshOn = toggleSwitch.checked;
+    
+    if (autoRefreshOn) {
+        refreshStatusText.textContent = `Auto-Refresh: ON (5s)`;
+        startAutoRefresh();
+    } else {
+        refreshStatusText.textContent = `Auto-Refresh: OFF`;
+        clearInterval(autoRefreshTimer);
+    }
+});
+
+// --- Initialization: Load history from localStorage on load ---
+window.addEventListener('load', () => {
+    loadRecentlySearched();
+    // Set initial toggle state based on autoRefreshOn (default is true)
+    toggleSwitch.checked = autoRefreshOn;
+    startAutoRefresh();
+});
+
+</script>
+</body>
+</html>
