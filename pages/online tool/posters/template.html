@@ -218,7 +218,7 @@
         </div>
 
     </div>
-          
+
         </div>
 
 
@@ -261,7 +261,7 @@
             </div>
         </div>
     </div>
-      
+
 
 
   <script type="module">
@@ -282,9 +282,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
-      
+
         document.addEventListener('DOMContentLoaded', () => {
-          
+
             onAuthStateChanged(auth, async (user) => {
         if (!user) {
           alert("Please login first");
@@ -312,8 +312,8 @@ if (snap.exists()) {
     new Date(templateAccess.rechargeExpiry) > new Date()
   );
 }
-                 
-          
+
+
             // --- DATA ---
             // To add a new template, just add a new object to this array.
             const templates = [
@@ -364,7 +364,7 @@ if (snap.exists()) {
                     category: 'general',
                     isFavorite: false
                 }, */
-              
+
             // --- DOM Element Selection ---
             const mainContent = document.querySelector('main');
             const templateSelector = document.getElementById('template-selector');
@@ -411,7 +411,7 @@ if (openId) {
                 showEditor(template.url, template.title);
             } else{
             if (!hasAccess(openId)) {
-                window.location.href = `payment.html?open=${openId}`;
+                showEditor(template.url, template.title);
             } else {
                 showEditor(template.url, template.title);
             }
@@ -709,7 +709,7 @@ currentCategory = savedCategory || 'all';
 
 updateActiveTab();
 filterAndRenderTemplates();
-          
+
               }); // 👈 close onAuthStateChanged
 }); // 👈 close DOMContentLoaded
 
