@@ -409,10 +409,10 @@ if (openId) {
         if (template.url !== 'about:blank') {
             if (currentUserRole === "admin" || currentUserRole === "tempadmin"){
                 showEditor(template.url, template.title);
-            } else{
+            } /* else{
             if (!hasAccess(openId)) {
                 window.location.href = `payment.html?open=${openId}`;
-            } else {
+            } */ else {
                 showEditor(template.url, template.title);
             }
         }
