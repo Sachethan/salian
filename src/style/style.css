@@ -702,14 +702,23 @@ input:checked + .slider .knob::before {
     .hero.loaded .lbtn { transition-delay: 0.8s; opacity: 1; transform: translateY(0); }
 
     /* Existing styles, ensure they dont conflict */
-    #notificationBox {
-      display: none;
-      border: 2px solid #4CAF50;
-      padding: 15px;
-      background: #f1f1f1;
-      border-radius: 8px;
-    }
-  
+#notificationBox {
+  position: fixed;                /* Stay fixed in viewport */
+  top: 19%;                       /* Move to middle vertically */
+  left: 50%;                      /* Move to middle horizontally */
+  transform: translate(-50%, -50%); /* Adjust to exact center */
+  display: none;
+  border: 2px solid #4578c5;
+  padding: 10px 15px;
+  color: #111;
+  background: #f1f1f1;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  max-width: 90%;                 /* Keep responsive on small screens */
+  text-align: center;
+  z-index: 9999;                  /* Stay above other elements */
+}
+
     #messageContainer{
       position: fixed;
       top: 10%;
