@@ -30,7 +30,7 @@
 
         /* Custom animation for the gift box 'pulsing' attention */
         @keyframes pulse-once {
-            0% { transform: scale(1); box-shadow: 0 0 15px rgba(138, 43, 226, 0.4); } /* BlueViolet pulse */
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(138, 43, 226, 0.4); }
             50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(138, 43, 226, 0.8); }
             100% { transform: scale(1); box-shadow: 0 0 15px rgba(138, 43, 226, 0.4); }
         }
@@ -49,7 +49,7 @@
             animation: fadeInScale 1s ease-out;
         }
 
-        /* NEW: Blasting Animation (Explosion Effect) */
+        /* Blasting Animation (Explosion Effect) */
         @keyframes blast-effect {
             0% { opacity: 1; transform: scale(0.1) rotate(0deg); box-shadow: 0 0 0 #FF6B6B; }
             50% { opacity: 1; transform: scale(1.5) rotate(5deg); box-shadow: 0 0 80px 40px rgba(255, 107, 107, 0.8); }
@@ -57,10 +57,10 @@
         }
 
         .blasting-image {
-            animation: blast-effect 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; /* A fast, dramatic curve */
+            animation: blast-effect 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
-        /* NEW: Final Image Pop-in Animation */
+        /* Final Image Pop-in Animation */
         @keyframes image-pop-in {
             0% { opacity: 0; transform: scale(0.7) rotate(-5deg); }
             100% { opacity: 1; transform: scale(1) rotate(0deg); }
@@ -85,9 +85,16 @@
                 The grand reveal is scheduled for your birthday gift launch.
             </p>
 
-            <!-- Gift Box Image (Pulsing) -->
-            <div class="pulsing-box bg-primary-light/10 p-8 rounded-xl shadow-lg border border-primary-light/50">
-                <img src="gift-box.png" alt="Gift Box" class="w-24 h-24 object-contain mx-auto">
+            <!-- Gift Box Image (Pulsing) - CONTAINS THE CAROUSEL -->
+            <div id="pulsing-box" class="pulsing-box relative bg-primary-light/10 p-8 rounded-xl shadow-lg border border-primary-light/50 overflow-hidden">
+                
+                <!-- NEW: Cycling Background Image (Blurred) -->
+                <img id="inner-bg-img" class="absolute inset-0 w-full h-full p-6 object-cover transition-opacity duration-500" 
+                     style="filter: blur(4px) brightness(1.2); transform: scale(1.1); z-index: 0;" 
+                     src="" alt=" " />
+
+                <!-- Gift Box Image (Pulsing and slightly transparent, on top) -->
+                <img src="gift-box.png" alt="Gift Box" class="w-24 h-24 object-contain mx-auto relative z-10" style="opacity: 0.9;">
             </div>
 
             <!-- Countdown Display -->
@@ -121,7 +128,7 @@
         </div>
     </div>
 
-    <!-- NEW: Full Screen Blast/Reveal Overlay (Hidden by Default) -->
+    <!-- Full Screen Blast/Reveal Overlay (Hidden by Default) -->
     <div id="blast-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-primary-light/95 transition-all duration-300 backdrop-blur-md p-4">
         
         <!-- The element that undergoes the blasting effect -->
@@ -134,9 +141,11 @@
             <h2 class="text-4xl font-black text-white mb-6 image-final">CONGRATULATIONS!</h2>
             <img src="cmf.png" alt="Your New Mobile Gift" class="image-final w-full h-auto object-contain mx-auto rounded-xl shadow-2xl border-4 border-white scale-90" style="max-height: 80vh;"/>
         </div>
-      <a href="gift.html" class="inline-block bg-accent-light hover:bg-accent-light/80 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-md">
-                BACK
-            </a>
+        
+        <!-- BACK button to dismiss the overlay and return to the launch state -->
+        <button id="back-button" class="mt-8 inline-block bg-accent-light hover:bg-accent-light/80 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-md">
+            BACK
+        </button>
     </div>
 
     <script>
@@ -150,11 +159,36 @@
         const blastOverlay = document.getElementById('blast-overlay');
         const blastingVisual = document.getElementById('blasting-visual');
         const mainContent = document.getElementById('main-content');
-        const mobileVisual = document.getElementById('mobile-visual'); // New: Mobile Visual Element
+        const mobileVisual = document.getElementById('mobile-visual');
+        const backButton = document.getElementById('back-button');
 
         // Control variables for claim state
         let isClaimTriggered = false;
         let autoTriggerTimeout;
+
+        // --- Background Carousel Logic (Now targeting the element inside the pulsing-box) ---
+        const backgroundImages = [
+            "image1.png", // NOTE: Use your actual local paths here
+            "image2.png", 
+            "image3.png",
+        ];
+        let currentBgIndex = 0;
+        const innerBgImgElement = document.getElementById('inner-bg-img'); // Target inside the pulsing box
+        let carouselInterval;
+
+        function startBackgroundCarousel() {
+            if (carouselInterval) clearInterval(carouselInterval);
+
+            carouselInterval = setInterval(() => {
+                // Change image source
+                currentBgIndex = (currentBgIndex + 1) % backgroundImages.length;
+                innerBgImgElement.src = backgroundImages[currentBgIndex];
+            }, 3000); // Change image every 3 seconds
+
+            // Initial load
+            innerBgImgElement.src = backgroundImages[0];
+        }
+
 
         // Function to format and display a time unit
         function createTimeUnit(value, label) {
@@ -173,6 +207,9 @@
             isClaimTriggered = true;
             if (autoTriggerTimeout) {
                 clearTimeout(autoTriggerTimeout); // Stop the auto-trigger if a user action happened
+            }
+            if (carouselInterval) {
+                clearInterval(carouselInterval); // Stop the carousel
             }
             
             // 1. Hide the main content card
@@ -203,10 +240,30 @@
             triggerClaim('Claim Button Click');
         });
 
-        // 2. Mobile Visual Click (New)
+        // 2. Mobile Visual Click
         mobileVisual.addEventListener('click', function() {
             triggerClaim('Mobile Visual Click');
         });
+
+        // 3. BACK Button Click
+        backButton.addEventListener('click', function() {
+            blastOverlay.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+            // Reset claim trigger so user can trigger it again
+            isClaimTriggered = false; 
+            
+            // Restart the auto-trigger/carousel based on current state
+            if (!countdownState.classList.contains('hidden')) {
+                 startBackgroundCarousel(); 
+            }
+             if (!launchState.classList.contains('hidden')) {
+                // Restart auto-trigger if returning to launch state
+                autoTriggerTimeout = setTimeout(() => {
+                    triggerClaim('Auto-Trigger (3 seconds)');
+                }, 3000);
+            }
+        });
+
 
         // --- Main Countdown Loop ---
         const countdownInterval = setInterval(function() {
@@ -217,12 +274,14 @@
                 // Time is up!
                 clearInterval(countdownInterval);
                 
-                // Only switch states if the claim hasnt been triggered yet (edge case where timer hits 0 during blast)
+                // Only switch states if the claim hasn't been triggered yet
                 if (!isClaimTriggered) {
                     countdownState.classList.add('hidden');
                     launchState.classList.remove('hidden');
                     launchState.classList.add('flex');
                     
+                    if (carouselInterval) clearInterval(carouselInterval); // Stop carousel when launching
+
                     // NEW: Set auto-trigger if not already claimed
                     autoTriggerTimeout = setTimeout(() => {
                         triggerClaim('Auto-Trigger (3 seconds)');
@@ -245,10 +304,15 @@
                 ${createTimeUnit(seconds, 'Secs')}
             `;
 
-            // Ensure the countdown state is visible while counting
+            // Ensure the countdown state is visible and the carousel is running
             countdownState.classList.remove('hidden');
             launchState.classList.add('hidden');
             countdownState.classList.add('flex');
+            
+            // Start the carousel if it hasn't been initialized
+            if (!carouselInterval) {
+                 startBackgroundCarousel();
+            }
 
         }, 1000);
     </script>
