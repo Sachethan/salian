@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Gift Launch</title>
+    
+<script src="https://cdn.tailwindcss.com"></script>
+    
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-light': '#8A2BE2', // BlueViolet for highlight
+                        'secondary-light': '#F0F2F5', // Light background
+                        'card-bg-light': '#FFFFFF', // White for cards
+                        'text-dark': '#333333', // Dark text for contrast
+                        'accent-light': '#FF6B6B', // Vibrant Coral for accents
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        /* Custom animation for the gift box 'pulsing' attention */
+        @keyframes pulse-once {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(138, 43, 226, 0.4); } /* BlueViolet pulse */
+            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(138, 43, 226, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(138, 43, 226, 0.4); }
+        }
+
+        .pulsing-box {
+            animation: pulse-once 2s infinite ease-in-out;
+        }
+
+        /* Animation for the mobile 'opening' effect */
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .mobile-reveal {
+            animation: fadeInScale 1s ease-out;
+        }
+
+        /* NEW: Blasting Animation (Explosion Effect) */
+        @keyframes blast-effect {
+            0% { opacity: 1; transform: scale(0.1) rotate(0deg); box-shadow: 0 0 0 #FF6B6B; }
+            50% { opacity: 1; transform: scale(1.5) rotate(5deg); box-shadow: 0 0 80px 40px rgba(255, 107, 107, 0.8); }
+            100% { opacity: 0; transform: scale(5) rotate(-5deg); box-shadow: 0 0 100px 60px rgba(138, 43, 226, 0.0); }
+        }
+
+        .blasting-image {
+            animation: blast-effect 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; /* A fast, dramatic curve */
+        }
+
+        /* NEW: Final Image Pop-in Animation */
+        @keyframes image-pop-in {
+            0% { opacity: 0; transform: scale(0.7) rotate(-5deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        .image-final {
+            animation: image-pop-in 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="bg-secondary-light text-text-dark font-sans min-h-screen flex items-center justify-center p-4 overflow-hidden">
+
+    <!-- Main Container Card -->
+    <div id="main-content" class="w-full max-w-xl bg-card-bg-light rounded-2xl shadow-xl p-6 md:p-10 border-4 border-primary-light/50 text-center">
+
+        <!-- Countdown State (Visible until Oct 27, 2025 10 PM) -->
+        <div id="countdown-state" class="flex flex-col items-center space-y-8">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-primary-light mb-2 tracking-tight">
+                A HUGE Surprise Awaits!
+            </h1>
+            <p class="text-lg text-gray-700">
+                The grand reveal is scheduled for your birthday gift launch.
+            </p>
+
+            <!-- Gift Box Image (Pulsing) -->
+            <div class="pulsing-box bg-primary-light/10 p-8 rounded-xl shadow-lg border border-primary-light/50">
+                <img src="gift-box.png" alt="Gift Box" class="w-24 h-24 object-contain mx-auto">
+            </div>
+
+            <!-- Countdown Display -->
+            <div id="timer" class="flex justify-center space-x-4">
+                <!-- Time units will be inserted here by JavaScript -->
+            </div>
+
+            <p class="text-lg font-medium text-gray-600 pt-4">
+                Surprise is active until Oct 27, 2025 at 10:00 PM IST!
+            </p>
+        </div>
+
+        <!-- Launch State (Visible AFTER Oct 27, 2025 10 PM) -->
+        <div id="launch-state" class="hidden flex-col items-center space-y-8">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-accent-light mb-2 tracking-tight">
+                🎁 Launching Your Birthday Gift! 🎁
+            </h1>
+            <p class="text-xl font-semibold text-gray-700">
+                The time is finally here! Check out your new mobile phone.
+            </p>
+
+            <!-- Mobile Reveal Visual (Now clickable) -->
+            <div id="mobile-visual" class="mobile-reveal bg-gray-100 p-8 rounded-3xl shadow-2xl border-4 border-accent-light/70 cursor-pointer hover:shadow-accent-light transition duration-200">
+                <img src="cmf.png" alt="New Mobile Phone" class="w-32 h-32 object-contain mx-auto" id="launch-preview-img">
+                <p class="text-sm text-gray-500 mt-2">New Phone Revealed! (Click me!)</p>
+            </div>
+
+            <a href="#" id="claim-link" class="inline-block bg-accent-light hover:bg-accent-light/80 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-md">
+                Claim Your Gift Now
+            </a>
+        </div>
+    </div>
+
+    <!-- NEW: Full Screen Blast/Reveal Overlay (Hidden by Default) -->
+    <div id="blast-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-primary-light/95 transition-all duration-300 backdrop-blur-md p-4">
+        
+        <!-- The element that undergoes the blasting effect -->
+        <div id="blasting-visual" class="p-10 rounded-full">
+            <img src="cmf.png" alt="Explosion Center" class="w-24 h-24 object-contain mx-auto opacity-0" />
+        </div>
+
+        <!-- The final, large image that pops in -->
+        <div class="mt-8 text-center max-w-lg w-full">
+            <h2 class="text-4xl font-black text-white mb-6 image-final">CONGRATULATIONS!</h2>
+            <img src="cmf.png" alt="Your New Mobile Gift" class="image-final w-full h-auto object-contain mx-auto rounded-xl shadow-2xl border-4 border-white scale-90" style="max-height: 80vh;"/>
+        </div>
+      <a href="gift.html" class="inline-block bg-accent-light hover:bg-accent-light/80 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-md">
+                BACK
+            </a>
+    </div>
+
+    <script>
+        // Set the target date/time: October 27, 2025, 10:00 PM (22:00:00) IST/Local Time
+        const launchDate = new Date("Oct 25, 2025 22:00:00").getTime();
+
+        const countdownState = document.getElementById('countdown-state');
+        const launchState = document.getElementById('launch-state');
+        const timerDisplay = document.getElementById('timer');
+        const claimLink = document.getElementById('claim-link');
+        const blastOverlay = document.getElementById('blast-overlay');
+        const blastingVisual = document.getElementById('blasting-visual');
+        const mainContent = document.getElementById('main-content');
+        const mobileVisual = document.getElementById('mobile-visual'); // New: Mobile Visual Element
+
+        // Control variables for claim state
+        let isClaimTriggered = false;
+        let autoTriggerTimeout;
+
+        // Function to format and display a time unit
+        function createTimeUnit(value, label) {
+            return `
+                <div class="text-center bg-gray-100 p-3 rounded-lg w-16 md:w-20 shadow-sm border border-gray-200">
+                    <span class="block text-3xl md:text-4xl font-mono font-bold text-primary-light transition duration-500 transform scale-100">${String(value).padStart(2, '0')}</span>
+                    <span class="block text-xs font-medium uppercase text-gray-500 mt-1">${label}</span>
+                </div>
+            `;
+        }
+
+        // --- Core function to trigger the claim/blast animation ---
+        function triggerClaim(source) {
+            if (isClaimTriggered) return; // Prevent double trigger
+
+            isClaimTriggered = true;
+            if (autoTriggerTimeout) {
+                clearTimeout(autoTriggerTimeout); // Stop the auto-trigger if a user action happened
+            }
+            
+            // 1. Hide the main content card
+            mainContent.classList.add('hidden');
+            
+            // 2. Show the full-screen blast overlay
+            blastOverlay.classList.remove('hidden');
+
+            // 3. Prepare the blasting element (using the phone image as the source of the blast)
+            const imgElement = blastingVisual.querySelector('img');
+            imgElement.src = document.getElementById('launch-preview-img').src;
+            imgElement.classList.remove('opacity-0');
+
+            // 4. Trigger the blast animation
+            blastingVisual.classList.add('blasting-image');
+
+            // Remove blast classes after animation (2000ms is enough for the effect)
+            setTimeout(() => {
+                blastingVisual.classList.remove('blasting-image');
+            }, 2000); 
+        }
+        
+        // --- Event Listeners for User Clicks ---
+        
+        // 1. Claim Link Click
+        claimLink.addEventListener('click', function(event) {
+            event.preventDefault(); 
+            triggerClaim('Claim Button Click');
+        });
+
+        // 2. Mobile Visual Click (New)
+        mobileVisual.addEventListener('click', function() {
+            triggerClaim('Mobile Visual Click');
+        });
+
+        // --- Main Countdown Loop ---
+        const countdownInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = launchDate - now;
+
+            if (distance <= 0) {
+                // Time is up!
+                clearInterval(countdownInterval);
+                
+                // Only switch states if the claim hasnt been triggered yet (edge case where timer hits 0 during blast)
+                if (!isClaimTriggered) {
+                    countdownState.classList.add('hidden');
+                    launchState.classList.remove('hidden');
+                    launchState.classList.add('flex');
+                    
+                    // NEW: Set auto-trigger if not already claimed
+                    autoTriggerTimeout = setTimeout(() => {
+                        triggerClaim('Auto-Trigger (3 seconds)');
+                    }, 3000); // 3000 milliseconds = 3 seconds
+                }
+                return;
+            }
+
+            // Calculate time components
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Update the display content
+            timerDisplay.innerHTML = `
+                ${createTimeUnit(days, 'Days')}
+                ${createTimeUnit(hours, 'Hours')}
+                ${createTimeUnit(minutes, 'Mins')}
+                ${createTimeUnit(seconds, 'Secs')}
+            `;
+
+            // Ensure the countdown state is visible while counting
+            countdownState.classList.remove('hidden');
+            launchState.classList.add('hidden');
+            countdownState.classList.add('flex');
+
+        }, 1000);
+    </script>
+</body>
+</html>
