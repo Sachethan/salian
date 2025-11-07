@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Professional Financial Tracker</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'primary': '#4f46e5', // Indigo-600
+                'primary-dark': '#4338ca', // Indigo-700
+                'danger': '#ef4444', // Red-500
+              },
+              fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        /* For Inter font and general reset */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        /* Style for the table to ensure responsiveness */
+        .table-responsive {
+            /* Ensures table content can scroll horizontally if needed on small screens */
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Ensure table is wide enough to justify scrolling, preventing cramped columns */
+        table { min-width: 500px; }
+        /* Adjusting button padding for better touch targets */
+        button { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+
+    <!-- Feedback Container (for alerts/messages) -->
+    <div id="feedbackContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Confirmation Modal Structure (Hidden by default) -->
+    <div id="confirmModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-40 hidden flex items-center justify-center transition-opacity duration-300 p-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-sm transform transition-all duration-300 scale-95">
+            <h4 class="text-xl font-semibold text-gray-800 mb-4" id="confirmTitle">Confirm Action</h4>
+            <p class="text-gray-600 mb-6" id="confirmMessage">Are you sure you want to proceed with this action?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="confirmCancelBtn" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150">
+                    Cancel
+                </button>
+                <button id="confirmProceedBtn" class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-primary hover:bg-primary-dark transition duration-150">
+                    Proceed
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="max-w-7xl mx-auto p-4"> <!-- Reduced padding slightly for mobile max-width -->
+        <header class="mb-6">
+            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Financial Tracker</h1>
+            <p class="text-xs text-gray-500 mt-1">Connects to your Google Sheet via Apps Script.</p>
+        </header>
+
+        <!-- API URL Notice -->
+        <div id="urlNotice" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-3 mb-6 rounded-lg text-sm" role="alert">
+            <p class="font-bold">Configuration Required</p>
+            <p class="text-sm">Please update the `WEB_APP_URL` variable in the script section below.</p>
+        </div>
+
+
+        <!-- Summary Card (Sticky) -->
+        <div class="sticky top-0 bg-white shadow-xl rounded-xl p-4 mb-6 z-10 border border-indigo-100" id="summaryCard">
+            <!-- Grid setup for mobile: single column stacking for large numbers, switches to 3 columns on small screens -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
+                
+                <!-- Total Budget -->
+                <div class="p-3 bg-indigo-50 rounded-lg">
+                    <label class="text-xs font-semibold uppercase text-indigo-700 block mb-1">Total Budget</label>
+                    <div class="text-2xl font-bold text-indigo-600" id="totalBudget">₹ 0</div>
+                </div>
+
+                <!-- Total Expenses -->
+                <div class="p-3 bg-red-50 rounded-lg">
+                    <label class="text-xs font-semibold uppercase text-red-700 block mb-1">Total Expenses</label>
+                    <div class="text-2xl font-bold text-red-600" id="totalExpenses">₹ 0</div>
+                </div>
+
+                <!-- Remaining Amount -->
+                <div class="p-3 bg-green-50 rounded-lg">
+                    <label class="text-xs font-semibold uppercase text-green-700 block mb-1">Remaining</label>
+                    <div class="text-2xl font-bold text-green-600" id="remaining">₹ 0</div>
+                </div>
+
+            </div>
+            <div class="text-center text-xs text-gray-500 mt-3">
+                Remaining = Total Budget - Total Expenses
+            </div>
+        </div>
+
+        <!-- Forms and Tables Container (Stacking on mobile is default behavior) -->
+        <div class="lg:flex lg:space-x-8 space-y-6 lg:space-y-0">
+            
+            <!-- Left Column: Budgets -->
+            <div class="lg:w-1/2 space-y-6">
+                
+                <!-- Add Budget Card -->
+                <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">New Budget Allocation</h3>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label for="budgetDate" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <!-- Increased padding for better touch target -->
+                            <input type="date" id="budgetDate" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150"/>
+                        </div>
+                        <div>
+                            <label for="budgetName" class="block text-sm font-medium text-gray-700 mb-1">Budget Name</label>
+                            <input type="text" id="budgetName" placeholder="e.g., Monthly Salary, Travel Fund" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150"/>
+                        </div>
+                        <div>
+                            <label for="budgetAmount" class="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+                            <input type="number" id="budgetAmount" placeholder="0.00" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150"/>
+                        </div>
+                        <div class="flex space-x-3 pt-2">
+                            <!-- Increased vertical padding for better touch target -->
+                            <button id="addBudgetBtn" class="flex-1 px-4 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition duration-150 shadow-md">
+                                Add Budget
+                            </button>
+                            <button id="refreshBtn" class="px-4 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition duration-150">
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budgets Table Card -->
+                <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Budget History</h3>
+                    <div class="table-responsive">
+                        <table id="budgetTable" class="w-full text-left text-sm text-gray-600">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-2 py-2 font-semibold">Date</th>
+                                    <th scope="col" class="px-2 py-2 font-semibold">Name</th>
+                                    <th scope="col" class="px-2 py-2 font-semibold text-right">Amount (₹)</th>
+                                    <th scope="col" class="px-2 py-2 font-semibold">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Budget entries will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <p id="noBudget" class="text-gray-500 text-sm mt-4 hidden">No budget entries found.</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Expenses -->
+            <div class="lg:w-1/2 space-y-6">
+                
+                <!-- Add Expense Card -->
+                <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Record New Expense</h3>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label for="expenseName" class="block text-sm font-medium text-gray-700 mb-1">Expense Description</label>
+                            <input type="text" id="expenseName" placeholder="e.g., Groceries, Dinner Out, Fuel" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150"/>
+                        </div>
+                        <div>
+                            <label for="expenseAmount" class="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+                            <input type="number" id="expenseAmount" placeholder="0.00" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150"/>
+                        </div>
+                        <div class="pt-2">
+                            <!-- Increased vertical padding for better touch target -->
+                            <button id="addExpenseBtn" class="w-full px-4 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition duration-150 shadow-md">
+                                Add Expense
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expenses Table Card -->
+                <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Expense Log</h3>
+                    <div class="table-responsive">
+                        <table id="expenseTable" class="w-full text-left text-sm text-gray-600">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-2 py-2 font-semibold">Description</th>
+                                    <th scope="col" class="px-2 py-2 font-semibold text-right">Amount (₹)</th>
+                                    <th scope="col" class="px-2 py-2 font-semibold">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Expense entries will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <p id="noExpense" class="text-gray-500 text-sm mt-4 hidden">No expense entries found.</p>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- End of max-w-7xl container -->
+
+<script>
+/* ========== EDIT THIS: put your deployed Apps Script web app URL here ========== */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzLMbQ7DzeT4fZPi6shIllYm99yHJIgpEsfqGZlf7J1yLFlw-2P7gbqm86gJJtcaB6x9Q/exec"; // e.g. https://script.google.com/macros/s/AKfy.../exec
+/* ========================================================================== */
+
+// --- Custom UI Feedback (Replacing alert() and confirm()) ---
+
+const feedbackContainer = document.getElementById('feedbackContainer');
+const confirmModal = document.getElementById('confirmModal');
+const confirmMessage = document.getElementById('confirmMessage');
+const confirmTitle = document.getElementById('confirmTitle');
+const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+const confirmProceedBtn = document.getElementById('confirmProceedBtn');
+
+// Map for feedback styles
+const feedbackStyles = {
+    error: { bg: 'bg-red-500', text: 'text-white', title: 'Error' },
+    success: { bg: 'bg-green-500', text: 'text-white', title: 'Success' },
+    info: { bg: 'bg-blue-500', text: 'text-white', title: 'Info' },
+};
+
+/** Displays a temporary notification message. */
+function showFeedback(message, type = 'info') {
+    const style = feedbackStyles[type] || feedbackStyles.info;
+    
+    const div = document.createElement('div');
+    div.className = `p-4 rounded-lg shadow-xl max-w-xs ${style.bg} ${style.text} transition duration-300 transform translate-x-full opacity-0`;
+    div.innerHTML = `<div class="font-bold">${style.title}</div><p class="text-sm">${message}</p>`;
+    
+    feedbackContainer.appendChild(div);
+
+    // Animate in
+    setTimeout(() => {
+        div.classList.remove('translate-x-full', 'opacity-0');
+    }, 10);
+
+    // Animate out and remove
+    setTimeout(() => {
+        div.classList.add('translate-x-full', 'opacity-0');
+        div.addEventListener('transitionend', () => div.remove());
+    }, 5000);
+}
+
+/** Displays a confirmation modal and returns a promise resolving to true or false. */
+function showConfirmation(message, title = 'Confirm Deletion') {
+    return new Promise(resolve => {
+        confirmTitle.textContent = title;
+        confirmMessage.textContent = message;
+        confirmModal.classList.remove('hidden');
+
+        const handleCancel = () => {
+            confirmModal.classList.add('hidden');
+            resolve(false);
+            removeListeners();
+        };
+
+        const handleProceed = () => {
+            confirmModal.classList.add('hidden');
+            resolve(true);
+            removeListeners();
+        };
+
+        const removeListeners = () => {
+            confirmCancelBtn.removeEventListener('click', handleCancel);
+            confirmProceedBtn.removeEventListener('click', handleProceed);
+        };
+
+        confirmCancelBtn.addEventListener('click', handleCancel);
+        confirmProceedBtn.addEventListener('click', handleProceed);
+    });
+}
+
+// --- API and Data Logic ---
+
+// Check for API URL configuration
+if (!WEB_APP_URL) {
+    document.getElementById('urlNotice').classList.remove('hidden');
+} else {
+    document.getElementById('urlNotice').classList.add('hidden');
+}
+
+// Helper: format INR
+function fmtINR(x){ 
+    return '₹ ' + Number(x||0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits:2}); 
+}
+
+// Generic fetch wrapper for GET actions
+async function apiGet(action){
+    const url = new URL(WEB_APP_URL);
+    url.searchParams.set('action', action);
+    
+    try {
+        const res = await fetch(url.toString(), { method: 'GET', mode:'cors' });
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Status ${res.status}: ${text}`);
+        }
+        return await res.json();
+    } catch (err) {
+        showFeedback(`GET failed: ${err.message}`, 'error');
+        console.error(err);
+        throw err; // Re-throw to be caught by the caller if needed
+    }
+}
+
+// Generic POST wrapper
+async function apiPost(action, data){
+    try {
+        const res = await fetch(WEB_APP_URL, {
+            method:'POST',
+            mode:'cors',
+            body: JSON.stringify({ action: action, data: data })
+        });
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Status ${res.status}: ${text}`);
+        }
+        return await res.json();
+    } catch (err) {
+        showFeedback(`POST failed: ${err.message}`, 'error');
+        console.error(err);
+        throw err; // Re-throw to be caught by the caller
+    }
+}
+
+// Render data returned from server
+function renderData(data){
+    document.getElementById('totalBudget').textContent = fmtINR(data.totals.totalBudget);
+    document.getElementById('totalExpenses').textContent = fmtINR(data.totals.totalExpenses);
+    document.getElementById('remaining').textContent = fmtINR(data.totals.remaining);
+    
+    const remainingEl = document.getElementById('remaining');
+    // Reset classes
+    remainingEl.className = 'text-2xl font-bold'; 
+    remainingEl.parentElement.classList.remove('bg-red-50', 'bg-green-50');
+    
+    if (data.totals.remaining < 0) {
+        remainingEl.classList.add('text-red-600');
+        remainingEl.parentElement.classList.add('bg-red-50');
+    } else {
+        remainingEl.classList.add('text-green-600');
+        remainingEl.parentElement.classList.add('bg-green-50');
+    }
+
+
+    // budgets
+    const bt = document.querySelector('#budgetTable tbody'); bt.innerHTML = '';
+    if (data.budgets.length === 0) {
+        document.getElementById('noBudget').classList.remove('hidden');
+    } else {
+        document.getElementById('noBudget').classList.add('hidden');
+        data.budgets.forEach(b=>{
+            const tr = document.createElement('tr');
+            tr.className = 'border-b hover:bg-gray-50';
+            tr.innerHTML = `
+                <td class="px-2 py-2">${b.date||'-'}</td>
+                <td class="px-2 py-2">${escapeHtml(b.name||'')}</td>
+                <td class="px-2 py-2 font-medium text-right">${fmtINR(b.amount)}</td>
+                <td class="px-2 py-2">
+                    <button style="padding:8px 12px;border-radius:6px;border:none;background:red;color:#fff;cursor:pointer" class="text-danger hover:text-red-700 font-medium text-sm transition duration-150" onclick="deleteBudget(${b.row})">
+                        Delete
+                    </button>
+                </td>`;
+            bt.appendChild(tr);
+        });
+    }
+
+
+    // expenses
+    const et = document.querySelector('#expenseTable tbody'); et.innerHTML = '';
+    if (data.expenses.length === 0) {
+        document.getElementById('noExpense').classList.remove('hidden');
+    } else {
+        document.getElementById('noExpense').classList.add('hidden');
+        data.expenses.forEach(e=>{
+            const tr = document.createElement('tr');
+            tr.className = 'border-b hover:bg-gray-50';
+            tr.innerHTML = `
+                <td class="px-2 py-2">${escapeHtml(e.name||'')}</td>
+                <td class="px-2 py-2 font-medium text-right text-red-600">${fmtINR(e.amount)}</td>
+                <td class="px-2 py-2">
+                    <button style="padding:8px 12px;border-radius:6px;border:none;background:red;color:#fff;cursor:pointer"class="text-danger hover:text-red-700 font-medium text-sm transition duration-150" onclick="deleteExpense(${e.row})">
+                        Delete
+                    </button>
+                </td>`;
+            et.appendChild(tr);
+        });
+    }
+}
+
+function escapeHtml(text){
+    return (text+'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+// load all
+async function refreshAll(){
+    if (!WEB_APP_URL) {
+        showFeedback("Please configure the WEB_APP_URL to connect to your data.", 'error');
+        return;
+    }
+    try {
+        const data = await apiGet('getAllData');
+        renderData(data);
+        showFeedback("Data refreshed successfully.", 'success');
+    } catch(err){
+        // Feedback already shown inside apiGet
+    }
+}
+
+// Add budget
+document.getElementById('addBudgetBtn').addEventListener('click', async ()=>{
+    const date = document.getElementById('budgetDate').value;
+    const name = document.getElementById('budgetName').value.trim();
+    const amount = Number(document.getElementById('budgetAmount').value || 0);
+    
+    if (!name || amount <= 0) { 
+        showFeedback('Please enter a valid budget name and a positive amount.', 'info'); 
+        return; 
+    }
+    
+    try {
+        await apiPost('addBudget', { date: date, name: name, amount: amount });
+        document.getElementById('budgetName').value=''; 
+        document.getElementById('budgetAmount').value=''; 
+        document.getElementById('budgetDate').value='';
+        showFeedback('Budget entry added.', 'success');
+        await refreshAll();
+    } catch(err){ 
+        // Feedback already shown inside apiPost
+    }
+});
+
+// Add expense
+document.getElementById('addExpenseBtn').addEventListener('click', async ()=>{
+    const name = document.getElementById('expenseName').value.trim();
+    const amount = Number(document.getElementById('expenseAmount').value || 0);
+    
+    if (!name || amount <= 0) { 
+        showFeedback('Please enter an expense description and a positive amount.', 'info'); 
+        return; 
+    }
+    
+    try {
+        await apiPost('addExpense', { name: name, amount: amount });
+        document.getElementById('expenseName').value=''; 
+        document.getElementById('expenseAmount').value='';
+        showFeedback('Expense recorded.', 'success');
+        await refreshAll();
+    } catch(err){ 
+        // Feedback already shown inside apiPost
+    }
+});
+
+document.getElementById('refreshBtn').addEventListener('click', refreshAll);
+
+// expose delete functions to global scope for button onClick to call
+window.deleteBudget = async function(row){
+    const confirmed = await showConfirmation('Are you sure you want to permanently delete this budget entry?', 'Confirm Budget Deletion');
+    if (!confirmed) return;
+    
+    try {
+        await apiPost('deleteBudget', { rowNumber: row });
+        showFeedback('Budget entry deleted.', 'success');
+        await refreshAll();
+    } catch(err){ 
+        // Feedback already shown inside apiPost
+    }
+};
+
+window.deleteExpense = async function(row){
+    const confirmed = await showConfirmation('Are you sure you want to permanently delete this expense entry?', 'Confirm Expense Deletion');
+    if (!confirmed) return;
+    
+    try {
+        await apiPost('deleteExpense', { rowNumber: row });
+        showFeedback('Expense entry deleted.', 'success');
+        await refreshAll();
+    } catch(err){ 
+        // Feedback already shown inside apiPost
+    }
+};
+
+// initial load
+window.onload = function() {
+    refreshAll();
+};
+
+</script>
+</body>
+  </html>
