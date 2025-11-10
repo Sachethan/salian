@@ -109,6 +109,51 @@
     box-shadow: 0 0 0 0 rgb(255, 174, 0);
   }
 }
+
+  #loadimg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#loadimg div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#loadimg img.logo {
+    width: 75px; /* Adjust the size of your logo */
+    height: auto;
+    z-index: 1000;
+}
+
+#loadimg span {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 4px solid transparent;
+    border-top: 4px solid #8A2BE2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1000;
+}
+
+/* Animation for the spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col h-screen">
@@ -174,6 +219,13 @@
     <!-- Main Container -->
     <div id="templateLoader" class="space-y-6 w-full max-w-lg mx-auto">
 
+<div id="loadimg">
+    <div>
+        <img src="https://saliantech.github.io/Saliantech/Files/resources/loading.gif" alt="Logo" class="logo"/>
+        <span></span>
+    </div>  
+<p class="absolute bottom-[40%] text-lg font-medium text-slate-700">@Sachethan_Salian_Creation</p>  
+</div>
         <!-- First Loading Card (mimics the top poster) -->
         <div class="w-full bg-white rounded-xl shadow-lg p-6">
             <div class="flex animate-pulse flex-col space-y-4">
@@ -227,13 +279,15 @@
             <!-- Loading Overlay -->
             <div id="loading-overlay" class="absolute inset-0 bg-slate-200 bg-opacity-80 flex items-center justify-center z-10">
                 <div class="flex flex-col items-center">
-                    <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <p class="mt-4 text-lg font-medium text-slate-700">Loading Editor...</p>
-                </div>
-            </div>
+<div id="loadimg">
+    <div>
+        <img src="https://saliantech.github.io/Saliantech/Files/resources/loading.gif" alt="Logo" class="logo"/>
+        <span></span>
+    </div>              
+</div>      
+<p class="absolute bottom-[20%] text-lg font-medium text-slate-700">Loading Editor...</p>          
+</div>
+</div>
             <iframe id="viewer" src="about:blank" title="Editor" class="w-full h-full border-0"></iframe>
         </div>
 
