@@ -7,6 +7,56 @@
 
   <link rel="stylesheet" href="src/style/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+  <style>
+  
+    
+  #loadimg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#loadimg div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#loadimg img.logo {
+    width: 75px; /* Adjust the size of your logo */
+    height: auto;
+    z-index: 1000;
+}
+
+#loadimg span {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 4px solid transparent;
+    border-top: 4px solid #8A2BE2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1000;
+}
+
+/* Animation for the spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+  
+  </style>
   
 </head>
 <body>
@@ -52,8 +102,13 @@
 
   <div id="messageContainer" style=""></div>
 
-  <div class="loader" id="loader">
-    <div class="spinner"></div>
+    <div class="loader" id="loader">
+    <div id="loadimg">
+    <div>
+        <img src="https://saliantech.github.io/Saliantech/Files/resources/loading.gif" alt="Logo" class="logo"/>
+        <span></span>
+    </div>
+</div>
   </div>
   
   <div id="super-popup">
