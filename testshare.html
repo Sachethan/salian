@@ -415,90 +415,87 @@ function updateMessageContent() {
   
 }
 
-// --- Best Case: Native Share with Image ---
+// --- WhatsApp Share Logic (Vivo Fix) ---
   const whatsappButton = document.getElementById('whatsapp-button');
 
   whatsappButton.addEventListener("click", async () => {
-    // 1. UI Loading State
+    
+    // 1. Basic Setup
     scanningOverlay.classList.add('active');
     whatsappButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
     whatsappButton.disabled = true;
 
-    // 2. Prepare Data
-    const dateText = document.getElementById("change1")?.textContent || "";
-    const name = document.getElementById("change2")?.textContent || "";
-    const time = document.getElementById("change4")?.textContent || "";
-    const messageText = document.getElementById("msgformate").textContent;
-
-    // Extract date for filename
-    const dateMatch = dateText.match(/\)\s*(\d{2}-\d{2}-\d{4})/);
-    const rawDate = dateMatch ? dateMatch[1] : 'invite';
-    const filename = `Bajane_${rawDate}.jpg`;
-
-    // 3. Save to Firebase (Optional - keep if you want analytics)
     try {
-      await addDoc(collection(db, "annapoorna_poster1"), {
-        name: name.trim(),
-        time: time.trim(),
-        date: rawDate,
-        action: "share_whatsapp"
-      });
-    } catch (err) {
-      console.error("Firebase Error:", err);
-    }
+        const dateText = document.getElementById("change1")?.textContent || "";
+        const rawDate = dateText.match(/\)\s*(\d{2}-\d{2}-\d{4})/)?.[1] || 'invite';
+        const filename = `Bajane_${rawDate}.jpg`;
+        const messageText = document.getElementById("msgformate").textContent;
 
-    // 4. Generate Image & Share
-    document.fonts.ready.then(async () => {
-      autoFitText('[contenteditable="true"]');
+        // 2. Generate Image (Using JPEG with 0.8 quality to keep file size safe for Android Share)
+        // We use 'await' here to ensure image is ready
+        const blob = await htmlToImage.toBlob(invitationCard, { 
+            quality: 0.8, 
+            type: 'image/jpeg',
+            cacheBust: true 
+        });
 
-      try {
-        // A. Create the Blob (The image data in memory)
-        const blob = await htmlToImage.toBlob(invitationCard, { quality: 0.95, cacheBust: true, type: 'image/jpeg' });
-        
-        // B. Convert Blob to a File Object (Required for navigator.share)
-        const file = new File([blob], filename, { type: "image/jpeg" });
+        // 3. Create the File Object
+        // Important: "lastModified" helps some Android versions accept the file
+        const file = new File([blob], filename, { 
+            type: "image/jpeg", 
+            lastModified: new Date().getTime() 
+        });
 
-        // C. Check if the browser supports sharing FILES
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        // 4. CHECK: Is Sharing Supported?
+        if (!navigator.share) {
+            throw new Error("Browser does not support Sharing API.");
+        }
+
+        // 5. CHECK: Can we share THIS file?
+        if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+             throw new Error("Your device allows sharing text, but NOT images.");
+        }
+
+        // 6. ATTEMPT TO OPEN SYSTEM TRAY
+        await navigator.share({
+            files: [file],
+            title: "Invite",
+            text: messageText
+        });
+
+        // If we get here, it worked!
+        whatsappButton.innerHTML = `<i class="fa-solid fa-check"></i>`;
+        window.parent.postMessage({ type: "showMessage", message: "Shared successfully!", variant: "success" }, "*");
+
+    } catch (error) {
+        // --- ERROR HANDLER (The "Why" it failed) ---
+        console.warn("Share failed:", error);
+
+        // Dont show alert if user just cancelled (clicked 'X' on tray)
+        if (error.name !== 'AbortError') {
+            // FALLBACK STRATEGY
+            // If system tray fails, we Download + Open WhatsApp App
+            alert("System Share failed on this device.\n\nSwitching to manual mode:\n1. Image is downloading...\n2. WhatsApp will open.\n3. Please attach the image.");
             
-            // D. Trigger the Share Sheet
-            await navigator.share({
-              files: [file],
-              title: 'Bhajane Invitation',
-              text: messageText
-            });
-            
-            // Success
-            whatsappButton.innerHTML = `<i class="fa-solid fa-check"></i>`;
-            window.parent.postMessage({ type: "showMessage", message: `<strong>Shared successfully!</strong>`, variant: "success" }, "*");
-
-        } else {
-            // Error: Browser doesn't support file sharing (e.g., Desktop or Old Android)
-            alert("Your browser does not support direct image sharing.\nDownloading image instead.");
-            
-            // Fallback: Just download it
+            // A. Download Image
             const link = document.createElement('a');
+            // Re-generate blob url if needed, or reuse logic
+            const blob = await htmlToImage.toBlob(invitationCard, { quality: 0.8, type: 'image/jpeg' });
             link.href = URL.createObjectURL(blob);
-            link.download = filename;
+            link.download = `Bajane_Invite.jpg`;
             link.click();
-        }
 
-      } catch (error) {
-        // This catches if the user clicks "Cancel" in the share sheet
-        if (error.name === 'AbortError') {
-             console.log("User cancelled the share.");
-             // No alert needed, just reset button
-        } else {
-             console.error('Share Error:', error);
-             alert("Share failed: " + error.message);
+            // B. Open WhatsApp (App Scheme)
+            setTimeout(() => {
+                const messageText = document.getElementById("msgformate").textContent;
+                window.location.href = `whatsapp://send?text=${encodeURIComponent(messageText)}`;
+            }, 1000);
         }
-      } finally {
-        // Reset Button
-        whatsappButton.disabled = false;
+    } finally {
         scanningOverlay.classList.remove('active');
+        whatsappButton.disabled = false;
         setTimeout(() => { whatsappButton.innerHTML = `<i class="fa-brands fa-whatsapp"></i>`; }, 2000);
-      }
-    });
+    }
   });
 </script>
 <script>
