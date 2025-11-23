@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sachethan Salian Creation</title>
+  <title>Sachethan Salian</title>
 
   <!-- External CSS -->
   <link rel="stylesheet" href="src/style/style.css" />
@@ -315,13 +315,10 @@
   </section>
   
   <!-- Chat Button (Floating) -->
-  <button id="chat-btn" title="Open chat">💬</button>
+<button id="chat-btn" title="Open chat">💬</button>
 
-  <!-- Chat Popup -->
   <div id="chat-popup">
-    <button id="close-chat" title="Close chat">X</button>
-    <iframe id="chat-iframe" src="chat/chat.html"></iframe> <!-- Change chat.html to your chat page -->
-  </div>
+    <iframe id="chat-iframe" src="chat/chat.html"></iframe> </div>
 
   <!-- Footer -->
   <footer id="footer" class="footer">
@@ -690,26 +687,72 @@
       });
     }
 
-    const chatBtn = document.getElementById("chat-btn");
-    const chatPopup = document.getElementById("chat-popup");
-    const closeChat = document.getElementById("close-chat");
-    const chatIframe = document.getElementById("chat-iframe");
+const chatBtn = document.getElementById("chat-btn");
+const chatPopup = document.getElementById("chat-popup");
+const chatIframe = document.getElementById("chat-iframe");
 
-    // Preload chat page when website loads
-    window.addEventListener("load", () => {
-      // Don't set src immediately, let the original src handle it
-      // This avoids unnecessary reloads
-      // chatIframe.src = "chat/chat.html"; // Original was pages/waste/user.html
-    });
+// Helper variable to track state quickly
+let isChatOpen = false;
+
+chatBtn.addEventListener("click", toggleChat);
+
+function toggleChat() {
+  if (isChatOpen) {
+    // --- Closing the chat ---
+    chatPopup.style.display = "none";
+    document.body.classList.remove("no-scroll");
     
-    chatBtn.addEventListener("click", () => {
-      chatPopup.style.display = "block";
-    });
+    // Visual changes back to chat icon
+    chatBtn.classList.remove("is-open");
+    chatBtn.innerHTML = "💬";
+    chatBtn.title = "Open chat";
+    isChatOpen = false;
 
-    closeChat.addEventListener("click", () => {
-      chatPopup.style.display = "none";
-    });
-  </script>
+  } else {
+    // --- Opening the chat ---
+    chatPopup.style.display = "block";
+    document.body.classList.add("no-scroll");
+    
+    // Visual changes to 'X' icon
+    chatBtn.classList.add("is-open");
+    chatBtn.innerHTML = "X"; 
+    chatBtn.title = "Close chat";
+    isChatOpen = true;
+
+    // IMPORTANT: Clear the unread notification when user opens chat
+    chatBtn.classList.remove("has-unread");
+  }
+}
+
+// ==========================================
+//  CROSS-ORIGIN MESSAGING LISTENER
+// ==========================================
+// This listens for messages sent specifically from the iframe
+window.addEventListener('message', function(event) {
+    
+    // Security Best Practice: In production, uncomment the next line and replace 
+    // with your actual iframe domain if it's hosted elsewhere.
+    // if (event.origin !== "https://your-chat-domain.com") return;
+
+    // Ensure the message comes from our chat iframe source
+    // (optional extra check if you have multiple iframes)
+    // if (event.source !== chatIframe.contentWindow) return;
+
+
+    // Check if the data sent is what we expect
+    if (event.data && event.data.type === 'CHAT_NOTIFICATION') {
+        console.log("Parent received notification status:", event.data.hasUnread);
+        
+        // Only show the notification badge if the chat window is currently CLOSED
+        if (event.data.hasUnread === true && !isChatOpen) {
+            chatBtn.classList.add("has-unread");
+            // Optional: If your chat sends a count, you could set it as an attribute here
+            // chatBtn.setAttribute('data-count', event.data.count); 
+        } 
+        // Note: We generally don't remove the class here if hasUnread becomes false,
+        // because we only want to clear it when the user *clicks* to open the chat.
+    }
+});  </script>
 
 </body>
 </html>
