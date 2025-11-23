@@ -7,94 +7,187 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; }
+    body { 
+      font-family: 'Inter', sans-serif; 
+      /* Apply dark theme to the root */
+      background-color: #111827; /* bg-gray-900 */
+      color: #D1D5DB; /* text-gray-300 */
+    }
+    
+    /* Dark mode scrollbar */
     ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; }
-    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+    ::-webkit-scrollbar-track { background: #1F2937; /* bg-gray-800 */ }
+    ::-webkit-scrollbar-thumb { background: #4B5563; /* bg-gray-600 */ border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6B7280; /* bg-gray-500 */ }
 
-  .safe-screen {
-    height: 100svh; /* Dynamic height for mobile */
-    display: flex;
-    flex-direction: column;
-  }
-  #chatBox {
-    flex: 1;
-    overflow-y: auto;
-  }
-.break-words {
-  word-break: break-word;
-}
+    .safe-screen {
+      height: 100svh; /* Dynamic height for mobile */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* Prevent body scroll */
+    }
 
+    #chatBox {
+      flex: 1;
+      overflow-y: auto;
+    }
+    
+    .break-words {
+      word-break: break-word;
+      white-space: pre-wrap; /* Preserve line breaks */
+    }
+
+    /* Message bubble styling */
+    .msg-bubble-sent {
+      border-radius: 1.2rem 1.2rem 0.3rem 1.2rem;
+    }
+    .msg-bubble-received {
+      border-radius: 1.2rem 1.2rem 1.2rem 0.3rem;
+    }
+
+    /* Loading Spinner */
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #4F46E5; /* indigo-600 */
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
-<body class="bg-gray-50 flex flex-col h-screen">
-  <div class="fixed w-full max-w-full bg-white shadow-2xl h-screen flex flex-col">
+<body class="flex flex-col h-screen">
+
+  <!-- Main container -->
+  <div class="fixed w-full max-w-full bg-gray-900 h-screen flex flex-col">
 
     <!-- ✅ Admin User List -->
     <div id="userListScreen" class="hidden flex-col h-full">
-      <div class="bg-sky-600 text-white p-5 flex items-center justify-between">
-        <h1 class="text-xl font-bold">Users</h1>
-        <span class="text-sm font-light">Admin View</span>
+      <div class="bg-gray-800 text-white p-4 flex items-center justify-between shadow-md">
+        <h1 class="text-xl font-bold">Support Inbox</h1>
+        <span class="text-sm font-semibold text-indigo-400">Admin</span>
       </div>
-      <div id="userList" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+      
+      <!-- Search Bar -->
+      <div class="p-4 bg-gray-800 border-b border-gray-700">
+        <input id="userSearchInput" type="text" placeholder="Search users..." class="w-full p-3 bg-gray-700 border border-gray-600 rounded-full text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      
+      <div id="userList" class="flex-1 overflow-y-auto p-2 space-y-1">
+        <!-- User list items will be injected here -->
+      </div>
     </div>
 
     <!-- ✅ Chat Screen -->
-<div id="chatScreen" class="hidden safe-screen">
-  <!-- Header -->
-<div class="bg-sky-600 text-white p-5 flex items-center justify-between">
-  <div class="flex items-center gap-4">
-    <button id="backBtn" class="hidden text-white font-bold p-2 hover:scale-110 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-      </svg>
-    </button>
-    <span id="chatUserName" class="text-lg font-bold"></span>
-  </div>
+    <div id="chatScreen" class="hidden safe-screen">
+      <!-- Header -->
+      <div class="bg-gray-800 text-white p-4 flex items-center justify-between shadow-md z-20">
+        <div class="flex items-center gap-3">
+          <!-- Back Button -->
+          <button id="backBtn" class="hidden text-white p-2 rounded-full hover:bg-gray-700 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          
+          <!-- Avatar and Name -->
+          <div id="chatHeaderAvatar" class="w-10 h-10"></div>
+          <span id="chatUserName" class="text-lg font-bold"></span>
+        </div>
 
-  <!-- 3-dot menu -->
-  <div class="relative">
-    <button id="chatMenuBtn" class="p-2">
-      ⋮
-    </button>
-    <div id="chatMenu" class="hidden absolute right-0 mt-2 bg-white text-black rounded shadow-md w-32 z-50">
-      <button id="clearChatBtn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Clear Chat</button>
+        <!-- 3-dot menu -->
+        <div class="relative">
+          <button id="chatMenuBtn" class="p-2 rounded-full hover:bg-gray-700 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+            </svg>
+          </button>
+          <div id="chatMenu" class="hidden absolute right-0 mt-2 bg-gray-700 text-white rounded-lg shadow-xl w-40 z-50 overflow-hidden">
+            <button id="clearChatBtn" class="flex items-center gap-2 w-full text-left px-4 py-3 hover:bg-gray-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span>Clear Chat</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat messages (fills available space) -->
+      <div id="chatBox" class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col justify-start">
+        <!-- Loading Spinner Placeholder -->
+        <div id="loadingSpinner" class="flex justify-center items-center h-full">
+          <div class="loader"></div>
+        </div>
+      </div>
+
+      <!-- Reply Box -->
+      <div id="replyBox" class="hidden p-3 bg-gray-800 border-l-4 border-indigo-500 m-2 rounded-lg">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-sm font-semibold text-indigo-400">Replying to...</p>
+            <p id="replyText" class="text-sm text-gray-300 truncate"></p>
+          </div>
+          <button onclick="cancelReply()" class="p-2 rounded-full hover:bg-gray-700 text-red-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Typing Indicator -->
+      <div id="typingIndicator" class="hidden px-4 pb-2 text-sm text-gray-400 italic">
+        <span>Typing...</span>
+      </div>
+
+      <!-- Fixed Input Bar -->
+      <div class="p-4 flex gap-3 border-t border-gray-700 bg-gray-800 z-10">
+        <input id="messageInput" class="flex-1 p-3 bg-gray-700 border border-gray-600 rounded-full text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Type a message..." />
+        <button id="sendBtn" class="bg-indigo-600 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg hover:bg-indigo-700 transition-all transform hover:scale-105 active:scale-95">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform rotate-45 -translate-y-px translate-x-px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </button>
+      </div>
     </div>
-  </div>
-</div>
-
-  <!-- Chat messages (fills available space) -->
-  <div id="chatBox" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100 flex flex-col justify-start"></div>
-
-  <!-- Fixed Input Bar -->
-      <div id="replyBox" class="hidden p-2 bg-gray-100 border-l-4 border-sky-500 mb-2 rounded">
-  <p id="replyText" class="text-sm text-gray-700"></p>
-  <button onclick="cancelReply()" class="text-xs text-red-500 mt-1">✖ Cancel</button>
-</div>
-
-  <div class="p-4 flex gap-3 border-t bg-white">
-    <input id="messageInput" class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="Type a message..." />
-    <button id="sendBtn" class="bg-sky-600 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg hover:bg-sky-700">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform rotate-45 -translate-y-px translate-x-px" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-      </svg>
-    </button>
-  </div>
-</div>
-
     
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getFirestore, collection, setDoc, getDocs, getDoc, addDoc, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, limit } 
-      from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-    import { serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+  <!-- Modal for login/error (replaces alert) -->
+  <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-xl max-w-sm w-full">
+      <h3 id="modalTitle" class="text-lg font-bold text-white mb-4">Notice</h3>
+      <p id="modalMessage" class="text-gray-300 mb-6"></p>
+      <button id="modalCloseBtn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors">
+        OK
+      </button>
+    </div>
+  </div>
 
+
+  <script type="module">
+    // --- Firebase 11.x Imports (Users specified versions) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { 
+      getFirestore, collection, setDoc, getDocs, getDoc, addDoc, query, 
+      orderBy, onSnapshot, doc, updateDoc, deleteDoc, limit, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+    import { 
+      getAuth, onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+    // Note: serverTimestamp is now included in the main firestore import
+
+    // --- Firebase Config (Hardcoded for Testing) ---
     const firebaseConfig = {
       apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
       authDomain: "editech-93e95.firebaseapp.com",
@@ -105,12 +198,20 @@
       measurementId: "G-3CGVLC34XD"
     };
 
+    // --- Firebase Initialization ---
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    let currentUid = null, role = null, username = null, adminId = null, selectedUser = null, unsubscribe = null;
 
+    // --- Global State ---
+    let currentUid = null, role = null, username = null, adminId = null, selectedUser = null;
+    let chatUnsubscribe = null; // For messages
+    let typingTimeout = null;
+    let currentChatId = null;
+    let chatDocUnsubscribe = null; // For typing indicator
+
+    // --- DOM Elements ---
     const userListScreen = document.getElementById("userListScreen");
     const chatScreen = document.getElementById("chatScreen");
     const userListDiv = document.getElementById("userList");
@@ -119,359 +220,658 @@
     const messageInput = document.getElementById("messageInput");
     const sendBtn = document.getElementById("sendBtn");
     const backBtn = document.getElementById("backBtn");
+    const userSearchInput = document.getElementById("userSearchInput");
+    const typingIndicator = document.getElementById("typingIndicator");
+    const chatHeaderAvatar = document.getElementById("chatHeaderAvatar");
+    const loadingSpinner = document.getElementById("loadingSpinner");
+    const replyBox = document.getElementById("replyBox");
+    
+    // --- Modal Functions ---
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalMessage = document.getElementById("modalMessage");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
 
+    function showModal(title, message) {
+      modalTitle.textContent = title;
+      modalMessage.textContent = message;
+      modal.classList.remove("hidden");
+    }
+    modalCloseBtn.onclick = () => modal.classList.add("hidden");
+
+
+    // --- Authentication (Original Logic) ---
     onAuthStateChanged(auth, async (user) => {
-      if (!user) { userListDiv.innerHTML = "Login"; return; }
-      currentUid = user.uid;
+      if (user) {
+        currentUid = user.uid;
+        console.log("User authenticated:", currentUid);
+        
+        try {
+          const snap = await getDocs(collection(db, "users"));
+          snap.forEach((d) => {
+            if (d.id === currentUid) {
+              role = d.data().role;
+              username = d.data().username;
+            }
+            if (d.data().role === "admin") {
+              adminId = d.id;
+            }
+          });
 
-      const snap = await getDocs(collection(db, "users"));
-      snap.forEach((d) => {
-        if (d.id === currentUid) { role = d.data().role; username = d.data().username; }
-        if (d.data().role === "admin") adminId = d.id;
-      });
-
-      if (role === "admin") { userListScreen.classList.remove("hidden"); loadUsers(); }
-      else { selectedUser = adminId; chatUserName.textContent = "Support"; chatScreen.classList.remove("hidden"); loadMessages(currentUid, adminId); }
-    });
-
-    function getChatId(uid1, uid2) { return [uid1, uid2].sort().join("_"); }
-
- function loadUsers() {
-  userListDiv.innerHTML = "";
-
-  // Listen for realtime user updates
-  onSnapshot(collection(db, "users"), (snap) => {
-    userListDiv.innerHTML = "";
-
-    snap.forEach((docSnap) => {
-      const data = docSnap.data();
-      if (data.role !== "user") return;
-
-      const chatId = getChatId(currentUid, docSnap.id);
-
-      // Listen for realtime last message
-      const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "desc"), limit(1));
-      onSnapshot(q, (msgSnap) => {
-        let lastMsg = "No messages yet";
-        let unread = false;
-
-        if (!msgSnap.empty) {
-          const msgData = msgSnap.docs[0].data();
-          lastMsg = msgData.text;
-
-          // Show unread symbol if message is NOT read and sent by that user
-          if (!msgData.read && msgData.senderId === docSnap.id) {
-            unread = true;
+          if (!role) {
+            console.warn("User document not found for UID:", currentUid);
+            // Optionally create a user doc here if needed
           }
+
+          console.log(`Role: ${role}, Username: ${username}, AdminID: ${adminId}`);
+
+          // Route user based on role
+          if (role === "admin") {
+            userListScreen.classList.remove("hidden");
+            chatScreen.classList.add("hidden");
+            loadUsers();
+          } else if (adminId) {
+            selectedUser = adminId;
+            userListScreen.classList.add("hidden");
+            chatScreen.classList.remove("hidden");
+            openChat(adminId, "Support"); // Open chat with admin
+          } else {
+            showModal("Error", "Could not find a support admin. Please try again later.");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          showModal("Database Error", "Could not load user data.");
         }
-
-        // Create user list button
-        const btn = document.createElement("button");
-        btn.className = "w-full text-left p-4 rounded-xl bg-gray-50 border border-gray-200 hover:bg-sky-50 hover:border-sky-300 flex justify-between items-center";
-
-        btn.innerHTML = `
-          <div>
-            <p class="font-semibold">${data.username}</p>
-            <p class="text-xs text-gray-400">${lastMsg.substring(0, 20)}...</p>
-          </div>
-          ${unread ? '<span class="w-3 h-3 bg-blue-500 rounded-full"></span>' : ""}
-        `;
-
-        btn.onclick = () => openChat(docSnap.id, data.username);
-
-        // Remove old entry if exists (to avoid duplicates)
-        const oldBtn = document.getElementById("user-" + docSnap.id);
-        if (oldBtn) oldBtn.remove();
-
-        btn.id = "user-" + docSnap.id;
-        userListDiv.appendChild(btn);
-      });
+      } else {
+        console.log("User is signed out.");
+        currentUid = null;
+        role = null;
+        username = null;
+        showModal("Authentication Error", "You are not signed in. Please log in to continue.");
+        userListDiv.innerHTML = `<p class="text-center text-gray-400 p-4">Please log in to view users.</p>`;
+      }
     });
-  });
+
+    // --- Utility Functions ---
+    
+    function getChatId(uid1, uid2) { 
+      if (!uid1 || !uid2) return null;
+      return [uid1, uid2].sort().join("_"); 
+    }
+
+  // ✅ === ADD THIS FUNCTION HERE ===
+function notifyParent(hasUnreadMessages) {
+  // Check if we are actually inside an iframe
+  if (window.self === window.top) return;
+
+  const messageData = {
+      type: 'CHAT_NOTIFICATION',
+      hasUnread: hasUnreadMessages
+  };
+
+  // Send message to the parent window
+  // Using '*' allows any parent domain. For extra security in production, 
+  // replace '*' with your specific website domain (e.g., "https://yourwebsite.com")
+  window.parent.postMessage(messageData, '*');
 }
-
-function openChat(userId, userName) {
-  // Unsubscribe from any previous chat immediately
-  if (unsubscribe) {
-    unsubscribe();
-    unsubscribe = null;
-  }
-
-  // Immediately clear UI so old messages dont flash
-  chatBox.innerHTML = `<p class="text-gray-400 text-center mt-10">Loading...</p>`;
-
-  selectedUser = userId;
-  chatUserName.textContent = userName;
-  userListScreen.classList.add("hidden");
-  chatScreen.classList.remove("hidden");
-  backBtn.classList.remove("hidden");
-
-  // Load messages for new chat
-  loadMessages(currentUid, userId);
-}
-
-
+// ✅ === END ADDITION ===
+  
+  
     function formatDate(timestamp) {
       if (!timestamp) return "";
       const date = timestamp.toDate();
-      const options = { day: "2-digit", month: "short", year: "numeric" };
+      const options = { day: "2-digit", month: "short" };
       const time = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      
+      // Check if its today
+      const today = new Date();
+      if (today.toDateString() === date.toDateString()) {
+        return time; // Just show time
+      }
       return `${date.toLocaleDateString("en-GB", options)} ${time}`;
     }
-  
-function formatMessageText(text) {
-  if (!text) return "";
 
-  // Escape HTML first
-  let safeText = escapeHTML(text);
-
-  // Convert URLs to clickable links
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return safeText.replace(urlRegex, (url) => {
-    return `<a href="${url}" target="_blank" class="text-blue-800 underline">${url}</a>`;
-  });
-}
-
-
- let replyData = null;
-
-function replyToMessage(sender, text, id) {
-  document.getElementById("replyBox").classList.remove("hidden");
-  document.getElementById("replyText").textContent = `${sender}: ${text}`;
-  replyData = { senderName: sender, text: text, id: id };
-}
-
-
-function cancelReply() {
-  replyData = null;
-  document.getElementById("replyBox").classList.add("hidden");
-}
-
-// ✅ Make them global
-window.replyToMessage = replyToMessage;
-window.cancelReply = cancelReply;
-
-function scrollToMessage(id) {
-  const msgDiv = document.getElementById(`msg-${id}`);
-  if (msgDiv) {
-    msgDiv.scrollIntoView({ behavior: "smooth", block: "center" });
-    msgDiv.classList.add("bg-yellow-200");
-
-    setTimeout(() => msgDiv.classList.remove("bg-yellow-200"), 2000);
-  }
-}
-
-window.scrollToMessage = scrollToMessage; // ✅ make global
-  
-function truncateText(text, maxLength = 40) {
-  if (!text) return "";
-  return text.length > maxLength
-    ? text.substring(0, maxLength) + "..."
-    : text;
-}
-  
-async function loadMessages(uid1, uid2) {
-  const chatId = getChatId(uid1, uid2);
-
-  // ✅ Get lastClearedAt for current user
-  const clearDocRef = doc(db, "chats", chatId, "clearState", uid1);
-  const clearDocSnap = await getDoc(clearDocRef);
-  let lastClearedAt = 0;
-  if (clearDocSnap.exists()) {
-    lastClearedAt = clearDocSnap.data().lastClearedAt?.toMillis() || 0;
-  }
-
-  const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp"));
-  unsubscribe = onSnapshot(q, (snapshot) => {
-    chatBox.innerHTML = "";
-
-    // ✅ If no messages after lastClearedAt
-    let hasVisibleMessages = false;
-
-    snapshot.forEach((docSnap) => {
-      const msg = docSnap.data();
-
-      // ✅ Hide messages cleared by current user
-      if (!msg.timestamp || msg.timestamp.toMillis() <= lastClearedAt) return;
-
-      hasVisibleMessages = true;
-
-      const align = msg.senderId === currentUid ? "justify-end" : "justify-start";
-      const bgColor = msg.senderId === currentUid ? "bg-sky-600 text-white" : "bg-gray-200 text-gray-800";
-      const showTick = msg.senderId === currentUid ? (msg.read ? "✔✔" : "✔") : "";
-const replyHTML = msg.replyTo
-  ? `<div class="text-xs p-2 mb-1 rounded bg-gray-100 text-blue-500 border-l-4 border-sky-500 cursor-pointer"
-       onclick="scrollToMessage('${msg.replyToId}')">
-       <strong>${msg.replyTo.senderId === currentUid ? "You" : msg.replyTo.senderName}:</strong><br>
-       ${escapeHTML(truncateText(msg.replyTo.text))}
-     </div>`
-  : "";
-
-      chatBox.innerHTML += `
-  <div class="flex ${align}" id="msg-${docSnap.id}">
-    <div class="max-w-[80%] px-4 py-3 rounded-2xl ${bgColor} relative break-words">
-<p class="text-xs font-medium mb-1 opacity-80">
-  ${msg.senderId === currentUid ? "You" : (msg.senderName || "Unknown")}
-</p>
-    ${replyHTML}${formatMessageText(msg.text)}
-            <div class="flex justify-between items-center mt-1 text-xs opacity-70">
-              <span>${formatDate(msg.timestamp)}</span>
-              <span>${showTick}</span>
-            </div>
-
-            <!-- 3-dot menu -->
-            <button class="absolute top-2 right-2 text-[20px] opacity-90 hover:opacity-100" onclick="toggleMenu('${docSnap.id}')">⋮</button>
-            <div id="menu-${docSnap.id}" class="hidden absolute right-8 top-2 bg-white text-black shadow-md rounded-md p-2">
-              <button class="block w-full text-left px-3 py-1 hover:bg-gray-100" onclick="copyMessage('${msg.text}')">📋 Copy</button>
-              ${
-                msg.senderId === currentUid
-                  ? `<button class="block w-full text-left px-3 py-1 hover:bg-gray-100" onclick="deleteMessage('${chatId}','${docSnap.id}')">🗑 Delete</button>`
-                  : ""
-              }
-<button 
-  class="block w-full text-left px-3 py-1 hover:bg-gray-100" 
-  onclick="replyToMessage('${msg.senderName}','${msg.text}','${docSnap.id}')">↩ Reply</button>
-            </div>
-          </div>
-        </div>`;
-    });
-
-    if (!hasVisibleMessages) {
-      chatBox.innerHTML = `<p class="text-gray-400 text-center mt-10">No messages yet. Start the conversation!</p>`;
+    function formatMessageText(text) {
+      if (!text) return "";
+      let safeText = escapeHTML(text);
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return safeText.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank" class="text-indigo-300 underline">${url}</a>`;
+      });
     }
 
-    chatBox.scrollTop = chatBox.scrollHeight;
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-    // ✅ Mark messages as read (only for visible messages)
-    markMessagesAsRead(uid1, uid2);
-  });
-}
+    function truncateText(text, maxLength = 40) {
+      if (!text) return "";
+      return text.length > maxLength
+        ? escapeHTML(text.substring(0, maxLength)) + "..."
+        : escapeHTML(text);
+    }
+    
+    const avatarColors = [
+      'bg-red-500', 'bg-yellow-500', 'bg-green-500', 'bg-blue-500', 
+      'bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 'bg-teal-500'
+    ];
 
+    function getInitials(name) {
+      if (!name) return "?";
+      const names = name.split(' ');
+      if (names.length === 1) return name[0].toUpperCase();
+      return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+    }
+    
+    function createAvatar(name) {
+      const initials = getInitials(name);
+      // Simple hash to get a consistent color
+      const colorIndex = (name || "").length % avatarColors.length;
+      const color = avatarColors[colorIndex];
+      
+      return `
+        <div class="w-10 h-10 rounded-full ${color} flex items-center justify-center font-bold text-white text-sm">
+          ${initials}
+        </div>
+      `;
+    }
 
-    async function markMessagesAsRead(uid1, uid2) {
-      const q = query(collection(db, "chats", getChatId(uid1, uid2), "messages"));
-      const snap = await getDocs(q);
-      snap.forEach(async (d) => {
-        if (d.data().senderId !== currentUid && !d.data().read) {
-          await updateDoc(doc(db, "chats", getChatId(uid1, uid2), "messages", d.id), { read: true });
+    // --- Main App Logic" ---
+
+    function loadUsers() {
+      userListDiv.innerHTML = "";
+      const userChatListeners = {}; // To manage onSnapshot listeners
+
+      onSnapshot(collection(db, "users"), (snap) => {
+        userListDiv.innerHTML = ""; // Clear list for redraw
+
+        snap.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (data.role !== "user") return;
+
+          const userId = docSnap.id;
+          const chatId = getChatId(currentUid, userId);
+          if (!chatId) return;
+
+          // Check if listener already exists
+          if (userChatListeners[chatId]) {
+            userChatListeners[chatId](); // Unsubscribe old listener
+          }
+
+          const q = query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "desc"), limit(1));
+          
+          // Listen for realtime last message
+          userChatListeners[chatId] = onSnapshot(q, (msgSnap) => {
+            let lastMsg = "No messages yet";
+            let unread = false;
+
+            if (!msgSnap.empty) {
+              const msgData = msgSnap.docs[0].data();
+              lastMsg = msgData.text || "Binary message";
+              if (!msgData.read && msgData.senderId === userId) {
+                unread = true;
+              }
+            }
+            
+            // Find existing button to update or create new
+            let btn = document.getElementById("user-" + userId);
+            if (!btn) {
+              btn = document.createElement("button");
+              btn.id = "user-" + userId;
+              btn.className = "w-full text-left p-3 rounded-xl hover:bg-gray-800 transition-colors flex items-center gap-3 user-list-item";
+              userListDiv.appendChild(btn);
+            }
+            
+            btn.setAttribute("data-username", data.username.toLowerCase()); // For search
+            btn.innerHTML = `
+              ${createAvatar(data.username)}
+              <div class="flex-1 overflow-hidden">
+                <div class="flex justify-between items-center">
+                  <p class="font-semibold text-gray-100">${escapeHTML(data.username)}</p>
+                  ${unread ? '<span class="w-3 h-3 bg-indigo-500 rounded-full"></span>' : ""}
+                </div>
+                <p class="text-sm text-gray-400 truncate">${truncateText(lastMsg, 30)}</p>
+              </div>
+            `;
+            
+            btn.onclick = () => openChat(userId, data.username);
+          });
+        });
+      });
+    }
+
+    // User search functionality
+    userSearchInput.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      document.querySelectorAll(".user-list-item").forEach(item => {
+        const username = item.getAttribute("data-username");
+        if (username.includes(searchTerm)) {
+          item.classList.remove("hidden");
+        } else {
+          item.classList.add("hidden");
+        }
+      });
+    });
+
+    function openChat(userId, userName) {
+      // Unsubscribe from any previous chat
+      if (chatUnsubscribe) chatUnsubscribe();
+      if (chatDocUnsubscribe) chatDocUnsubscribe();
+
+      loadingSpinner.classList.remove("hidden"); // Show spinner
+      chatBox.innerHTML = ""; // Clear old messages
+
+      selectedUser = userId;
+      currentChatId = getChatId(currentUid, userId);
+      chatUserName.textContent = escapeHTML(userName);
+      chatHeaderAvatar.innerHTML = createAvatar(userName); // Add avatar to header
+      
+      userListScreen.classList.add("hidden");
+      chatScreen.classList.remove("hidden");
+      if (role === 'admin') {
+        backBtn.classList.remove("hidden");
+      }
+      
+      cancelReply(); // Ensure reply box is closed
+
+      if (!currentChatId) {
+        showModal("Error", "Invalid chat session.");
+        loadingSpinner.classList.add("hidden");
+        return;
+      }
+
+      // Load messages
+      loadMessages(currentUid, userId);
+      
+      // Listen for typing status
+      chatDocUnsubscribe = onSnapshot(doc(db, "chats", currentChatId), (docSnap) => {
+        if (docSnap.exists() && docSnap.data().typing?.[selectedUser]) {
+          typingIndicator.classList.remove("hidden");
+        } else {
+          typingIndicator.classList.add("hidden");
         }
       });
     }
+
+    async function loadMessages(uid1, uid2) {
+      if (!currentChatId) {
+        console.error("loadMessages: currentChatId is not set.");
+        loadingSpinner.classList.add("hidden");
+        return;
+      }
+      
+      const clearDocRef = doc(db, "chats", currentChatId, "clearState", uid1);
+      const clearDocSnap = await getDoc(clearDocRef);
+      let lastClearedAt = 0;
+      if (clearDocSnap.exists()) {
+        lastClearedAt = clearDocSnap.data().lastClearedAt?.toMillis() || 0;
+      }
+
+      const q = query(collection(db, "chats", currentChatId, "messages"), orderBy("timestamp"));
+      
+      chatUnsubscribe = onSnapshot(q, (snapshot) => {
+        loadingSpinner.classList.add("hidden"); // Hide spinner
+        chatBox.innerHTML = "";
+        let hasVisibleMessages = false;
+        
+        // ✅ 1. NEW TRACKER VARIABLE
+    let foundNewUnreadMsg = false;
+
+        snapshot.forEach((docSnap) => {
+          const msg = docSnap.data();
+          const msgId = docSnap.id;
+
+          if (!msg.timestamp || msg.timestamp.toMillis() <= lastClearedAt) return;
+          hasVisibleMessages = true;
+
+          const isSender = msg.senderId === currentUid;
+            
+// ✅ 2. CHECK FOR UNREAD MESSAGES FROM OTHERS
+      // If I am NOT the sender, AND it is marked as unread
+      if (!isSender && !msg.read) {
+          foundNewUnreadMsg = true;
+      }            
+            
+          const align = isSender ? "justify-end" : "justify-start";
+          const bgColor = isSender ? "bg-indigo-600 text-white" : "bg-gray-700 text-gray-200";
+          const bubbleClass = isSender ? "msg-bubble-sent" : "msg-bubble-received";
+          const readTick = isSender ? (msg.read ? "✔✔" : "✔") : "";
+          const readColor = msg.read ? "text-blue-300" : "text-gray-400";
+          const edited = msg.edited ? `<span class="text-xs opacity-70 ml-2">(edited)</span>` : "";
+
+          // Reply HTML
+          const replyHTML = msg.replyTo
+            ? `<div class="text-xs p-2 mb-2 rounded bg-gray-800 text-indigo-300 border-l-4 border-indigo-500 cursor-pointer"
+                 onclick="scrollToMessage('${msg.replyToId}')">
+                 <strong>${msg.replyTo.senderId === currentUid ? "You" : escapeHTML(msg.replyTo.senderName)}:</strong><br>
+                 ${truncateText(msg.replyTo.text)}
+               </div>`
+            : "";
+          
+          // Message content (check for editing)
+          const messageContent = `
+            <p class="text-xs font-medium mb-1 opacity-80">
+              ${isSender ? "You" : escapeHTML(msg.senderName || "Unknown")}
+            </p>
+            ${replyHTML}
+            <div id="text-${msgId}" class="break-words">${formatMessageText(msg.text)}</div>
+            
+            <!-- Edit container (hidden by default) -->
+            <div id="edit-${msgId}" class="hidden flex flex-col gap-2 mt-2">
+              <textarea rows="3" class="w-full p-2 bg-gray-600 border border-gray-500 rounded-md text-gray-100">${escapeHTML(msg.text)}</textarea>
+              <div class="flex justify-end gap-2">
+                <button class="text-xs text-gray-400 hover:text-white" onclick="cancelEdit('${msgId}', \`${escapeHTML(msg.text)}\`)">Cancel</button>
+                <button class="text-xs text-indigo-300 hover:text-white font-semibold" onclick="saveEdit('${msgId}')">Save</button>
+              </div>
+            </div>
+            
+            <div class="flex justify-end items-center gap-2 mt-1 text-xs opacity-70">
+              ${edited}
+              <span>${formatDate(msg.timestamp)}</span>
+              <span class="${readColor}">${readTick}</span>
+            </div>
+          `;
+
+          // Menu button
+          const menuButton = `
+            <button class="absolute top-2 right-2 p-1 rounded-full text-gray-300 opacity-50 hover:opacity-100 hover:bg-black/20" onclick="toggleMenu('${msgId}')">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+              </svg>
+            </button>`;
+          
+          // Menu
+          const menuItems = [
+            `<button class="flex items-center gap-2 w-full text-left px-3 py-2 hover:bg-gray-600" onclick="replyToMessage('${escapeHTML(msg.senderName)}','${escapeHTML(msg.text)}','${msgId}')">↩ Reply</button>`,
+            `<button class="flex items-center gap-2 w-full text-left px-3 py-2 hover:bg-gray-600" onclick="copyMessage('${escapeHTML(msg.text)}')">📋 Copy</button>`,
+            isSender ? `<button class="flex items-center gap-2 w-full text-left px-3 py-2 hover:bg-gray-600" onclick="showEdit('${msgId}')">✏️ Edit</button>` : '',
+            isSender ? `<button class="flex items-center gap-2 w-full text-left px-3 py-2 hover:bg-red-500 text-red-300 hover:text-white" onclick="deleteMessage('${msgId}')">🗑 Delete</button>` : ''
+          ].join('');
+
+          const menu = `<div id="menu-${msgId}" class="hidden absolute right-8 top-2 bg-gray-700 text-white shadow-lg rounded-md p-1 w-28 z-30">${menuItems}</div>`;
+
+          chatBox.innerHTML += `
+            <div class="flex ${align}" id="msg-${msgId}">
+              <div class="max-w-[80%] px-4 py-3 rounded-2xl ${bgColor} ${bubbleClass} relative">
+                ${messageContent}
+                ${menuButton}
+                ${menu}
+              </div>
+            </div>`;
+        });
+
+        if (!hasVisibleMessages) {
+          chatBox.innerHTML = `<p class="text-gray-500 text-center mt-10">No messages yet. Start the conversation!</p>`;
+        }
+
+// ✅ ROBUST SCROLL FIX: Attempt to scroll multiple times to catch layout shifts.
+        
+        // Attempt 1: Immediate scroll (works if layout is already settled)
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Attempt 2: Short delay (catches rapid updates)
+        setTimeout(() => {
+           chatBox.scrollTop = chatBox.scrollHeight;
+        }, 50);
+
+        // Attempt 3: Longer delay (catches slow browser rendering specifically when un-hiding elements)
+        setTimeout(() => {
+           chatBox.scrollTop = chatBox.scrollHeight;
+        }, 200);
+        
+        
+// ✅ 3. NOTIFY PARENT IF UNREAD MESSAGES FOUND
+    if (foundNewUnreadMsg) {
+      notifyParent(true);
+    }        
+        
+        
+        markMessagesAsRead(uid1, uid2);
+      }, (error) => {
+        console.error("Error loading messages: ", error);
+        loadingSpinner.classList.add("hidden");
+        chatBox.innerHTML = `<p class="text-red-400 text-center mt-10">Error loading messages. Please try again.</p>`;
+      });
+    }
+
+    async function markMessagesAsRead(uid1, uid2) {
+      if (!currentChatId) return;
+      const q = query(collection(db, "chats", currentChatId, "messages"));
+      const snap = await getDocs(q);
+      snap.forEach(async (d) => {
+        if (d.data().senderId !== currentUid && !d.data().read) {
+          await updateDoc(doc(db, "chats", currentChatId, "messages", d.id), { read: true });
+        }
+      });
+    }
+    
+    // --- Message Actions (Reply, Edit, Delete, Copy) ---
+    
+    let replyData = null;
+    
+    window.replyToMessage = (sender, text, id) => {
+      replyBox.classList.remove("hidden");
+      document.getElementById("replyText").textContent = `${sender}: ${truncateText(text, 50)}`;
+      replyData = { senderName: sender, text: text, id: id, senderId: sender === 'You' ? currentUid : selectedUser };
+      closeAllMenus();
+      messageInput.focus();
+    }
+
+    window.cancelReply = () => {
+      replyData = null;
+      replyBox.classList.add("hidden");
+    }
+
+    window.copyMessage = (text) => {
+      // Use execCommand for iframe compatibility
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+        showModal("Error", "Could not copy text.");
+      }
+      document.body.removeChild(textarea);
+      closeAllMenus();
+    };
+
+    window.deleteMessage = async (msgId) => {
+      if (!currentChatId) return;
+      await deleteDoc(doc(db, "chats", currentChatId, "messages", msgId));
+      // UI will update via onSnapshot
+    };
+    
+    window.showEdit = (msgId) => {
+      closeAllMenus();
+      document.getElementById(`text-${msgId}`).classList.add('hidden'); // Hide original text
+      document.getElementById(`edit-${msgId}`).classList.remove('hidden'); // Show edit box
+      
+      // Also hide the reply box if its visible for this message
+      const replyDiv = document.getElementById(`msg-${msgId}`).querySelector('[onclick^="scrollToMessage"]');
+      if (replyDiv) replyDiv.classList.add('hidden');
+    }
+    
+    window.cancelEdit = (msgId, originalText) => {
+      document.getElementById(`text-${msgId}`).innerHTML = formatMessageText(originalText); // Restore original
+      document.getElementById(`text-${msgId}`).classList.remove('hidden');
+      document.getElementById(`edit-${msgId}`).classList.add('hidden');
+      
+      const replyDiv = document.getElementById(`msg-${msgId}`).querySelector('[onclick^="scrollToMessage"]');
+      if (replyDiv) replyDiv.classList.remove('hidden');
+    }
+    
+    window.saveEdit = async (msgId) => {
+      if (!currentChatId) return;
+      const newText = document.getElementById(`edit-${msgId}`).querySelector('textarea').value.trim();
+      
+      if (newText) {
+        await updateDoc(doc(db, "chats", currentChatId, "messages", msgId), {
+          text: newText,
+          edited: true
+        });
+      }
+      // UI will update via onSnapshot, which will hide the edit box
+    }
+
+    window.scrollToMessage = (id) => {
+      const msgDiv = document.getElementById(`msg-${id}`);
+      if (msgDiv) {
+        msgDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+        const bubble = msgDiv.querySelector('[class*="bg-"]');
+        bubble.classList.add("bg-yellow-500", "text-black");
+        setTimeout(() => {
+          bubble.classList.remove("bg-yellow-500", "text-black");
+        }, 2000);
+      }
+    }
+
+    // --- Menu Handling ---
+    window.toggleMenu = (id) => {
+      const menu = document.getElementById(`menu-${id}`);
+      const isHidden = menu.classList.contains("hidden");
+      closeAllMenus(); // Close all others
+      if (isHidden) menu.classList.remove("hidden"); // Open this one
+    };
+    
+    function closeAllMenus() {
+      document.querySelectorAll("[id^='menu-']").forEach(m => m.classList.add("hidden"));
+    }
+
+    // --- Event Listeners ---
 
     backBtn.addEventListener("click", () => {
       chatScreen.classList.add("hidden");
       userListScreen.classList.remove("hidden");
-      if (unsubscribe) unsubscribe();
+      if (chatUnsubscribe) chatUnsubscribe();
+      if (chatDocUnsubscribe) chatDocUnsubscribe();
+      currentChatId = null;
+      selectedUser = null;
     });
 
-sendBtn.addEventListener("mousedown", async (e) => {
-  e.preventDefault();
+    async function sendMessage() {
+      const messageText = messageInput.value.trim();
+      if (!messageText || !selectedUser || !currentChatId) return;
 
-  if (!messageInput.value.trim() || !selectedUser) return;
+      const currentReplyData = replyData;
+      messageInput.value = "";
+      cancelReply();
+      setTimeout(() => messageInput.focus(), 50);
 
-  // Save message text
-const messageText = escapeHTML(messageInput.value);
-const currentReplyData = replyData;
-  // Instantly clear input & hide reply box
-  messageInput.value = "";
-  cancelReply(); // Hide reply instantly
-  setTimeout(() => messageInput.focus(), 50);
+      // Stop typing indicator
+      if (typingTimeout) clearTimeout(typingTimeout);
+      typingTimeout = null;
+      await setDoc(doc(db, "chats", currentChatId), { 
+        typing: { [currentUid]: false } 
+      }, { merge: true });
 
-  // Send message to Firestore in background
-  await addDoc(collection(db, "chats", getChatId(currentUid, selectedUser), "messages"), {
-    text: messageText,
-    senderId: currentUid,
-    senderName: username,
-    timestamp: serverTimestamp(),
-    replyTo: currentReplyData,
-    replyToId: currentReplyData?.id || null
-  });
-});
-
-  messageInput.addEventListener("keydown", async (e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault(); // Prevent newline
-    sendBtn.click();    // Trigger send
-  }
-});
-
-
-    window.toggleMenu = (id) => {
-      document.querySelectorAll("[id^='menu-']").forEach(m => m.classList.add("hidden"));
-      document.getElementById(`menu-${id}`).classList.toggle("hidden");
-    };
-
-    window.copyMessage = (text) => {
-      navigator.clipboard.writeText(text);
-    };
-
-    window.deleteMessage = async (chatId, msgId) => {
-      await deleteDoc(doc(db, "chats", chatId, "messages", msgId));
-    };
-  
-let initialHeight = window.innerHeight;
-
-window.addEventListener("resize", () => {
-  const newHeight = window.innerHeight;
-
-  // If height is reduced, keyboard is open
-  if (newHeight < initialHeight - 150) {
-    chatScreen.style.height = newHeight + "px";
-    chatBox.scrollTop = chatBox.scrollHeight; // Auto scroll
-  } else {
-    chatScreen.style.height = "100svh";
-  }
-});  
-  
-  const chatMenuBtn = document.getElementById("chatMenuBtn");
-const chatMenu = document.getElementById("chatMenu");
-const clearChatBtn = document.getElementById("clearChatBtn");
-
-chatMenuBtn.addEventListener("click", () => {
-  chatMenu.classList.toggle("hidden");
-});
-
-// ✅ Close any open 3-dot menu when clicking outside
-document.addEventListener("click", (e) => {
-  // Close the chat header menu (top 3-dot)
-  if (!chatMenuBtn.contains(e.target) && !chatMenu.contains(e.target)) {
-    chatMenu.classList.add("hidden");
-  }
-
-  // Close all message menus
-  document.querySelectorAll("[id^='menu-']").forEach((menu) => {
-    const button = menu.previousElementSibling; // The ⋮ button before the menu
-    if (!menu.contains(e.target) && !button.contains(e.target)) {
-      menu.classList.add("hidden");
+      // Send message
+      try {
+        await addDoc(collection(db, "chats", currentChatId, "messages"), {
+          text: messageText,
+          senderId: currentUid,
+          senderName: username,
+          timestamp: serverTimestamp(),
+          read: false,
+          replyTo: currentReplyData,
+          replyToId: currentReplyData?.id || null
+        });
+      } catch (e) {
+        console.error("Error sending message:", e);
+        showModal("Error", "Could not send message.");
+        messageInput.value = messageText; // Restore text on failure
+      }
     }
-  });
-});
 
-  
-  
-clearChatBtn.addEventListener("click", async () => {
-  if (!selectedUser) return;
-  const chatId = getChatId(currentUid, selectedUser);
+    sendBtn.addEventListener("click", sendMessage);
 
-  await setDoc(doc(db, "chats", chatId, "clearState", currentUid), {
-    lastClearedAt: serverTimestamp(),
-  });
+    messageInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    
+    // Typing indicator logic
+    messageInput.addEventListener("input", async () => {
+      if (!currentChatId) return;
+      
+      // Set typing to true immediately
+      await setDoc(doc(db, "chats", currentChatId), { 
+        typing: { [currentUid]: true } 
+      }, { merge: true });
+
+      // Clear previous timeout
+      if (typingTimeout) clearTimeout(typingTimeout);
+
+      // Set new timeout to clear typing status
+      typingTimeout = setTimeout(async () => {
+        await setDoc(doc(db, "chats", currentChatId), { 
+          typing: { [currentUid]: false } 
+        }, { merge: true });
+        typingTimeout = null;
+      }, 2000);
+    });
+
+    // Mobile keyboard handling
+    let initialHeight = window.innerHeight;
+    window.addEventListener("resize", () => {
+      const newHeight = window.innerHeight;
+      if (newHeight < initialHeight - 150) {
+        chatScreen.style.height = newHeight + "px";
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } else {
+        chatScreen.style.height = "100svh";
+      }
+    });  
   
-    // ✅ Reload messages to apply immediately
-  if (unsubscribe) unsubscribe(); // Stop old snapshot listener
-  loadMessages(currentUid, selectedUser);
-  
-});
-  
-function escapeHTML(str) {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-  
+    // --- Global Click Listeners ---
+    const chatMenuBtn = document.getElementById("chatMenuBtn");
+    const chatMenu = document.getElementById("chatMenu");
+    const clearChatBtn = document.getElementById("clearChatBtn");
+
+    // ✅ FIXED: Added click listener to toggle the menu
+    chatMenuBtn.addEventListener("click", () => {
+      chatMenu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      // Close chat header menu
+      if (!chatMenuBtn.contains(e.target) && !chatMenu.contains(e.target)) {
+        chatMenu.classList.add("hidden");
+      }
+
+      // Close all message menus
+      const messageMenuButton = e.target.closest('[onclick^="toggleMenu"]');
+      const messageMenu = e.target.closest("[id^='menu-']");
+      if (!messageMenuButton && !messageMenu) {
+        closeAllMenus();
+      }
+    });
+
+    // Clear Chat functionality
+    clearChatBtn.addEventListener("click", async () => {
+      if (!selectedUser || !currentChatId) return;
+
+      await setDoc(doc(db, "chats", currentChatId, "clearState", currentUid), {
+        lastClearedAt: serverTimestamp(),
+      });
+      
+      // Reload messages
+      if (chatUnsubscribe) chatUnsubscribe();
+      loadMessages(currentUid, selectedUser);
+      chatMenu.classList.add("hidden"); // Close menu
+    });
+    
+    // Auth process starts automatically via onAuthStateChanged
+
   </script>
 </body>
 </html>
