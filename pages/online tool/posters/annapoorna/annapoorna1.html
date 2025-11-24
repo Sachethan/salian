@@ -420,92 +420,56 @@ function updateMessageContent() {
 }
 
 // --- WhatsApp Share Logic (Stable Version: html2canvas + Vivo Fix) ---
+// --- WhatsApp Clipboard Share (Minimal Version) ---
 const whatsappButton = document.getElementById('whatsapp-button');
 
 whatsappButton.addEventListener("click", async () => {
 
-  scanningOverlay.classList.add('active');
-  whatsappButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
-  whatsappButton.disabled = true;
+  scanningOverlay.classList.add('active');
+  whatsappButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+  whatsappButton.disabled = true;
 
-  try {
-      const dateText = document.getElementById("change1")?.textContent || "";
-      const rawDate = dateText.match(/\)\s*(\d{2}-\d{2}-\d{4})/)?.[1] || 'invite';
-      const filename = `Bajane_${rawDate}.jpg`;
-      const messageText = document.getElementById("msgformate").textContent;
+  try {
+      // 1️⃣ Capture screenshot
+      const canvas = await html2canvas(invitationCard, {
+          scale: 3,
+          useCORS: true,
+          backgroundColor: "#ffffff"
+      });
 
-      // STEP 1 → Use html2canvas (most compatible)
-      const canvas = await html2canvas(invitationCard, {
-          scale: 10,
-          useCORS: true,
-          backgroundColor: "#ffffff"
-      });
+      // 2️⃣ Convert to Blob
+      const blob = await (await fetch(canvas.toDataURL("image/png"))).blob();
 
-      // STEP 2 → Convert to DataURL
-      const dataURL = canvas.toDataURL("image/jpeg", 0.85);
+      // 3️⃣ Copy image to clipboard
+      await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob })
+      ]);
 
-      // STEP 3 → Convert DataURL -> Blob
-      const blob = await (await fetch(dataURL)).blob();
+      console.log("Image copied to clipboard");
 
-      // STEP 4 → Make file
-      const file = new File([blob], filename, {
-          type: "image/jpeg",
-          lastModified: Date.now()
-      });
+      // 4️⃣ Open WhatsApp (blank)
+      setTimeout(() => {
+          window.location.href = "whatsapp://send?text=🙏";
+      }, 300);
 
-      console.log("File size:", (blob.size / 1024).toFixed(1), "KB");
+      // 5️⃣ Notify user
+      setTimeout(() => {
+          alert("📌 Image copied to clipboard!\n\nIn WhatsApp → Tap the clipboard icon → Paste the image.");
+      }, 600);
 
-      // STEP 5 → System Share Tray
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+  } catch (error) {
+      console.error("Clipboard copy failed:", error);
+      alert("Clipboard not supported on your device.\nTry long-press → Paste in WhatsApp.");
+  } finally {
+      scanningOverlay.classList.remove('active');
+      whatsappButton.disabled = false;
 
-          await navigator.share({
-              files: [file],
-              title: "Bhajane Invitation",
-              text: messageText
-          });
-
-          whatsappButton.innerHTML = `<i class="fa-solid fa-check"></i>`;
-          window.parent.postMessage({
-              type: "showMessage",
-              message: "Shared successfully!",
-              variant: "success"
-          }, "*");
-
-      } else {
-          throw new Error("ShareNotSupported");
-      }
-
-  } catch (error) {
-
-      console.warn("Share failed → fallback used:", error);
-
-      // FALLBACK: Download + Manual WhatsApp
-      const fallbackCanvas = await html2canvas(invitationCard, { scale: 2 });
-      const link = document.createElement("a");
-      link.href = fallbackCanvas.toDataURL("image/jpeg", 0.85);
-      link.download = "Bajane_Invite.jpg";
-      link.click();
-
-      setTimeout(() => {
-          window.location.href =
-              `whatsapp://send?text=${encodeURIComponent(
-                  document.getElementById("msgformate").textContent
-              )}`;
-      }, 800);
-
-      setTimeout(() => {
-          alert("Image saved to gallery.\n\nWhatsApp opening…\nPlease attach the image manually.");
-      }, 1200);
-
-  } finally {
-      scanningOverlay.classList.remove('active');
-      whatsappButton.disabled = false;
-
-      setTimeout(() => {
-          whatsappButton.innerHTML = `<i class="fa-brands fa-whatsapp"></i>`;
-      }, 2500);
-  }
+      setTimeout(() => {
+          whatsappButton.innerHTML = `<i class="fa-brands fa-whatsapp"></i>`;
+      }, 2000);
+  }
 });
+
 
 </script>
 <script>
