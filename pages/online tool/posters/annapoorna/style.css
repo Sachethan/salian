@@ -21,16 +21,14 @@
     }
 
     .garland-border {
-      min-height: 4%;
-      background: repeating-linear-gradient(
-        90deg,
-        #f97316 0, #f97316 10px,
-        #fbbf24 10px, #fbbf24 20px,
-        #16a34a 20px, #16a34a 30px
-      );
+      height: 20%;
       border-top: 3px solid #c2410c;
       border-bottom: 3px solid #c2410c;
     }
+.garland-wrapper img {
+  display: block;
+}
+
     .text-header { font-size: clamp(0.5rem, 2.2cqw, 1rem); }
     .text-title { font-size: clamp(1.2rem, 4vw, 2.2rem); }
     .text-subtitle { font-size: clamp(0.8rem, 3.5cqw, 1.5rem); }
