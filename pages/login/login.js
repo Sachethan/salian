@@ -1,9 +1,27 @@
 // --- Firebase Imports ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    setPersistence, 
+    browserLocalPersistence,
+    sendPasswordResetEmail 
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+import { 
+    getFirestore, 
+    doc, 
+    setDoc, 
+    getDoc, 
+    updateDoc, 
+    collection, // <-- Added for query
+    query,      // <-- Added for query
+    where,      // <-- Added for query
+    getDocs     // <-- Added for query
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
 // --- Firebase Config ---
+// (Keeping your provided config)
 const firebaseConfig = {
     apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
     authDomain: "editech-93e95.firebaseapp.com",
@@ -28,11 +46,16 @@ const db = getFirestore(app);
 document.addEventListener('DOMContentLoaded', () => {
     const loginFormContainer = document.getElementById('loginFormContainer');
     const registerFormContainer = document.getElementById('registerFormContainer');
-    const loginForm = document.getElementById('loginForm');
+    const forgotPasswordFormContainer = document.getElementById('forgotPasswordFormContainer'); // New form
+    
+    const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm'); // New form
 
     const showRegisterBtn = document.getElementById('showRegisterBtn');
     const showLoginBtn = document.getElementById('showLoginBtn');
+    const showForgotPasswordBtn = document.getElementById('showForgotPasswordBtn'); // New link
+    const showLoginFromForgotBtn = document.getElementById('showLoginFromForgotBtn'); // New button
 
     const loginEmailInput = document.getElementById('loginEmail');
     const loginPasswordInput = document.getElementById('loginPassword');
@@ -42,8 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerPasswordInput = document.getElementById('registerPassword');
     const registerConfirmPasswordInput = document.getElementById('registerConfirmPassword');
 
+    const forgotPasswordEmailInput = document.getElementById('forgotPasswordEmail'); // New input
+
     const loginMessageDiv = document.getElementById('loginMessage');
     const registerMessageDiv = document.getElementById('registerMessage');
+    const forgotPasswordMessageDiv = document.getElementById('forgotPasswordMessage'); // New message div
     const emailStatusDiv = document.getElementById('emailStatus');
 
     // --- Register ---
@@ -84,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 username: username,
                 email: email,
                 role: "user",
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString()
             });
 
             
@@ -197,7 +223,7 @@ getDoc(docRef)
   });
 
         
-            stopLoading(loginBtn, originalText);
+stopLoading(loginBtn, originalText);
             showMessage(loginMessageDiv, `Welcome back, ${userData.username || 'User'}!`, 'success');            loginForm.reset();
             setTimeout(() => {
                 // Check if redirect URL is saved
@@ -224,6 +250,58 @@ if (redirectUrl) {
             showMessage(loginMessageDiv, msg, 'error');
         }
     });
+
+    // --- Forgot Password ---
+    forgotPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideMessage(forgotPasswordMessageDiv);
+
+        const email = forgotPasswordEmailInput.value.trim();
+        const resetBtn = forgotPasswordForm.querySelector("button[type='submit']");
+        const originalText = resetBtn.innerHTML;
+
+        if (!email) {
+            showMessage(forgotPasswordMessageDiv, 'Please enter your email address.', 'error');
+            return;
+        }
+
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            showMessage(forgotPasswordMessageDiv, 'Please enter a valid email address.', 'error');
+            return;
+        }
+
+        startLoading(resetBtn);
+
+        try {
+            // **NEW STEP: Check if email exists in Firestore 'users' collection first**
+            const q = query(collection(db, "users"), where("email", "==", email));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                // No user found in Firestore with this email
+                throw new Error("auth/user-not-found");
+            }
+
+            // **User found, now proceed to send reset email**
+            await sendPasswordResetEmail(auth, email);
+            
+            stopLoading(resetBtn, originalText);
+            showMessage(forgotPasswordMessageDiv, 'Password reset email sent! Check your inbox (and spam folder).', 'success');
+            forgotPasswordForm.reset();
+
+        } catch (err) {
+            stopLoading(resetBtn, originalText);
+            let msg = 'Failed to send reset email. Try again.';
+            
+            // Handle the "auth/user-not-found" error specifically
+            // This will be triggered by our manual check (throw new Error) or by Firebase Auth
+            if (err.code === 'auth/user-not-found' || err.message === 'auth/user-not-found') {
+                msg = 'No user found with this email address.';
+            }
+            
+            showMessage(forgotPasswordMessageDiv, msg, 'error');
+        }
+    });
 
 
             function showMessage(el, message, type = 'error') {
@@ -273,9 +351,8 @@ if (redirectUrl) {
                 switchForms(loginFormContainer, registerFormContainer);
                 hideMessage(loginMessageDiv);
                 loginForm.reset();
-                // Manually trigger label float for empty fields after reset if needed
                 document.querySelectorAll('#loginForm .form-input').forEach(input => {
-                    input.dispatchEvent(new Event('blur')); // Trigger blur to reset label state
+                    input.dispatchEvent(new Event('blur')); 
                 });
             });
 
@@ -285,6 +362,25 @@ if (redirectUrl) {
                 emailStatusDiv.textContent = '';
                 registerForm.reset();
                 document.querySelectorAll('#registerForm .form-input').forEach(input => {
+                    input.dispatchEvent(new Event('blur'));
+                });
+            });
+
+            // --- New Forgot Password Switching ---
+            showForgotPasswordBtn.addEventListener('click', () => {
+                switchForms(loginFormContainer, forgotPasswordFormContainer);
+                hideMessage(loginMessageDiv);
+                loginForm.reset();
+                 document.querySelectorAll('#loginForm .form-input').forEach(input => {
+                    input.dispatchEvent(new Event('blur'));
+                });
+            });
+
+            showLoginFromForgotBtn.addEventListener('click', () => {
+                switchForms(forgotPasswordFormContainer, loginFormContainer);
+                hideMessage(forgotPasswordMessageDiv);
+                forgotPasswordForm.reset();
+                document.querySelectorAll('#forgotPasswordForm .form-input').forEach(input => {
                     input.dispatchEvent(new Event('blur'));
                 });
             });
@@ -331,6 +427,3 @@ function stopLoading(button, originalText) {
 
 
 });
-
-
-
