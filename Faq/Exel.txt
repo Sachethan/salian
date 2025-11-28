@@ -1,2 +1,0 @@
-Excel not opening
-kill from task manager
