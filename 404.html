@@ -1,29 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Page Not Found</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background: #f3f3f3;
-        padding: 50px;
-    }
-    h1 { font-size: 80px; margin-bottom: 10px; }
-    h2 { margin-bottom: 30px; }
-    a {
-        text-decoration: none;
-        color: white;
-        background: #007BFF;
-        padding: 10px 20px;
-        border-radius: 5px;
-    }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Page Not Found</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts: 'Poppins' for a modern, clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /*====================== Global Settings =======================*/
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fbfd; /* Softer white background */
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        /*====================== 404 Page Styles =======================*/
+        .page_404 {
+            padding: 80px 0;
+            background: #f9fbfd;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .four_zero_four_bg {
+            /* Using a high-quality, professional GIF or Image URL. 
+               Note: For production, download this image and serve locally. */
+            background-image: url('https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif');
+            height: 500px;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Ensure image scales correctly on mobile */
+            background-size: contain; 
+            margin-bottom: 30px;
+        }
+
+        /* Typography Styling */
+        .four_zero_four_bg h1 {
+            font-size: 100px;
+            font-weight: 800;
+            color: #2d3436;
+            margin: 0;
+            /* Text shadow for depth */
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1); 
+        }
+
+        .contant_box_404 {
+            margin-top: -30px;
+            text-align: center;
+        }
+
+        .contant_box_404 h3 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2d3436;
+        }
+
+        .contant_box_404 p {
+            font-size: 18px;
+            color: #636e72;
+            margin-bottom: 30px;
+        }
+
+        /* Professional Button Styling */
+        .link_404 {
+            color: #fff !important;
+            padding: 12px 35px;
+            background: #39ac31;
+            background: linear-gradient(135deg, #39ac31 0%, #2d8a26 100%);
+            border-radius: 50px; /* Modern pill shape */
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -10px rgba(57, 172, 49, 0.5);
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+        }
+
+        .link_404:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px -10px rgba(57, 172, 49, 0.6);
+            color: #fff;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .four_zero_four_bg {
+                height: 300px;
+            }
+            .four_zero_four_bg h1 {
+                font-size: 60px;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>404</h1>
-<h2>Oops! Page not found.</h2>
-<p>Go back to <a href="index.html">Home</a></p>
+
+    <section class="page_404">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-8 text-center">
+                    
+                    <!-- Background Image Area -->
+                    <div class="four_zero_four_bg">
+                        <h1>404</h1>
+                    </div>
+
+                    <!-- Text Content Area -->
+                    <div class="contant_box_404">
+                        <h3>Looks like you're lost</h3>
+                        <p>The page you are looking for is not available!</p>
+                        
+                        <a href="index.html" class="link_404">Go to Home</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
