@@ -22,15 +22,15 @@ import {
 
 // --- Firebase Config ---
 // (Keeping your provided config)
-const firebaseConfig = {
-    apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
-    authDomain: "editech-93e95.firebaseapp.com",
-    projectId: "editech-93e95",
-    storageBucket: "editech-93e95.firebasestorage.app",
-    messagingSenderId: "337897717681",
-    appId: "1:337897717681:web:99a1c9344d6a4acf6dc790",
-    measurementId: "G-3CGVLC34XD"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyCC7sNEByDpD-ftE936NoyF1W6KnHzCZME",
+    authDomain: "salian-hub.firebaseapp.com",
+    projectId: "salian-hub",
+    storageBucket: "salian-hub.firebasestorage.app",
+    messagingSenderId: "389748625220",
+    appId: "1:389748625220:web:c5b5dabdd424f06ee65111",
+    measurementId: "G-Z0Z062P4YP"
+  };
 
 // --- Initialize Firebase ---
 const app = initializeApp(firebaseConfig);
@@ -199,13 +199,15 @@ getDoc(docRef)
 
       const username = userData.username; // from Firestore
       const email = user.email;           // from Firebase Auth
-      const uid = user.uid;               // from Firebase Auth
-
+      const uid = user.uid;// from Firebase Auth
+        const role = userData.role;
+        
       if (username && email && uid) {
         const userInfo = {
           username: username,
           email: email,
-          uid: uid
+          uid: uid,
+            role: role
         };
 
         localStorage.setItem("userInfo", JSON.stringify(userInfo));
