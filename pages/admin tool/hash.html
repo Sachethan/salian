@@ -574,5 +574,19 @@
         document.addEventListener('DOMContentLoaded', fetchMappings);
 
     </script>
+     <script>
+  // Get user info from localStorage
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+  // If no user info found → redirect
+  if (!userInfo) {
+    window.location.href = "../../index.html";
+  }
+
+  // If role is NOT admin → redirect
+  if (userInfo.role !== "admin") {
+    window.location.href = "../../index.html";
+  }
+</script>           
 </body>
 </html>
