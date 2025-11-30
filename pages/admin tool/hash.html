@@ -3,152 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sheet Mapping Manager</title>
+    <title>Unified Tool Manager</title>
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome (For Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Custom styles for a professional look and feel */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* A light gray background */
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+
+        /* Smooth Transitions */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        /* Style for the expand/collapse transition */
+
+        /* Mapping Manager Styles */
         .details-panel {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .details-panel.expanded {
-            max-height: 500px; /* Adjust as needed */
-        }
-        /* Custom modal backdrop */
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+        .details-panel.expanded { max-height: 500px; }
+
+        /* Explorer Styles */
+        .explorer-row { transition: background-color 0.1s; }
+        .explorer-row:hover { background-color: #f1f5f9; }
+        .folder-icon { color: #fbbf24; text-shadow: 0 1px 2px rgba(0,0,0,0.1); } /* Windows Yellow */
+        .breadcrumb-item:hover { color: #2563eb; text-decoration: underline; }
     </style>
 </head>
-<body class="antialiased text-gray-800">
+<body class="antialiased text-slate-700 min-h-screen flex flex-col">
 
-    <div class="container mx-auto p-4 md:p-6 max-w-4xl">
-        <header class="mb-6">
-            <h1 class="text-3xl font-bold text-gray-900">Mapping Manager</h1>
-            <p class="text-gray-600 mt-1">Manage your sheet mappings with ease.</p>
-        </header>
-
-        <!-- Add New Mapping Section (Collapsible) -->
-        <div class="bg-white rounded-lg shadow-md mb-6">
-            <button id="toggle-add-form" class="w-full p-4 text-left font-semibold text-lg flex justify-between items-center">
-                <span>Add New Mapping</span>
-                <svg id="add-form-icon" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
-            <div id="add-form-panel" class="px-4 pb-4 hidden">
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input id="addHash" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Hash (Required)">
-                    <input id="addTemplate" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Template ID">
-                    <input id="addRoot" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="RootFileName">
-                    <input id="addUrl" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="SubURLName">
+    <!-- Navbar / Tab Controller -->
+    <div class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="bg-slate-800 text-white p-1.5 rounded-lg">
+                        <i class="fa-solid fa-toolbox"></i>
+                    </div>
+                    <h1 class="font-bold text-xl text-slate-800 tracking-tight">Admin Tools</h1>
                 </div>
-                <button id="addBtn" class="mt-4 w-full md:w-auto bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                    Add Mapping
-                </button>
+
+                <div class="flex space-x-1 bg-slate-100 p-1 rounded-lg">
+                    <button onclick="switchTab('mapping')" id="tab-mapping" class="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-blue-600 shadow-sm">
+                        Sheet Mappings
+                    </button>
+                    <button onclick="switchTab('github')" id="tab-github" class="px-4 py-2 text-sm font-medium rounded-md transition-colors text-slate-500 hover:text-slate-700">
+                        <i class="fa-brands fa-github mr-2"></i> File Explorer
+                    </button>
+                </div>
             </div>
-        </div>
-
-        <!-- Search and Status -->
-        <div class="mb-4">
-            <input id="searchBox" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" type="text" placeholder="Search by Hash, Template, Root, or URL...">
-        </div>
-        <div id="status" class="min-h-[1.5em] mb-4 text-sm font-medium"></div>
-
-        <!-- Mappings List -->
-        <div id="mappingsList" class="space-y-3">
-            <!-- Mapping items will be dynamically inserted here -->
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="delete-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
-            <h3 class="text-lg font-bold text-gray-900">Confirm Deletion</h3>
-            <p id="delete-modal-text" class="text-gray-600 mt-2 mb-4">Are you sure you want to delete this mapping?</p>
+    <main class="flex-grow p-4 md:p-6 max-w-5xl mx-auto w-full">
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: MAPPING MANAGER (Preserved)     -->
+        <!-- ========================================== -->
+        <div id="section-mapping" class="fade-in block">
+            <header class="mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Sheet Mapping Manager</h2>
+                <p class="text-slate-500 text-sm">Manage database hash mappings and template routing.</p>
+            </header>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 mb-6 overflow-hidden">
+                <button id="toggle-add-form" class="w-full p-4 text-left font-semibold text-lg flex justify-between items-center hover:bg-slate-50 transition-colors">
+                    <span class="flex items-center gap-2"><div class="bg-green-100 text-green-600 p-1 rounded"><i class="fa-solid fa-plus w-4 h-4 text-xs flex items-center justify-center"></i></div> Add New Mapping</span>
+                    <i id="add-form-icon" class="fa-solid fa-chevron-down text-slate-400 text-sm transition-transform"></i>
+                </button>
+                <div id="add-form-panel" class="px-4 pb-4 hidden bg-slate-50 border-t border-slate-100 pt-4">
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input id="addHash" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Hash (Required)">
+                        <input id="addTemplate" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Template ID">
+                        <input id="addRoot" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="RootFileName">
+                        <input id="addUrl" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="SubURLName">
+                    </div>
+                    <button id="addBtn" class="mt-4 w-full md:w-auto bg-blue-600 text-white font-medium py-2 px-6 rounded-lg hover:bg-blue-700 shadow-sm transition-all text-sm">
+                        Add Mapping
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-4 relative">
+                <i class="fa-solid fa-search absolute left-4 top-3.5 text-slate-400"></i>
+                <input id="searchBox" class="w-full pl-10 p-3 border border-slate-300 rounded-lg shadow-sm text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" type="text" placeholder="Search mappings...">
+            </div>
+            
+            <div id="status" class="min-h-[1.5em] mb-4 text-xs font-medium text-slate-500"></div>
+
+            <div id="mappingsList" class="space-y-3"></div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: WINDOWS STYLE EXPLORER (Search) -->
+        <!-- ========================================== -->
+        <div id="section-github" class="hidden fade-in">
+            
+            <header class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">File Explorer</h2>
+                    <p class="text-slate-500 text-sm mt-1">
+                        Viewing <span class="font-mono bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 text-xs">Sachethan/salian</span>
+                    </p>
+                </div>
+                
+                <div class="flex gap-2 w-full md:w-auto">
+                    <!-- GitHub Search Box -->
+                    <div class="relative w-full md:w-64">
+                        <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                        <input id="gh-searchBox" type="text" placeholder="Search repository..." 
+                            class="w-full pl-8 pr-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all">
+                    </div>
+                    
+                    <button onclick="initGitHubTree()" class="text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-3 py-1.5 rounded transition shadow-sm flex items-center gap-2 shrink-0 h-[34px]">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Error Box -->
+            <div id="gh-errorMsg" class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-4"></div>
+
+            <!-- Loader -->
+            <div id="gh-loader" class="flex flex-col items-center justify-center py-24 text-slate-400 hidden">
+                <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4 text-blue-500"></i>
+                <p class="font-medium text-slate-500">Loading file system...</p>
+            </div>
+
+            <!-- EXPLORER UI CONTAINER -->
+            <div id="explorer-ui" class="hidden flex flex-col bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden min-h-[400px]">
+                
+                <!-- 1. Address Bar (Breadcrumbs) -->
+                <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center gap-2 text-sm text-slate-600 overflow-x-auto whitespace-nowrap" id="breadcrumb-container">
+                    <span class="font-semibold text-slate-400">Loading...</span>
+                </div>
+
+                <!-- 2. File List Header -->
+                <div class="grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 bg-white border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    <div class="w-6 text-center">Type</div>
+                    <div>Name</div>
+                    <div>Action</div>
+                </div>
+
+                <!-- 3. File List Body -->
+                <div id="file-list-body" class="flex-1 overflow-y-auto max-h-[60vh]">
+                    <!-- Files injected by JS -->
+                </div>
+
+                <!-- 4. Footer Status -->
+                <div class="bg-slate-50 border-t border-slate-200 px-4 py-2 text-xs text-slate-400 flex justify-between">
+                    <span id="item-count">0 items</span>
+                    <span>GitHub API</span>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Global Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-800 text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+        <i class="fa-solid fa-check-circle text-green-400"></i>
+        <span id="toastMsg" class="text-sm font-medium">Notification</span>
+    </div>
+
+    <!-- Delete Modal (Mapping Manager) -->
+    <div id="delete-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-lg font-bold text-slate-900">Confirm Deletion</h3>
+            <p id="delete-modal-text" class="text-slate-600 mt-2 mb-6 text-sm">Are you sure?</p>
             <div class="flex justify-end space-x-3">
-                <button id="cancel-delete-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button>
-                <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
+                <button id="cancel-delete-btn" class="px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200">Cancel</button>
+                <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700">Delete</button>
             </div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziNy-rYG9oWJSHkSvyytw09IYLIHoConrNLji_SCT8Jc99aUmmc9FC0e2Oyp7lI7CQ/exec";
-        let mappings = []; // Full dataset from the server
-        let rowToDelete = null; // Store the row number for the delete confirmation
+        // ==========================================
+        // UI: TAB SWITCHING
+        // ==========================================
+        let isGitHubLoaded = false;
 
-        // --- DOM Elements ---
-        const searchBox = document.getElementById('searchBox');
-        const addBtn = document.getElementById('addBtn');
-        const mappingsList = document.getElementById('mappingsList');
-        const statusEl = document.getElementById('status');
-        const toggleAddFormBtn = document.getElementById('toggle-add-form');
-        const addFormPanel = document.getElementById('add-form-panel');
-        const addFormIcon = document.getElementById('add-form-icon');
-        const deleteModal = document.getElementById('delete-modal');
-        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        function switchTab(tabName) {
+            const btnMap = document.getElementById('tab-mapping');
+            const btnGit = document.getElementById('tab-github');
+            const secMap = document.getElementById('section-mapping');
+            const secGit = document.getElementById('section-github');
 
-        // --- Utility Functions ---
-        function setStatus(msg, isErr = false) {
-            statusEl.textContent = msg;
-            statusEl.className = `min-h-[1.5em] mb-4 text-sm font-medium ${isErr ? 'text-red-600' : 'text-green-600'}`;
+            if (tabName === 'mapping') {
+                btnMap.className = "px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-blue-600 shadow-sm";
+                btnGit.className = "px-4 py-2 text-sm font-medium rounded-md transition-colors text-slate-500 hover:text-slate-700";
+                secMap.classList.remove('hidden');
+                secGit.classList.add('hidden');
+            } else {
+                btnGit.className = "px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-blue-600 shadow-sm";
+                btnMap.className = "px-4 py-2 text-sm font-medium rounded-md transition-colors text-slate-500 hover:text-slate-700";
+                secGit.classList.remove('hidden');
+                secMap.classList.add('hidden');
+                
+                if (!isGitHubLoaded) initGitHubTree();
+            }
+        }
+
+        function showGlobalToast(msg, type='success') {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            const icon = toast.querySelector('i');
+            
+            msgEl.innerText = msg;
+            icon.className = type === 'error' ? 'fa-solid fa-circle-exclamation text-red-400' : 'fa-solid fa-check-circle text-green-400';
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            if(window.toastTimeout) clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
         }
 
         function escapeHtml(str) {
-            return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            }[c]));
+            return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
 
-        // --- Core Application Logic ---
+        // ==========================================
+        // LOGIC 1: MAPPING MANAGER
+        // ==========================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziNy-rYG9oWJSHkSvyytw09IYLIHoConrNLji_SCT8Jc99aUmmc9FC0e2Oyp7lI7CQ/exec";
+        let mappings = []; 
+        let rowToDelete = null; 
+
+        // DOM Elements
+        const mappingsList = document.getElementById('mappingsList');
+        const statusEl = document.getElementById('status');
+        const deleteModal = document.getElementById('delete-modal');
+
+        function setStatus(msg, isErr = false) {
+            statusEl.textContent = msg;
+            statusEl.className = `min-h-[1.5em] mb-4 text-xs font-medium ${isErr ? 'text-red-600' : 'text-green-600'}`;
+        }
+
         async function fetchMappings() {
-            setStatus('Loading mappings...');
-            mappingsList.innerHTML = '<div class="text-center p-8 text-gray-500">Loading...</div>';
+            setStatus('Syncing...');
+            mappingsList.innerHTML = '<div class="text-center p-8 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading...</div>';
             try {
                 const res = await fetch(SCRIPT_URL, { method: 'GET', cache: 'no-store' });
-                if (!res.ok) throw new Error(`Network response was not ok (${res.status})`);
+                if (!res.ok) throw new Error('Network error');
                 const json = await res.json();
-                if (!json.success) throw new Error(json.error || 'Failed to load data from script.');
+                if (!json.success) throw new Error(json.error || 'Failed to load');
                 
                 mappings = json.data || [];
                 renderMappings();
-                setStatus(`Loaded ${mappings.length} rows.`);
+                setStatus(`Last synced: ${new Date().toLocaleTimeString()}`);
             } catch (err) {
-                console.error(err);
-                setStatus('Error loading data: ' + err.message, true);
-                mappingsList.innerHTML = `<div class="text-center p-8 text-red-500 bg-red-100 rounded-lg">${escapeHtml(err.message)}</div>`;
+                setStatus('Error loading data', true);
+                mappingsList.innerHTML = `<div class="bg-red-50 text-red-600 p-4 rounded text-sm text-center">${err.message}</div>`;
             }
         }
 
         function renderMappings(filterText = '') {
             const t = filterText.trim().toLowerCase();
-            const filteredMappings = t ? mappings.filter(r => Object.values(r).some(v => String(v).toLowerCase().includes(t))) : mappings;
+            const filtered = t ? mappings.filter(r => Object.values(r).some(v => String(v).toLowerCase().includes(t))) : mappings;
             
-            mappingsList.innerHTML = ''; // Clear previous list
-
-            if (filteredMappings.length === 0) {
-                mappingsList.innerHTML = '<div class="text-center p-8 text-gray-500">No mappings found.</div>';
+            mappingsList.innerHTML = ''; 
+            if (filtered.length === 0) {
+                mappingsList.innerHTML = '<div class="text-center p-8 text-slate-400 text-sm">No mappings found.</div>';
                 return;
             }
 
-            filteredMappings.forEach(row => {
+            filtered.forEach(row => {
                 const item = document.createElement('div');
-                item.className = 'bg-white rounded-lg shadow-md overflow-hidden';
+                item.className = 'bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden transition hover:shadow-md';
                 item.dataset.rowNumber = row.rowNumber;
                 item.innerHTML = createMappingItemHTML(row);
                 mappingsList.appendChild(item);
@@ -156,198 +286,310 @@
         }
 
         function createMappingItemHTML(row, isEditing = false) {
-            const rowData = {
-                hash: row.hash || '',
-                templateId: row.templateId || '',
-                root: row.root || '',
-                url: row.url || ''
-            };
-
+            const d = { hash: row.hash||'', tid: row.templateId||'', root: row.root||'', url: row.url||'' };
+            
             if (isEditing) {
                 return `
-                    <div class="p-4 border-l-4 border-blue-500">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Hash</label>
-                                <input class="mt-1 w-full p-2 border border-gray-300 rounded-md" name="hash" value="${escapeHtml(rowData.hash)}">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Template ID</label>
-                                <input class="mt-1 w-full p-2 border border-gray-300 rounded-md" name="templateId" value="${escapeHtml(rowData.templateId)}">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">RootFileName</label>
-                                <input class="mt-1 w-full p-2 border border-gray-300 rounded-md" name="root" value="${escapeHtml(rowData.root)}">
-                            </div>
-                             <div>
-                                <label class="block text-sm font-medium text-gray-700">SubURLName</label>
-                                <input class="mt-1 w-full p-2 border border-gray-300 rounded-md" name="url" value="${escapeHtml(rowData.url)}">
-                            </div>
+                    <div class="p-4 bg-blue-50/50 border-l-4 border-blue-500">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Hash</label><input class="w-full p-2 border border-slate-300 rounded text-sm" name="hash" value="${escapeHtml(d.hash)}"></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Template ID</label><input class="w-full p-2 border border-slate-300 rounded text-sm" name="templateId" value="${escapeHtml(d.tid)}"></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Root</label><input class="w-full p-2 border border-slate-300 rounded text-sm" name="root" value="${escapeHtml(d.root)}"></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">URL</label><input class="w-full p-2 border border-slate-300 rounded text-sm" name="url" value="${escapeHtml(d.url)}"></div>
                         </div>
-                        <div class="flex justify-end space-x-2">
-                            <button data-action="cancel" class="px-3 py-1 bg-gray-200 text-gray-800 text-sm font-semibold rounded-md hover:bg-gray-300">Cancel</button>
-                            <button data-action="save" class="px-3 py-1 bg-green-600 text-white text-sm font-semibold rounded-md hover:bg-green-700">Save</button>
+                        <div class="flex justify-end gap-2">
+                            <button data-action="cancel" class="px-3 py-1.5 bg-white border border-slate-300 rounded text-xs">Cancel</button>
+                            <button data-action="save" class="px-3 py-1.5 bg-green-600 text-white rounded text-xs shadow-sm">Save</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }
-
             return `
-                <div class="p-4 flex justify-between items-center cursor-pointer" data-action="expand">
-                    <div class="font-semibold text-gray-800 truncate pr-4">${escapeHtml(rowData.hash)}</div>
-                    <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div class="p-4 flex justify-between items-center cursor-pointer group" data-action="expand">
+                    <div class="flex items-center gap-3">
+                         <div class="bg-blue-100 text-blue-600 p-1.5 rounded-md"><i class="fa-solid fa-link text-xs"></i></div>
+                        <div class="font-semibold text-slate-700 truncate">${escapeHtml(d.hash)}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-slate-400 group-hover:text-blue-500 transition-transform"></i>
                 </div>
-                <div class="details-panel bg-gray-50 border-t border-gray-200">
-                    <div class="p-4 space-y-3">
-                        <div><strong class="text-gray-600 w-28 inline-block">Template ID:</strong> ${escapeHtml(rowData.templateId)}</div>
-                        <div><strong class="text-gray-600 w-28 inline-block">Root File:</strong> ${escapeHtml(rowData.root)}</div>
-                        <div><strong class="text-gray-600 w-28 inline-block">Sub URL:</strong> ${escapeHtml(rowData.url)}</div>
-                        <div class="flex justify-end space-x-2 pt-2">
-                            <button data-action="edit" class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-semibold rounded-md hover:bg-blue-200">Edit</button>
-                            <button data-action="delete" class="px-3 py-1 bg-red-100 text-red-800 text-sm font-semibold rounded-md hover:bg-red-200">Delete</button>
+                <div class="details-panel bg-slate-50 border-t border-slate-100">
+                    <div class="p-4 text-sm">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-white p-2.5 rounded border border-slate-200"><span class="block text-[10px] text-slate-400 font-bold uppercase">Template ID</span><span class="font-mono text-xs">${escapeHtml(d.tid)||'-'}</span></div>
+                            <div class="bg-white p-2.5 rounded border border-slate-200"><span class="block text-[10px] text-slate-400 font-bold uppercase">Root</span><span>${escapeHtml(d.root)||'-'}</span></div>
+                            <div class="bg-white p-2.5 rounded border border-slate-200"><span class="block text-[10px] text-slate-400 font-bold uppercase">URL</span><span>${escapeHtml(d.url)||'-'}</span></div>
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <button data-action="edit" class="text-blue-600 text-xs font-semibold px-2 py-1 hover:bg-blue-50 rounded"><i class="fa-solid fa-pen mr-1"></i> Edit</button>
+                            <button data-action="delete" class="text-red-600 text-xs font-semibold px-2 py-1 hover:bg-red-50 rounded"><i class="fa-solid fa-trash mr-1"></i> Delete</button>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
-        
-        async function addRow() {
-            const hash = document.getElementById('addHash').value.trim();
-            const templateId = document.getElementById('addTemplate').value.trim();
-            const root = document.getElementById('addRoot').value.trim();
-            const url = document.getElementById('addUrl').value.trim();
 
-            if (!hash) {
-                setStatus('Hash is a required field.', true);
-                return;
-            }
-            
-            setStatus('Adding new mapping...');
-            addBtn.disabled = true;
-            addBtn.textContent = 'Adding...';
-
+        async function performAction(action, body) {
             try {
-                const res = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'add', hash, templateId, root, url })
-                });
+                const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(body) });
                 const json = await res.json();
-                if (!json.success) throw new Error(json.error || 'Add operation failed.');
-                
-                ['addHash', 'addTemplate', 'addRoot', 'addUrl'].forEach(id => document.getElementById(id).value = '');
+                if (!json.success) throw new Error(json.error);
                 await fetchMappings();
-                setStatus('Successfully added new mapping.');
-            } catch (err) {
-                console.error(err);
-                setStatus('Add error: ' + err.message, true);
-            } finally {
-                addBtn.disabled = false;
-                addBtn.textContent = 'Add Mapping';
-            }
-        }
-        
-        async function saveEditRow(item, rowNumber) {
-            const hash = item.querySelector('input[name="hash"]').value.trim();
-            const templateId = item.querySelector('input[name="templateId"]').value.trim();
-            const root = item.querySelector('input[name="root"]').value.trim();
-            const url = item.querySelector('input[name="url"]').value.trim();
-
-            if (!hash) {
-                setStatus('Hash is required.', true);
-                return;
-            }
-
-            setStatus('Saving changes...');
-            try {
-                const res = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'update', rowNumber, hash, templateId, root, url })
-                });
-                const json = await res.json();
-                if (!json.success) throw new Error(json.error || 'Update failed');
-                
-                await fetchMappings(); // Refresh the entire list to ensure consistency
-                setStatus('Row updated successfully.');
-            } catch (err) {
-                console.error(err);
-                setStatus('Update error: ' + err.message, true);
-                // Optionally, restore the original view of the row on failure
-                renderMappings(searchBox.value);
-            }
+                showGlobalToast(`Action ${action} successful`);
+            } catch(e) { setStatus(e.message, true); }
         }
 
-        async function performDelete(rowNumber) {
-            setStatus('Deleting row...');
-            try {
-                const res = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'delete', rowNumber })
-                });
-                const json = await res.json();
-                if (!json.success) throw new Error(json.error || 'Delete failed');
-                
-                await fetchMappings();
-                setStatus('Row deleted.');
-            } catch (err) {
-                console.error(err);
-                setStatus('Delete error: ' + err.message, true);
-            }
-        }
-
-        // --- Event Listeners ---
-        searchBox.addEventListener('input', () => renderMappings(searchBox.value));
-        addBtn.addEventListener('click', addRow);
-        
-        toggleAddFormBtn.addEventListener('click', () => {
-            addFormPanel.classList.toggle('hidden');
-            addFormIcon.classList.toggle('rotate-180');
+        document.getElementById('addBtn').addEventListener('click', async () => {
+             const hash = document.getElementById('addHash').value.trim();
+             if(!hash) return showGlobalToast('Hash required', 'error');
+             const templateId = document.getElementById('addTemplate').value.trim();
+             const root = document.getElementById('addRoot').value.trim();
+             const url = document.getElementById('addUrl').value.trim();
+             
+             document.getElementById('addBtn').innerText = 'Adding...';
+             await performAction('Add', { action: 'add', hash, templateId, root, url });
+             document.getElementById('addBtn').innerText = 'Add Mapping';
+             ['addHash','addTemplate','addRoot','addUrl'].forEach(id=>document.getElementById(id).value='');
         });
 
         mappingsList.addEventListener('click', (e) => {
-            const button = e.target.closest('button');
-            const expander = e.target.closest('[data-action="expand"]');
+            const btn = e.target.closest('button');
+            const expand = e.target.closest('[data-action="expand"]');
             const item = e.target.closest('[data-row-number]');
-            if (!item) return;
+            if(!item) return;
+            const rNum = Number(item.dataset.rowNumber);
+            const rowData = mappings.find(r => r.rowNumber === rNum);
 
-            const rowNumber = Number(item.dataset.rowNumber);
-            const rowData = mappings.find(r => r.rowNumber === rowNumber);
-
-            if (button) {
-                const action = button.dataset.action;
-                if (action === 'edit') {
-                    item.innerHTML = createMappingItemHTML(rowData, true);
-                } else if (action === 'delete') {
-                    rowToDelete = rowNumber;
-                    document.getElementById('delete-modal-text').textContent = `Are you sure you want to delete mapping with hash: "${rowData.hash}"?`;
+            if(btn) {
+                const act = btn.dataset.action;
+                if(act === 'edit') item.innerHTML = createMappingItemHTML(rowData, true);
+                if(act === 'cancel') item.innerHTML = createMappingItemHTML(rowData, false);
+                if(act === 'delete') {
+                    rowToDelete = rNum;
+                    document.getElementById('delete-modal-text').innerText = `Delete "${rowData.hash}"?`;
                     deleteModal.classList.remove('hidden');
-                } else if (action === 'save') {
-                    saveEditRow(item, rowNumber);
-                } else if (action === 'cancel') {
-                    item.innerHTML = createMappingItemHTML(rowData, false);
                 }
-            } else if (expander) {
-                const details = item.querySelector('.details-panel');
-                const icon = item.querySelector('svg');
-                details.classList.toggle('expanded');
-                icon.classList.toggle('rotate-180');
+                if(act === 'save') {
+                    const hash = item.querySelector('[name="hash"]').value;
+                    const templateId = item.querySelector('[name="templateId"]').value;
+                    const root = item.querySelector('[name="root"]').value;
+                    const url = item.querySelector('[name="url"]').value;
+                    performAction('Update', { action: 'update', rowNumber: rNum, hash, templateId, root, url });
+                }
+            } else if(expand) {
+                const p = item.querySelector('.details-panel');
+                const i = item.querySelector('.fa-chevron-down');
+                p.classList.toggle('expanded');
+                i.style.transform = p.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0deg)';
             }
         });
-
-        // Modal event listeners
-        cancelDeleteBtn.addEventListener('click', () => {
-            deleteModal.classList.add('hidden');
-            rowToDelete = null;
+        
+        document.getElementById('toggle-add-form').addEventListener('click', () => {
+             document.getElementById('add-form-panel').classList.toggle('hidden');
+        });
+        document.getElementById('searchBox').addEventListener('input', e => renderMappings(e.target.value));
+        document.getElementById('cancel-delete-btn').addEventListener('click', () => deleteModal.classList.add('hidden'));
+        document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+             if(rowToDelete) performAction('Delete', { action: 'delete', rowNumber: rowToDelete });
+             deleteModal.classList.add('hidden');
         });
 
-        confirmDeleteBtn.addEventListener('click', () => {
-            if (rowToDelete !== null) {
-                performDelete(rowToDelete);
+        // ==========================================
+        // LOGIC 2: GITHUB EXPLORER (SEARCHABLE)
+        // ==========================================
+        const GH = { user: "Sachethan", repo: "salian", branch: "main" };
+        let fullTreeData = {};
+        let flatTreeData = []; // Flat list for search
+        let currentPathStack = []; 
+
+        async function initGitHubTree() {
+            const ui = document.getElementById('explorer-ui');
+            const loader = document.getElementById('gh-loader');
+            const errorDiv = document.getElementById('gh-errorMsg');
+            
+            ui.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            try {
+                let url = `https://api.github.com/repos/${GH.user}/${GH.repo}/git/trees/${GH.branch}?recursive=1`;
+                let res = await fetch(url);
+                if (res.status === 404 && GH.branch === 'main') {
+                    GH.branch = 'master'; 
+                    url = `https://api.github.com/repos/${GH.user}/${GH.repo}/git/trees/${GH.branch}?recursive=1`;
+                    res = await fetch(url);
+                }
+                
+                if (!res.ok) throw new Error(res.status === 403 ? "Rate Limit Exceeded" : "Repo not found");
+                
+                const data = await res.json();
+                
+                // 1. Store Flat Data (for search)
+                flatTreeData = data.tree.filter(i => i.type === 'tree' || i.type === 'blob').map(item => ({
+                    name: item.path.split('/').pop(),
+                    path: item.path,
+                    type: item.type === 'tree' ? 'folder' : 'file',
+                    parentPath: item.path.includes('/') ? item.path.substring(0, item.path.lastIndexOf('/')) : ''
+                }));
+
+                // 2. Build Nested Data (for navigation)
+                fullTreeData = buildTreeObj(flatTreeData);
+                currentPathStack = []; 
+                
+                document.getElementById('gh-searchBox').value = ''; // Reset Search
+                renderExplorer();
+                
+                isGitHubLoaded = true;
+                loader.classList.add('hidden');
+                ui.classList.remove('hidden');
+
+            } catch (err) {
+                loader.classList.add('hidden');
+                errorDiv.textContent = err.message;
+                errorDiv.classList.remove('hidden');
+                isGitHubLoaded = false;
             }
-            deleteModal.classList.add('hidden');
-            rowToDelete = null;
+        }
+
+        function buildTreeObj(flatList) {
+            const root = { _children: {} };
+            flatList.forEach(item => {
+                const parts = item.path.split("/");
+                let curr = root;
+                parts.forEach((part, idx) => {
+                    if (!curr._children[part]) {
+                        curr._children[part] = {
+                            _name: part,
+                            _type: (idx === parts.length - 1 && item.type === 'file') ? 'file' : 'folder',
+                            _path: item.path,
+                            _children: {}
+                        };
+                    }
+                    curr = curr._children[part];
+                });
+            });
+            return root;
+        }
+
+        // --- EXPLORER RENDERER ---
+        function renderExplorer() {
+            const breadcrumbEl = document.getElementById('breadcrumb-container');
+            const listBody = document.getElementById('file-list-body');
+            const countEl = document.getElementById('item-count');
+            
+            // Check Search
+            const searchQuery = document.getElementById('gh-searchBox').value.trim().toLowerCase();
+            
+            if (searchQuery.length > 0) {
+                // --- SEARCH MODE ---
+                renderSearchResults(searchQuery, breadcrumbEl, listBody, countEl);
+                return;
+            }
+
+            // --- NORMAL FOLDER MODE ---
+            let currentNode = fullTreeData;
+            currentPathStack.forEach(folder => {
+                if(currentNode._children[folder]) currentNode = currentNode._children[folder];
+            });
+
+            // Breadcrumbs
+            let bcHtml = `<span class="breadcrumb-item cursor-pointer flex items-center gap-1" onclick="navToRoot()"><i class="fa-solid fa-house"></i> Home</span>`;
+            currentPathStack.forEach((folder, index) => {
+                bcHtml += ` <span class="text-slate-300 text-xs">/</span> <span class="breadcrumb-item cursor-pointer font-medium" onclick="navToLevel(${index})">${folder}</span>`;
+            });
+            breadcrumbEl.innerHTML = bcHtml;
+
+            // List
+            let listHtml = '';
+            if (currentPathStack.length > 0) {
+                listHtml += `
+                <div onclick="navUp()" class="explorer-row grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 border-b border-slate-50 cursor-pointer select-none">
+                    <div class="w-6 text-center"><i class="fa-solid fa-turn-up text-slate-400"></i></div>
+                    <div class="font-semibold text-slate-500">..</div>
+                    <div></div>
+                </div>`;
+            }
+
+            const items = Object.values(currentNode._children).sort((a, b) => {
+                if (a._type === b._type) return a._name.localeCompare(b._name);
+                return a._type === 'folder' ? -1 : 1;
+            });
+
+            if(items.length === 0) {
+                listHtml += `<div class="p-8 text-center text-slate-400 italic">Empty folder</div>`;
+            } else {
+                items.forEach(item => {
+                    const isFolder = item._type === 'folder';
+                    const icon = isFolder ? '<i class="fa-solid fa-folder folder-icon fa-lg"></i>' : '<i class="fa-regular fa-file text-slate-400 fa-lg"></i>';
+                    listHtml += `
+                    <div ${isFolder ? `onclick="navEnter('${item._name}')"` : ''} class="explorer-row grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2.5 border-b border-slate-50 ${isFolder ? 'cursor-pointer' : 'cursor-default'} items-center group">
+                        <div class="w-6 text-center flex items-center justify-center">${icon}</div>
+                        <div class="${isFolder ? 'font-semibold text-slate-700' : 'text-slate-600 font-mono text-sm'} truncate">${item._name}</div>
+                        <div>
+                            ${!isFolder ? `<button onclick="copyToClipboard('${item._path}')" class="opacity-0 group-hover:opacity-100 bg-white border border-slate-200 text-xs px-2 py-1 rounded text-slate-500 hover:text-blue-600 hover:border-blue-400 transition shadow-sm">Copy Path</button>` : ''}
+                        </div>
+                    </div>`;
+                });
+            }
+
+            listBody.innerHTML = listHtml;
+            countEl.innerText = `${items.length} items`;
+        }
+
+        function renderSearchResults(query, bcEl, listEl, countEl) {
+            // Update Breadcrumb
+            bcEl.innerHTML = `<span class="text-blue-600 font-semibold"><i class="fa-solid fa-search"></i> Search Results for "${query}"</span>`;
+            
+            const results = flatTreeData.filter(item => item.name.toLowerCase().includes(query));
+            
+            if (results.length === 0) {
+                listEl.innerHTML = `<div class="p-8 text-center text-slate-400">No matching files found.</div>`;
+                countEl.innerText = "0 results";
+                return;
+            }
+
+            let html = '';
+            results.forEach(item => {
+                const isFolder = item.type === 'folder';
+                const icon = isFolder ? '<i class="fa-solid fa-folder folder-icon fa-lg"></i>' : '<i class="fa-regular fa-file text-slate-400 fa-lg"></i>';
+                // Folder path display
+                const location = item.path.includes('/') ? item.path.substring(0, item.path.lastIndexOf('/')) : 'Root';
+
+                html += `
+                <div class="explorer-row grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-3 border-b border-slate-50 cursor-default items-center group">
+                    <div class="w-6 text-center flex items-center justify-center">${icon}</div>
+                    <div class="overflow-hidden">
+                        <div class="text-sm font-semibold text-slate-700 truncate">${item.name}</div>
+                        <div class="text-xs text-slate-400 truncate">in ${location}</div>
+                    </div>
+                    <div>
+                        <button onclick="copyToClipboard('${item.path}')" class="opacity-0 group-hover:opacity-100 bg-white border border-slate-200 text-xs px-2 py-1 rounded text-slate-500 hover:text-blue-600 hover:border-blue-400 transition shadow-sm">Copy Path</button>
+                    </div>
+                </div>`;
+            });
+
+            listEl.innerHTML = html;
+            countEl.innerText = `${results.length} results`;
+        }
+
+        // --- NAVIGATION ACTIONS ---
+        window.navEnter = (folderName) => { currentPathStack.push(folderName); renderExplorer(); };
+        window.navUp = () => { currentPathStack.pop(); renderExplorer(); };
+        window.navToRoot = () => { currentPathStack = []; renderExplorer(); };
+        window.navToLevel = (idx) => { currentPathStack = currentPathStack.slice(0, idx + 1); renderExplorer(); };
+
+        // Search Listener
+        document.getElementById('gh-searchBox').addEventListener('input', () => {
+             renderExplorer();
         });
 
-        // --- Initial Load ---
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => showGlobalToast(`Path copied`))
+            .catch(() => {
+                 const t = document.createElement("textarea");
+                 t.value = text; document.body.appendChild(t); t.select(); document.execCommand("Copy"); t.remove();
+                 showGlobalToast(`Path copied`);
+            });
+        }
+
+        // Initial Load
         document.addEventListener('DOMContentLoaded', fetchMappings);
 
     </script>
