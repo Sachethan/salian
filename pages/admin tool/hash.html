@@ -580,12 +580,12 @@
 
   // If no user info found → redirect
   if (!userInfo) {
-    window.location.href = "../../index.html";
+    window.top.location.href = "../../index.html";          
   }
 
   // If role is NOT admin → redirect
   if (userInfo.role !== "admin") {
-    window.location.href = "../../index.html";
+    window.top.location.href = "../../index.html";
   }
 </script>           
 </body>
