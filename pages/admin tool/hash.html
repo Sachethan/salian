@@ -66,7 +66,7 @@
     <main class="flex-grow p-4 md:p-6 max-w-5xl mx-auto w-full">
 
         <!-- ========================================== -->
-        <!-- SECTION 1: MAPPING MANAGER (Preserved)     -->
+        <!-- SECTION 1: MAPPING MANAGER                 -->
         <!-- ========================================== -->
         <div id="section-mapping" class="fade-in block">
             <header class="mb-6">
@@ -103,7 +103,7 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- SECTION 2: WINDOWS STYLE EXPLORER (Search) -->
+        <!-- SECTION 2: FILE EXPLORER (Search + Win)    -->
         <!-- ========================================== -->
         <div id="section-github" class="hidden fade-in">
             
@@ -116,7 +116,6 @@
                 </div>
                 
                 <div class="flex gap-2 w-full md:w-auto">
-                    <!-- GitHub Search Box -->
                     <div class="relative w-full md:w-64">
                         <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                         <input id="gh-searchBox" type="text" placeholder="Search repository..." 
@@ -129,36 +128,23 @@
                 </div>
             </header>
 
-            <!-- Error Box -->
             <div id="gh-errorMsg" class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-4"></div>
 
-            <!-- Loader -->
             <div id="gh-loader" class="flex flex-col items-center justify-center py-24 text-slate-400 hidden">
                 <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4 text-blue-500"></i>
                 <p class="font-medium text-slate-500">Loading file system...</p>
             </div>
 
-            <!-- EXPLORER UI CONTAINER -->
             <div id="explorer-ui" class="hidden flex flex-col bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden min-h-[400px]">
-                
-                <!-- 1. Address Bar (Breadcrumbs) -->
                 <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center gap-2 text-sm text-slate-600 overflow-x-auto whitespace-nowrap" id="breadcrumb-container">
                     <span class="font-semibold text-slate-400">Loading...</span>
                 </div>
-
-                <!-- 2. File List Header -->
                 <div class="grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 bg-white border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider">
                     <div class="w-6 text-center">Type</div>
                     <div>Name</div>
                     <div>Action</div>
                 </div>
-
-                <!-- 3. File List Body -->
-                <div id="file-list-body" class="flex-1 overflow-y-auto max-h-[60vh]">
-                    <!-- Files injected by JS -->
-                </div>
-
-                <!-- 4. Footer Status -->
+                <div id="file-list-body" class="flex-1 overflow-y-auto max-h-[60vh]"></div>
                 <div class="bg-slate-50 border-t border-slate-200 px-4 py-2 text-xs text-slate-400 flex justify-between">
                     <span id="item-count">0 items</span>
                     <span>GitHub API</span>
@@ -175,7 +161,7 @@
         <span id="toastMsg" class="text-sm font-medium">Notification</span>
     </div>
 
-    <!-- Delete Modal (Mapping Manager) -->
+    <!-- Delete Modal -->
     <div id="delete-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 hidden backdrop-blur-sm">
         <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
             <h3 class="text-lg font-bold text-slate-900">Confirm Deletion</h3>
@@ -189,9 +175,10 @@
 
     <script>
         // ==========================================
-        // UI: TAB SWITCHING
+        // UI: TAB SWITCHING & UTILS
         // ==========================================
         let isGitHubLoaded = false;
+        const BASE_BLOG_URL = "https://itssachethan.blogspot.com/#";
 
         function switchTab(tabName) {
             const btnMap = document.getElementById('tab-mapping');
@@ -225,6 +212,15 @@
             toast.classList.remove('translate-y-20', 'opacity-0');
             if(window.toastTimeout) clearTimeout(window.toastTimeout);
             window.toastTimeout = setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => showGlobalToast(`Copied to clipboard`))
+            .catch(() => {
+                 const t = document.createElement("textarea");
+                 t.value = text; document.body.appendChild(t); t.select(); document.execCommand("Copy"); t.remove();
+                 showGlobalToast(`Copied to clipboard`);
+            });
         }
 
         function escapeHtml(str) {
@@ -305,11 +301,14 @@
             }
             return `
                 <div class="p-4 flex justify-between items-center cursor-pointer group" data-action="expand">
-                    <div class="flex items-center gap-3">
-                         <div class="bg-blue-100 text-blue-600 p-1.5 rounded-md"><i class="fa-solid fa-link text-xs"></i></div>
+                    <div class="flex items-center gap-2 min-w-0">
+                         <div class="bg-blue-100 text-blue-600 p-1.5 rounded-md shrink-0"><i class="fa-solid fa-link text-xs"></i></div>
                         <div class="font-semibold text-slate-700 truncate">${escapeHtml(d.hash)}</div>
+                        <button data-action="copy-hash-url" data-hash="${escapeHtml(d.hash)}" class="text-slate-400 hover:text-blue-600 p-1.5 rounded-full transition-colors ml-1" title="Copy Blog Link">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
                     </div>
-                    <i class="fa-solid fa-chevron-down text-slate-400 group-hover:text-blue-500 transition-transform"></i>
+                    <i class="fa-solid fa-chevron-down text-slate-400 group-hover:text-blue-500 transition-transform shrink-0"></i>
                 </div>
                 <div class="details-panel bg-slate-50 border-t border-slate-100">
                     <div class="p-4 text-sm">
@@ -359,6 +358,16 @@
 
             if(btn) {
                 const act = btn.dataset.action;
+                
+                // --- NEW: Copy Hash URL Logic ---
+                if (act === 'copy-hash-url') {
+                    // Stop propagation prevents expand/collapse when clicking copy
+                    e.stopPropagation(); 
+                    const hashVal = btn.dataset.hash;
+                    copyToClipboard(`${BASE_BLOG_URL}${hashVal}`);
+                    return; 
+                }
+
                 if(act === 'edit') item.innerHTML = createMappingItemHTML(rowData, true);
                 if(act === 'cancel') item.innerHTML = createMappingItemHTML(rowData, false);
                 if(act === 'delete') {
@@ -392,11 +401,11 @@
         });
 
         // ==========================================
-        // LOGIC 2: GITHUB EXPLORER (SEARCHABLE)
+        // LOGIC 2: GITHUB EXPLORER
         // ==========================================
         const GH = { user: "Sachethan", repo: "salian", branch: "main" };
         let fullTreeData = {};
-        let flatTreeData = []; // Flat list for search
+        let flatTreeData = []; 
         let currentPathStack = []; 
 
         async function initGitHubTree() {
@@ -421,7 +430,6 @@
                 
                 const data = await res.json();
                 
-                // 1. Store Flat Data (for search)
                 flatTreeData = data.tree.filter(i => i.type === 'tree' || i.type === 'blob').map(item => ({
                     name: item.path.split('/').pop(),
                     path: item.path,
@@ -429,11 +437,9 @@
                     parentPath: item.path.includes('/') ? item.path.substring(0, item.path.lastIndexOf('/')) : ''
                 }));
 
-                // 2. Build Nested Data (for navigation)
                 fullTreeData = buildTreeObj(flatTreeData);
                 currentPathStack = []; 
-                
-                document.getElementById('gh-searchBox').value = ''; // Reset Search
+                document.getElementById('gh-searchBox').value = '';
                 renderExplorer();
                 
                 isGitHubLoaded = true;
@@ -468,35 +474,28 @@
             return root;
         }
 
-        // --- EXPLORER RENDERER ---
         function renderExplorer() {
             const breadcrumbEl = document.getElementById('breadcrumb-container');
             const listBody = document.getElementById('file-list-body');
             const countEl = document.getElementById('item-count');
-            
-            // Check Search
             const searchQuery = document.getElementById('gh-searchBox').value.trim().toLowerCase();
             
             if (searchQuery.length > 0) {
-                // --- SEARCH MODE ---
                 renderSearchResults(searchQuery, breadcrumbEl, listBody, countEl);
                 return;
             }
 
-            // --- NORMAL FOLDER MODE ---
             let currentNode = fullTreeData;
             currentPathStack.forEach(folder => {
                 if(currentNode._children[folder]) currentNode = currentNode._children[folder];
             });
 
-            // Breadcrumbs
             let bcHtml = `<span class="breadcrumb-item cursor-pointer flex items-center gap-1" onclick="navToRoot()"><i class="fa-solid fa-house"></i> Home</span>`;
             currentPathStack.forEach((folder, index) => {
                 bcHtml += ` <span class="text-slate-300 text-xs">/</span> <span class="breadcrumb-item cursor-pointer font-medium" onclick="navToLevel(${index})">${folder}</span>`;
             });
             breadcrumbEl.innerHTML = bcHtml;
 
-            // List
             let listHtml = '';
             if (currentPathStack.length > 0) {
                 listHtml += `
@@ -534,9 +533,7 @@
         }
 
         function renderSearchResults(query, bcEl, listEl, countEl) {
-            // Update Breadcrumb
             bcEl.innerHTML = `<span class="text-blue-600 font-semibold"><i class="fa-solid fa-search"></i> Search Results for "${query}"</span>`;
-            
             const results = flatTreeData.filter(item => item.name.toLowerCase().includes(query));
             
             if (results.length === 0) {
@@ -549,7 +546,6 @@
             results.forEach(item => {
                 const isFolder = item.type === 'folder';
                 const icon = isFolder ? '<i class="fa-solid fa-folder folder-icon fa-lg"></i>' : '<i class="fa-regular fa-file text-slate-400 fa-lg"></i>';
-                // Folder path display
                 const location = item.path.includes('/') ? item.path.substring(0, item.path.lastIndexOf('/')) : 'Root';
 
                 html += `
@@ -569,27 +565,12 @@
             countEl.innerText = `${results.length} results`;
         }
 
-        // --- NAVIGATION ACTIONS ---
         window.navEnter = (folderName) => { currentPathStack.push(folderName); renderExplorer(); };
         window.navUp = () => { currentPathStack.pop(); renderExplorer(); };
         window.navToRoot = () => { currentPathStack = []; renderExplorer(); };
         window.navToLevel = (idx) => { currentPathStack = currentPathStack.slice(0, idx + 1); renderExplorer(); };
 
-        // Search Listener
-        document.getElementById('gh-searchBox').addEventListener('input', () => {
-             renderExplorer();
-        });
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => showGlobalToast(`Path copied`))
-            .catch(() => {
-                 const t = document.createElement("textarea");
-                 t.value = text; document.body.appendChild(t); t.select(); document.execCommand("Copy"); t.remove();
-                 showGlobalToast(`Path copied`);
-            });
-        }
-
-        // Initial Load
+        document.getElementById('gh-searchBox').addEventListener('input', () => { renderExplorer(); });
         document.addEventListener('DOMContentLoaded', fetchMappings);
 
     </script>
