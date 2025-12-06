@@ -28,29 +28,21 @@
             opacity: 0;
             transition: opacity 0.5s ease-out;
         }
-.flex-grow {
-    /* Corrected to background-image, and using a shorthand 'background' is often easier */
-    background: linear-gradient(90deg, rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgb(245, 164, 3) 100%);
-    /* Define the animation */
-    animation: gradient-shift 10s ease-in-out infinite alternate;
-    /* Optional: Ensure the background covers the entire element */
-    background-size: 400% 400%; 
-}
+        .flex-grow {
+            /* Corrected to background-image */
+            background: linear-gradient(90deg, rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgb(245, 164, 3) 100%);
+            /* Define the animation */
+            animation: gradient-shift 10s ease-in-out infinite alternate;
+            /* Optional: Ensure the background covers the entire element */
+            background-size: 400% 400%; 
+        }
 
-@keyframes gradient-shift {
-    0% {
-        /* Start position - the gradient is aligned to the top-left */
-        background-position: 0% 50%;
-    }
-    50% {
-        /* Middle position - the gradient is centered */
-        background-position: 100% 50%;
-    }
-    100% {
-        /* End position - the gradient is aligned to the bottom-right */
-        background-position: 0% 50%;
-    }
-}
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         /* Custom height for iframe container to fill available space below the sub-header */
         #iframe-container.dynamic-height {
             height: calc(100% - var(--subheader-height, 41px));
@@ -76,84 +68,70 @@
             background: #555;
         }
 
-.blink {
-    animation: blinkAnim 2s infinite;
-}
+        .blink {
+            animation: blinkAnim 2s infinite;
+        }
 
-@keyframes blinkAnim {
-    0%, 50%, 100% { opacity: 1; }
-    25%, 75% { opacity: 0; }
-}
+        @keyframes blinkAnim {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0; }
+        }
 
-/* Custom CSS to be included in your stylesheet */
-.btn-pulse {
-  /* Initial state: A strong shadow for depth */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-  /* Apply the animation */
-  animation: pulse-shadow 2s infinite ease-in-out;
-  /* Optimization */
-  will-change: box-shadow; 
-}
+        /* Custom CSS to be included in your stylesheet */
+        .btn-pulse {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+            animation: pulse-shadow 2s infinite ease-in-out;
+            will-change: box-shadow; 
+        }
 
-@keyframes pulse-shadow {
-  0% {
-    /* Base shadow: default blue color */
-    box-shadow: 0 0 0 0 rgba(255, 72, 0, 0.7); /* Indigo-600 with high opacity */
-  }
-  50% {
-    /* Maximum pulse: larger and more transparent shadow */
-    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); /* Same color, fades out */
-  }
-  100% {
-    /* Return to base, ready to repeat */
-    box-shadow: 0 0 0 0 rgb(255, 174, 0);
-  }
-}
+        @keyframes pulse-shadow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 72, 0, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgb(255, 174, 0); }
+        }
 
-  #loadimg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-}
+        #loadimg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
 
-#loadimg div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
+        #loadimg div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
 
-#loadimg img.logo {
-    width: 75px; /* Adjust the size of your logo */
-    height: auto;
-    z-index: 1000;
-}
+        #loadimg img.logo {
+            width: 75px; 
+            height: auto;
+            z-index: 1000;
+        }
 
-#loadimg span {
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    border: 4px solid transparent;
-    border-top: 4px solid #8A2BE2;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    z-index: 1000;
-}
+        #loadimg span {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 4px solid transparent;
+            border-top: 4px solid #8A2BE2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1000;
+        }
 
-/* Animation for the spinner */
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col h-screen">
@@ -179,12 +157,11 @@
 
             <!-- Search and Tabs Section -->
             <div class="mb-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <!-- Search Input -->
-<button onclick="window.history.back()" 
-    class="absolute z-10 top-1 left-1 m-0 opacity-75 items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-gray-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95">
-    &larr; Back
-</button>
-
+                <!-- Back Button -->
+                <button onclick="window.history.back()" 
+                    class="absolute z-10 top-1 left-1 m-0 opacity-75 items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-gray-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95">
+                    &larr; Back
+                </button>
 
                 <div class="relative w-full sm:w-1/2 md:w-1/3">
                     <input type="text" id="search-input" placeholder="Search templates..."
@@ -216,61 +193,32 @@
                 <!-- Template cards will be generated by JavaScript -->
             </div>
 
-    <!-- Main Container -->
-    <div id="templateLoader" class="space-y-6 w-full max-w-lg mx-auto">
-
-<div id="loadimg">
-    <div>
-        <img src="https://saliantech.github.io/Saliantech/Files/resources/loading.gif" alt="Logo" class="logo"/>
-        <span></span>
-    </div>  
-<p class="absolute bottom-[40%] text-lg font-medium text-slate-700">@Sachethan_Salian_Creation</p>  
-</div>
-        <!-- First Loading Card (mimics the top poster) -->
-        <div class="w-full bg-white rounded-xl shadow-lg p-6">
-            <div class="flex animate-pulse flex-col space-y-4">
-                <!-- Large title placeholder -->
-                <div class="h-8 w-3/4 rounded-md bg-gray-200"></div>
-                <!-- Subtitle placeholder -->
-                <div class="h-4 w-1/2 rounded-md bg-gray-200"></div>
-                <!-- Spacer -->
-                <div class="h-4"></div>
-
-                <!-- Expiration and description placeholders -->
-                <div class="space-y-2">
-                    <div class="h-3 w-1/3 rounded-md bg-gray-200"></div>
-                    <div class="h-3 w-2/3 rounded-md bg-gray-200"></div>
-                </div>
-
-                <!-- Spacer -->
-                <div class="h-4"></div>
-
-                <!-- Button and icon placeholder -->
-                <div class="flex justify-between items-center">
-                    <div class="h-10 w-32 rounded-lg bg-blue-500"></div>
-                    <div class="size-10 rounded-full bg-gray-200"></div>
+            <!-- Loading Spinner (Initial) -->
+            <div id="templateLoader" class="space-y-6 w-full max-w-lg mx-auto">
+                <div id="loadimg">
+                    <div>
+                        <img src="https://saliantech.github.io/Saliantech/Files/resources/loading.gif" alt="Logo" class="logo"/>
+                        <span></span>
+                    </div>  
+                </div>      
+                <!-- Loading Placeholders -->
+                <div class="w-full bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex animate-pulse flex-col space-y-4">
+                        <div class="h-8 w-3/4 rounded-md bg-gray-200"></div>
+                        <div class="h-4 w-1/2 rounded-md bg-gray-200"></div>
+                        <div class="h-4"></div>
+                        <div class="space-y-2">
+                            <div class="h-3 w-1/3 rounded-md bg-gray-200"></div>
+                            <div class="h-3 w-2/3 rounded-md bg-gray-200"></div>
+                        </div>
+                        <div class="h-4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-10 w-32 rounded-lg bg-blue-500"></div>
+                            <div class="size-10 rounded-full bg-gray-200"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Second Loading Card (mimics the bottom poster) -->
-        <div class="w-full bg-white rounded-xl shadow-lg p-6">
-            <div class="flex animate-pulse flex-col space-y-4">
-                <!-- Date title placeholder -->
-                <div class="h-4 w-1/4 rounded-md bg-gray-200"></div>
-                <!-- Location title placeholder -->
-                <div class="h-4 w-1/2 rounded-md bg-gray-200"></div>
-
-                <!-- Main content box placeholder -->
-                <div class="rounded-xl bg-gray-200 p-4 h-32"></div>
-
-                <!-- Bottom title placeholder -->
-                <div class="h-4 w-3/4 rounded-md bg-gray-200"></div>
-            </div>
-        </div>
-
-    </div>
-
         </div>
 
 
@@ -279,97 +227,48 @@
             <!-- Loading Overlay -->
             <div id="loading-overlay" class="absolute inset-0 bg-slate-200 bg-opacity-80 flex items-center justify-center z-10">
                 <div class="flex flex-col items-center">
-<div id="loadimg">
-    <div>
-        <img src="https://saliantech.github.io/Saliantech/Files/resources/loading.gif" alt="Logo" class="logo"/>
-        <span></span>
-    </div>              
-</div>      
-<p class="absolute bottom-[20%] text-lg font-medium text-slate-700">Loading Editor...</p>          
-</div>
-</div>
+                    <div id="loadimg">
+                        <div>
+                            <img src="https://saliantech.github.io/Saliantech/Files/resources/loading.gif" alt="Logo" class="logo"/>
+                            <span></span>
+                        </div>              
+                    </div>      
+                    <p class="absolute bottom-[20%] text-lg font-medium text-slate-700">Loading Editor...</p>          
+                </div>
+            </div>
             <iframe id="viewer" src="about:blank" title="Editor" class="w-full h-full border-0"></iframe>
         </div>
 
-    <!-- Confirmation Modal -->
-    <div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div class="mt-3 text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
-                    <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                </div>
-                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Are you sure?</h3>
-                <div class="mt-2 px-7 py-3">
-                    <p class="text-sm text-gray-500">
-                        Any unsaved changes will be lost. Do you want to return to the template selection?
-                    </p>
-                </div>
-                <div class="items-center px-4 py-3 space-x-4">
-                    <button id="cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        Cancel
-                    </button>
-                    <button id="confirm-back-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Confirm
-                    </button>
+        <!-- Confirmation Modal -->
+        <div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="mt-3 text-center">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                        <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Are you sure?</h3>
+                    <div class="mt-2 px-7 py-3">
+                        <p class="text-sm text-gray-500">
+                            Any unsaved changes will be lost. Do you want to return to the template selection?
+                        </p>
+                    </div>
+                    <div class="items-center px-4 py-3 space-x-4">
+                        <button id="cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                            Cancel
+                        </button>
+                        <button id="confirm-back-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Confirm
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyD-IQlftZn1NGONo7KYQgIZnU5P3FVsHks",
-      authDomain: "editech-93e95.firebaseapp.com",
-      projectId: "editech-93e95",
-      storageBucket: "editech-93e95.firebasestorage.app",
-      messagingSenderId: "337897717681",
-      appId: "1:337897717681:web:99a1c9344d6a4acf6dc790",
-      measurementId: "G-3CGVLC34XD"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-          alert("Please login first");
-          return;
-        }
-
-        let currentUserRole = "user"; // default
-
-        const userRef = doc(db, "users", user.uid);
-        const snap = await getDoc(userRef);
-        let accessData = {};
-
-if (snap.exists()) {
-  const data = snap.data();
-  const userData = snap.data();
-  accessData = data.access || {};
-  currentUserRole = userData.role || "user";
-}
-
-   function hasAccess(templateId) {
-  const templateAccess = accessData[templateId];
-  return (
-    templateAccess &&
-    templateAccess.isRecharged === true &&
-    new Date(templateAccess.rechargeExpiry) > new Date()
-  );
-}
-
-
             // --- DATA ---
-            // To add a new template, just add a new object to this array.
             const templates = [
                 {
                     id: 'poster-anna-poorna',
@@ -377,6 +276,7 @@ if (snap.exists()) {
                     description: 'A poster editor for the Annapoorna Seva Samithi event.',
                     previewImage: 'annapoorna/image/preview.jpg',
                     url: 'annapoorna/annapoorna1.html',
+                    url2: 'annapoorna/report.html',
                     category: 'devotional',
                     isFavorite: false
                 },
@@ -388,36 +288,8 @@ if (snap.exists()) {
                     url: 'sharabeswara/sharabeswara.html',
                     category: 'devotional',
                     isFavorite: false
-                },
+                },               
             ];
-
-              /**     {
-                    id: 'form-volunteer',
-                    title: 'Volunteer Sign-up Sheet',
-                    description: 'Create a form for new volunteers to sign up.',
-                    previewImage: 'https://placehold.co/600x400/fff3e0/e65100?text=Volunteer+Form',
-                    url: 'about:blank',
-                    category: 'general',
-                    isFavorite: false
-                },
-                {
-                    id: 'card-event-invite',
-                    title: 'Event Invitation Card',
-                    description: 'Design an elegant invitation card for special events.',
-                    previewImage: 'https://placehold.co/600x400/f3e5f5/8e24aa?text=Invitation+Card',
-                    url: 'about:blank',
-                    category: 'general',
-                    isFavorite: false
-                },
-                {
-                    id: 'hash-manager',
-                    title: 'Hash Manager',
-                    description: 'manage website #tags.',
-                    previewImage: 'https://placehold.co/600x400/e8f5e9/2e7d32?text=Hash-Tag-Manager',
-                    url: '../../admin tool/hash.html"',
-                    category: 'general',
-                    isFavorite: false
-                }, */
 
             // --- DOM Element Selection ---
             const mainContent = document.querySelector('main');
@@ -441,44 +313,32 @@ if (snap.exists()) {
             let currentSearchQuery = '';
             let currentCategory = 'all'; // Default category
 
-            // --- Functions ---
-window.parent.postMessage({
-  type: "showMessage",
-  message: `This is the Editing Panel. Click on 'Open Editor' to edit a poster.`,
-  variant: "info"
-}, "*");
+            // --- Messaging ---
+            window.parent.postMessage({
+                type: "showMessage",
+                message: `This is the Editing Panel. Click on 'Open Editor' to edit a poster.`,
+                variant: "info"
+            }, "*");
 
-// --- For Changes template Url based on Hash ---
-const urlParams = new URLSearchParams(window.location.search);
-const openId = urlParams.get('open');
-const overrideUrl = urlParams.get('override');
+            // --- Changes template Url based on Hash ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const openId = urlParams.get('open');
+            const overrideUrl = urlParams.get('override');
 
-if (openId) {
-    const template = templates.find(t => t.id === openId);
-    if (template) {
-        if (overrideUrl) {
-            template.url = overrideUrl;
-        }
-
-        if (template.url !== 'about:blank') {
-            if (currentUserRole === "admin" || currentUserRole === "tempadmin"){
-                showEditor(template.url, template.title);
-            } else{
-            if (!hasAccess(openId)) {
-                showEditor(template.url, template.title);
-            } else {
-                showEditor(template.url, template.title);
+            if (openId) {
+                const template = templates.find(t => t.id === openId);
+                if (template) {
+                    if (overrideUrl) {
+                        template.url = overrideUrl;
+                    }
+                    if (template.url !== 'about:blank') {
+                        showEditor(template.url, template.title);
+                    }
+                }
             }
-        }
-        }
-    }
-}
-
-
-
 
             /**
-             * Loads favorite template IDs from localStorage and updates the templates array.
+             * Loads favorite template IDs from localStorage.
              */
             function loadFavorites() {
                 const favoriteTemplateIds = JSON.parse(localStorage.getItem('favoriteTemplates') || '[]');
@@ -496,90 +356,73 @@ if (openId) {
             }
 
             /**
-             * Renders the template cards into the grid based on the provided array.
-             * @param {Array} templatesToRender - The array of templates to display.
+             * Renders the template cards.
              */
-function renderTemplates(templatesToRender) {
-  templateGrid.innerHTML = ''; // Clear existing templates
-  document.getElementById('templateLoader').classList.add('hidden');
-  if (!templatesToRender || templatesToRender.length === 0) {
-    templateGrid.innerHTML = `
-      <div class="col-span-full text-center py-10">
-        <p class="text-slate-500 text-lg">No templates found matching your criteria.</p>
-        <p class="text-slate-400 text-sm mt-2">Try adjusting your search or selecting a different category.</p>
-      </div>
-    `;
-    return;
-  }
+            function renderTemplates(templatesToRender) {
+                templateGrid.innerHTML = '';
+                document.getElementById('templateLoader').classList.add('hidden');
+                
+                if (!templatesToRender || templatesToRender.length === 0) {
+                    templateGrid.innerHTML = `
+                      <div class="col-span-full text-center py-10">
+                        <p class="text-slate-500 text-lg">No templates found matching your criteria.</p>
+                        <p class="text-slate-400 text-sm mt-2">Try adjusting your search or selecting a different category.</p>
+                      </div>
+                    `;
+                    return;
+                }
 
-  templatesToRender.forEach(template => {
-    const card = document.createElement('div');
-    card.className = 'group relative flex flex-col bg-white border border-slate-200 rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1';
+                templatesToRender.forEach(template => {
+                    const card = document.createElement('div');
+                    card.className = 'group relative flex flex-col bg-white border border-slate-200 rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1';
 
-    const isDisabled = template.url === 'about:blank';
+                    const isDisabled = template.url === 'about:blank';
+                    let primaryBtnHTML = "";
 
-// --- Days left / Expired text ---
-let daysLeftHtml = "";
-const tAccess = accessData?.[template.id];
-if (currentUserRole === "admin" || currentUserRole === "tempadmin") {
-    // Show special message for admin
-    daysLeftHtml = `<p class="text-sm text-blue-600 font-semibold">You are in Admin Access</p>`;
-}
-    // --- Button logic: Coming Soon / Open / Pending / Buy ---
-    const now = new Date();
-    const hasAccess = !!(tAccess?.isRecharged && new Date(tAccess.rechargeExpiry) > now);
-    const isPending = !!tAccess?.requested;
+                    if (isDisabled) {
+                        primaryBtnHTML = `
+                        <button class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-slate-400 cursor-not-allowed" disabled>
+                          Coming Soon
+                        </button>`;
+                    } else {
+                        primaryBtnHTML = `
+                        <button
+                          class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95 btn-pulse"
+                          data-url="${template.url}"
+                          data-title="${template.title}">
+                          Edit
+                        </button>`;
+                    }
 
-    let primaryBtnHTML = "";
-    if (isDisabled) {
-      primaryBtnHTML = `
-        <button class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-slate-400 cursor-not-allowed" disabled>
-          Coming Soon
-        </button>`;
-    } else {
-primaryBtnHTML = `
-  <button
-    class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95 
-    
-    btn-pulse"
-    
-    data-url="${template.url}"
-    data-title="${template.title}">
-    Open Editor
-  </button>`;
-}
+                    card.innerHTML = `
+                      <div class="aspect-w-16 aspect-h-9 bg-slate-100">
+                        <img src="${template.previewImage}" alt="${template.title} Preview" class="w-full h-48 object-cover"
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+Not+Found';">
+                      </div>
+                      <div class="p-5 flex-grow flex flex-col">
+                        <h3 class="text-xl font-semibold text-slate-900 mb-2">${template.title}</h3>
+                        <p class="text-sm text-slate-600 flex-grow mb-4">${template.description}</p>
+                        <div class="flex items-center justify-between mt-auto">
+                          ${primaryBtnHTML}
+                        <button
+                       class="favorite-button ml-4 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200
+                       ${template.isFavorite ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
+                       data-template-id="${template.id}"
+                       title="${template.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}">
+                       <svg class="h-5 w-5 inline-block align-middle" fill="${template.isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${template.isFavorite ? 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z' : 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z'}"></path>
+                       </svg>
+                       </button>
+                       </div>
+                      </div>
+                    `;
 
-    card.innerHTML = `
-      <div class="aspect-w-16 aspect-h-9 bg-slate-100">
-        <img src="${template.previewImage}" alt="${template.title} Preview" class="w-full h-48 object-cover"
-             onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+Not+Found';">
-      </div>
-      <div class="p-5 flex-grow flex flex-col">
-        <h3 class="text-xl font-semibold text-slate-900 mb-2">${template.title}</h3>
-        ${daysLeftHtml}
-        <p class="text-sm text-slate-600 flex-grow mb-4">${template.description}</p>
-        <div class="flex items-center justify-between mt-auto">
-          ${primaryBtnHTML}
-        <button
-       class="favorite-button ml-4 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200
-       ${template.isFavorite ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
-       data-template-id="${template.id}"
-       title="${template.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}">
-       <svg class="h-5 w-5 inline-block align-middle" fill="${template.isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${template.isFavorite ? 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z' : 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z'}"></path>
-       </svg>
-       </button>
-       </div>
-      </div>
-    `;
-
-    templateGrid.appendChild(card);
-   });
-}
-
+                    templateGrid.appendChild(card);
+                });
+            }
 
             /**
-             * Filters templates based on current search query and category, then renders them.
+             * Filters templates based on search and category.
              */
             function filterAndRenderTemplates() {
                 const lowerCaseQuery = currentSearchQuery.toLowerCase();
@@ -592,7 +435,7 @@ primaryBtnHTML = `
                         matchesCategory = true;
                     } else if (currentCategory === 'favorite') {
                         matchesCategory = template.isFavorite;
-                    } else { // 'devotional' or any other specific category
+                    } else {
                         matchesCategory = template.category === currentCategory;
                     }
                     return matchesSearch && matchesCategory;
@@ -601,7 +444,7 @@ primaryBtnHTML = `
             }
 
             /**
-             * Updates the active tab styling.
+             * Updates active tab styling.
              */
             function updateActiveTab() {
                 tabButtons.forEach(button => {
@@ -615,54 +458,37 @@ primaryBtnHTML = `
                 });
             }
 
-            /**
-             * Hides the loading overlay with a fade-out effect.
-             */
             function hideLoader() {
                 loadingOverlay.classList.add('loader-fade-out');
                 setTimeout(() => {
                     loadingOverlay.classList.add('hidden');
-                }, 500); // Match transition duration in CSS
+                }, 500);
             }
 
-            /**
-             * Switches the view to the editor iframe.
-             * @param {string} url - The URL of the template to load.
-             * @param {string} title - The title of the template for the breadcrumb.
-             */
-function showEditor(url, title) {
-  loadingOverlay.classList.remove('hidden', 'loader-fade-out');
-  loadingOverlay.style.opacity = '1';
+            function showEditor(url, title) {
+                loadingOverlay.classList.remove('hidden', 'loader-fade-out');
+                loadingOverlay.style.opacity = '1';
 
-  templateSelector.classList.add('hidden');
-  iframeContainer.classList.remove('hidden');
-  subHeader.classList.remove('hidden');
+                templateSelector.classList.add('hidden');
+                iframeContainer.classList.remove('hidden');
+                subHeader.classList.remove('hidden');
 
-  document.documentElement.style.setProperty('--subheader-height', `${subHeader.offsetHeight}px`);
-  iframeContainer.classList.add('dynamic-height');
+                document.documentElement.style.setProperty('--subheader-height', `${subHeader.offsetHeight}px`);
+                iframeContainer.classList.add('dynamic-height');
 
-  templateBreadcrumb.textContent = title;
-  viewerIframe.src = url;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+                templateBreadcrumb.textContent = title;
+                viewerIframe.src = url;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
 
-            /**
-             * Switches the view back to the template selector.
-             */
-function showTemplateSelector() {
-  viewerIframe.src = blankPageUrl;
+            function showTemplateSelector() {
+                viewerIframe.src = blankPageUrl;
+                templateSelector.classList.remove('hidden');
+                iframeContainer.classList.add('hidden');
+                subHeader.classList.add('hidden');
+                closeConfirmationModal();
+            }
 
-  templateSelector.classList.remove('hidden');
-  iframeContainer.classList.add('hidden');
-  subHeader.classList.add('hidden');
-
-  closeConfirmationModal();
-}
-
-
-            /**
-             * Shows the confirmation modal if the editor is active.
-             */
             function openConfirmationModal() {
                 if (!iframeContainer.classList.contains('hidden')) {
                     confirmationModal.classList.remove('hidden');
@@ -671,9 +497,6 @@ function showTemplateSelector() {
                 }
             }
 
-            /**
-             * Hides the confirmation modal.
-             */
             function closeConfirmationModal() {
                 confirmationModal.classList.add('hidden');
             }
@@ -689,28 +512,19 @@ function showTemplateSelector() {
                     if (template) {
                         template.isFavorite = !template.isFavorite;
                         saveFavorites();
-                        filterAndRenderTemplates(); // Re-render to update the button state and filter
+                        filterAndRenderTemplates();
                     }
-                    return; // Prevent triggering the 'Open Editor' logic
+                    return;
                 }
 
-  // BUY
-  const buyBtn = e.target.closest('button[data-action="buy"]');
-  if (buyBtn) {
-    const tid = buyBtn.dataset.templateId;
-    window.location.href = `payment.html?open=${encodeURIComponent(tid)}`;
-    return;
-  }
-
-  // OPEN EDITOR
-  const openEditorButton = e.target.closest('button[data-url]');
-  if (openEditorButton && openEditorButton.dataset.url) {
-    const { url, title } = openEditorButton.dataset;
-    if (url && url !== blankPageUrl) {
-      showEditor(url, title);
-    }
-  }
-});
+                const openEditorButton = e.target.closest('button[data-url]');
+                if (openEditorButton && openEditorButton.dataset.url) {
+                    const { url, title } = openEditorButton.dataset;
+                    if (url && url !== blankPageUrl) {
+                        showEditor(url, title);
+                    }
+                }
+            });
 
             homeBreadcrumbLink.addEventListener('click', openConfirmationModal);
             confirmBackBtn.addEventListener('click', showTemplateSelector);
@@ -722,7 +536,6 @@ function showTemplateSelector() {
                 }
             });
 
-            // Search functionality
             searchInput.addEventListener('input', (e) => {
                 currentSearchQuery = e.target.value;
                 if (currentSearchQuery.length > 0) {
@@ -740,43 +553,29 @@ function showTemplateSelector() {
                 filterAndRenderTemplates();
             });
 
-// Tab functionality
-tabButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    currentCategory = button.dataset.category;
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    currentCategory = button.dataset.category;
+                    localStorage.setItem('lastCategory', currentCategory);
+                    updateActiveTab();
+                    filterAndRenderTemplates();
+                });
+            });
 
-    // persist the last chosen category
-    localStorage.setItem('lastCategory', currentCategory);
+            // --- Initial Load ---
+            loadFavorites();
+            const savedCategory = localStorage.getItem('lastCategory');
+            currentCategory = savedCategory || 'all';
+            updateActiveTab();
+            filterAndRenderTemplates();
+        });
 
-    updateActiveTab();
-    filterAndRenderTemplates();
-  });
-});
-
-
-// --- Initial Load ---
-loadFavorites();
-
-// restore last selected category (default: 'all')
-const savedCategory = localStorage.getItem('lastCategory');
-currentCategory = savedCategory || 'all';
-
-updateActiveTab();
-filterAndRenderTemplates();
-
-              }); // 👈 close onAuthStateChanged
-}); // 👈 close DOMContentLoaded
-
-
-    window.addEventListener("message", (event) => {
-  // Optional origin check
-  // if (event.origin !== "https://sachethan.github.io") return;
-
-  // Forward any showMessage events to the parent (index.html)
-  if (event.data?.type === "showMessage") {
-    window.parent.postMessage(event.data, "*");
-  }
-});
- </script>
+        // Optional message handling from parent
+        window.addEventListener("message", (event) => {
+            if (event.data?.type === "showMessage") {
+                window.parent.postMessage(event.data, "*");
+            }
+        });
+    </script>
 </body>
 </html>
