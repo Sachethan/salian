@@ -169,4 +169,33 @@ margin-bottom: 5px;
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
+}
+
+        /* Animation: Smooth Zoom In for the centered modal */
+        @keyframes zoom-in {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        /* The centered class */
+        .centered-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Keeps it perfectly centered */
+            z-index: 99999;
+            animation: zoom-in 0.3s ease-out forwards;
+        }
+
+        /* Dark overlay background */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Dim background */
+            z-index: 99998; /* Just behind the popup */
+            backdrop-filter: blur(2px); /* Slight blur effect */
+            display: none; /* Hidden by default */
+        }
