@@ -486,6 +486,12 @@
         emailInput.disabled = false;
         nameInput.required = true;
         emailInput.required = true;
+        
+          showMessage(
+    "<strong>Note:</strong> If you're a new user, please click to <a href='#' id='registerMessageLink'>Register</a>, if not then <a href='pages/login/login.html'>Login</a>.",
+    "info"
+  );
+        
       } else {
         loader.classList.add('show'); // Show loader while user data is being processed
         document.getElementById("profileButton").style.display = "inline-flex"; // Changed to inline-flex
