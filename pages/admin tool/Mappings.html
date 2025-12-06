@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Tool Manager</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome (For Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+
+        /* Smooth Transitions */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mapping Manager Styles */
+        .details-panel {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .details-panel.expanded { max-height: 500px; }
+
+        /* Explorer Styles */
+        .explorer-row { transition: background-color 0.1s; }
+        .explorer-row:hover { background-color: #f1f5f9; }
+        .folder-icon { color: #fbbf24; text-shadow: 0 1px 2px rgba(0,0,0,0.1); } /* Windows Yellow */
+        .breadcrumb-item:hover { color: #2563eb; text-decoration: underline; }
+    </style>
+</head>
+<body class="antialiased text-slate-700 min-h-screen flex flex-col">
+
+    <!-- Navbar / Tab Controller -->
+    <div class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-20">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="bg-slate-800 text-white p-1.5 rounded-lg">
+                        <i class="fa-solid fa-toolbox"></i>
+                    </div>
+                    <h1 class="font-bold text-xl text-slate-800 tracking-tight">Admin Tools</h1>
+                </div>
+
+                <div class="flex space-x-1 bg-slate-100 p-1 rounded-lg">
+                    <button onclick="switchTab('mapping')" id="tab-mapping" class="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-blue-600 shadow-sm">
+                        Sheet Mappings
+                    </button>
+                    <button onclick="switchTab('github')" id="tab-github" class="px-4 py-2 text-sm font-medium rounded-md transition-colors text-slate-500 hover:text-slate-700">
+                        <i class="fa-brands fa-github mr-2"></i> File Explorer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="flex-grow p-4 md:p-6 max-w-5xl mx-auto w-full">
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: MAPPING MANAGER                 -->
+        <!-- ========================================== -->
+        <div id="section-mapping" class="fade-in block">
+            <header class="mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">Sheet Mapping Manager</h2>
+                <p class="text-slate-500 text-sm">Manage database hash mappings and template routing.</p>
+            </header>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 mb-6 overflow-hidden">
+                <button id="toggle-add-form" class="w-full p-4 text-left font-semibold text-lg flex justify-between items-center hover:bg-slate-50 transition-colors">
+                    <span class="flex items-center gap-2"><div class="bg-green-100 text-green-600 p-1 rounded"><i class="fa-solid fa-plus w-4 h-4 text-xs flex items-center justify-center"></i></div> Add New Mapping</span>
+                    <i id="add-form-icon" class="fa-solid fa-chevron-down text-slate-400 text-sm transition-transform"></i>
+                </button>
+                <div id="add-form-panel" class="px-4 pb-4 hidden bg-slate-50 border-t border-slate-100 pt-4">
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input id="addHash" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Hash (Required)">
+                        <input id="addTemplate" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Template ID">
+                        <input id="addRoot" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="RootFileName">
+                        <input id="addUrl" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="SubURLName">
+                    </div>
+                    <button id="addBtn" class="mt-4 w-full md:w-auto bg-blue-600 text-white font-medium py-2 px-6 rounded-lg hover:bg-blue-700 shadow-sm transition-all text-sm">
+                        Add Mapping
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-4 relative">
+                <i class="fa-solid fa-search absolute left-4 top-3.5 text-slate-400"></i>
+                <input id="searchBox" class="w-full pl-10 p-3 border border-slate-300 rounded-lg shadow-sm text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" type="text" placeholder="Search mappings...">
+            </div>
+            
+            <div id="status" class="min-h-[1.5em] mb-4 text-xs font-medium text-slate-500"></div>
+
+            <div id="mappingsList" class="space-y-3"></div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: FILE EXPLORER (Search + Win)    -->
+        <!-- ========================================== -->
+        <div id="section-github" class="hidden fade-in">
+            
+            <header class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">File Explorer</h2>
+                    <p class="text-slate-500 text-sm mt-1">
+                        Viewing <span class="font-mono bg-slate-200 px-1.5 py-0.5 rounded text-slate-700 text-xs">Sachethan/salian</span>
+                    </p>
+                </div>
+                
+                <div class="flex gap-2 w-full md:w-auto">
+                    <div class="relative w-full md:w-64">
+                        <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                        <input id="gh-searchBox" type="text" placeholder="Search repository..." 
+                            class="w-full pl-8 pr-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all">
+                    </div>
+                    
+                    <button onclick="initGitHubTree()" class="text-xs bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-3 py-1.5 rounded transition shadow-sm flex items-center gap-2 shrink-0 h-[34px]">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div id="gh-errorMsg" class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-4"></div>
+
+            <div id="gh-loader" class="flex flex-col items-center justify-center py-24 text-slate-400 hidden">
+                <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4 text-blue-500"></i>
+                <p class="font-medium text-slate-500">Loading file system...</p>
+            </div>
+
+            <div id="explorer-ui" class="hidden flex flex-col bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden min-h-[400px]">
+                <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center gap-2 text-sm text-slate-600 overflow-x-auto whitespace-nowrap" id="breadcrumb-container">
+                    <span class="font-semibold text-slate-400">Loading...</span>
+                </div>
+                <div class="grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 bg-white border-b border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    <div class="w-6 text-center">Type</div>
+                    <div>Name</div>
+                    <div>Action</div>
+                </div>
+                <div id="file-list-body" class="flex-1 overflow-y-auto max-h-[60vh]"></div>
+                <div class="bg-slate-50 border-t border-slate-200 px-4 py-2 text-xs text-slate-400 flex justify-between">
+                    <span id="item-count">0 items</span>
+                    <span>GitHub API</span>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Global Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-800 text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+        <i class="fa-solid fa-check-circle text-green-400"></i>
+        <span id="toastMsg" class="text-sm font-medium">Notification</span>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="delete-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm">
+            <h3 class="text-lg font-bold text-slate-900">Confirm Deletion</h3>
+            <p id="delete-modal-text" class="text-slate-600 mt-2 mb-6 text-sm">Are you sure?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-delete-btn" class="px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200">Cancel</button>
+                <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // UI: TAB SWITCHING & UTILS
+        // ==========================================
+        let isGitHubLoaded = false;
+        const BASE_BLOG_URL = "https://itssachethan.blogspot.com/#";
+
+        function switchTab(tabName) {
+            const btnMap = document.getElementById('tab-mapping');
+            const btnGit = document.getElementById('tab-github');
+            const secMap = document.getElementById('section-mapping');
+            const secGit = document.getElementById('section-github');
+
+            if (tabName === 'mapping') {
+                btnMap.className = "px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-blue-600 shadow-sm";
+                btnGit.className = "px-4 py-2 text-sm font-medium rounded-md transition-colors text-slate-500 hover:text-slate-700";
+                secMap.classList.remove('hidden');
+                secGit.classList.add('hidden');
+            } else {
+                btnGit.className = "px-4 py-2 text-sm font-medium rounded-md transition-colors bg-white text-blue-600 shadow-sm";
+                btnMap.className = "px-4 py-2 text-sm font-medium rounded-md transition-colors text-slate-500 hover:text-slate-700";
+                secGit.classList.remove('hidden');
+                secMap.classList.add('hidden');
+                
+                if (!isGitHubLoaded) initGitHubTree();
+            }
+        }
+
+        function showGlobalToast(msg, type='success') {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            const icon = toast.querySelector('i');
+            
+            msgEl.innerText = msg;
+            icon.className = type === 'error' ? 'fa-solid fa-circle-exclamation text-red-400' : 'fa-solid fa-check-circle text-green-400';
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            if(window.toastTimeout) clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => showGlobalToast(`Copied to clipboard`))
+            .catch(() => {
+                 const t = document.createElement("textarea");
+                 t.value = text; document.body.appendChild(t); t.select(); document.execCommand("Copy"); t.remove();
+                 showGlobalToast(`Copied to clipboard`);
+            });
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
+        // ==========================================
+        // LOGIC 1: MAPPING MANAGER
+        // ==========================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziNy-rYG9oWJSHkSvyytw09IYLIHoConrNLji_SCT8Jc99aUmmc9FC0e2Oyp7lI7CQ/exec";
+        let mappings = []; 
+        let rowToDelete = null; 
+
+        // DOM Elements
+        const mappingsList = document.getElementById('mappingsList');
+        const statusEl = document.getElementById('status');
+        const deleteModal = document.getElementById('delete-modal');
+
+        function setStatus(msg, isErr = false) {
+            statusEl.textContent = msg;
+            statusEl.className = `min-h-[1.5em] mb-4 text-xs font-medium ${isErr ? 'text-red-600' : 'text-green-600'}`;
+        }
+
+        async function fetchMappings() {
+            setStatus('Syncing...');
+            mappingsList.innerHTML = '<div class="text-center p-8 text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading...</div>';
+            try {
+                const res = await fetch(SCRIPT_URL, { method: 'GET', cache: 'no-store' });
+                if (!res.ok) throw new Error('Network error');
+                const json = await res.json();
+                if (!json.success) throw new Error(json.error || 'Failed to load');
+                
+                mappings = json.data || [];
+                renderMappings();
+                setStatus(`Last synced: ${new Date().toLocaleTimeString()}`);
+            } catch (err) {
+                setStatus('Error loading data', true);
+                mappingsList.innerHTML = `<div class="bg-red-50 text-red-600 p-4 rounded text-sm text-center">${err.message}</div>`;
+            }
+        }
+
+        function renderMappings(filterText = '') {
+            const t = filterText.trim().toLowerCase();
+            const filtered = t ? mappings.filter(r => Object.values(r).some(v => String(v).toLowerCase().includes(t))) : mappings;
+            
+            mappingsList.innerHTML = ''; 
+            if (filtered.length === 0) {
+                mappingsList.innerHTML = '<div class="text-center p-8 text-slate-400 text-sm">No mappings found.</div>';
+                return;
+            }
+
+            filtered.forEach(row => {
+                const item = document.createElement('div');
+                item.className = 'bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden transition hover:shadow-md';
+                item.dataset.rowNumber = row.rowNumber;
+                item.innerHTML = createMappingItemHTML(row);
+                mappingsList.appendChild(item);
+            });
+        }
+
+        function createMappingItemHTML(row, isEditing = false) {
+            const d = { hash: row.hash||'', tid: row.templateId||'', root: row.root||'', url: row.url||'' };
+            
+            if (isEditing) {
+                return `
+                    <div class="p-4 bg-blue-50/50 border-l-4 border-blue-500">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Hash</label><input class="w-full p-2 border border-slate-300 rounded text-sm" name="hash" value="${escapeHtml(d.hash)}"></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Template ID</label><input class="w-full p-2 border border-slate-300 rounded text-sm" name="templateId" value="${escapeHtml(d.tid)}"></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Root</label><input class="w-full p-2 border border-slate-300 rounded text-sm" name="root" value="${escapeHtml(d.root)}"></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">URL</label><input class="w-full p-2 border border-slate-300 rounded text-sm" name="url" value="${escapeHtml(d.url)}"></div>
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <button data-action="cancel" class="px-3 py-1.5 bg-white border border-slate-300 rounded text-xs">Cancel</button>
+                            <button data-action="save" class="px-3 py-1.5 bg-green-600 text-white rounded text-xs shadow-sm">Save</button>
+                        </div>
+                    </div>`;
+            }
+            return `
+                <div class="p-4 flex justify-between items-center cursor-pointer group" data-action="expand">
+                    <div class="flex items-center gap-2 min-w-0">
+                         <div class="bg-blue-100 text-blue-600 p-1.5 rounded-md shrink-0"><i class="fa-solid fa-link text-xs"></i></div>
+                        <div class="font-semibold text-slate-700 truncate">${escapeHtml(d.hash)}</div>
+                        <button data-action="copy-hash-url" data-hash="${escapeHtml(d.hash)}" class="text-slate-400 hover:text-blue-600 p-1.5 rounded-full transition-colors ml-1" title="Copy Blog Link">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-slate-400 group-hover:text-blue-500 transition-transform shrink-0"></i>
+                </div>
+                <div class="details-panel bg-slate-50 border-t border-slate-100">
+                    <div class="p-4 text-sm">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-white p-2.5 rounded border border-slate-200"><span class="block text-[10px] text-slate-400 font-bold uppercase">Template ID</span><span class="font-mono text-xs">${escapeHtml(d.tid)||'-'}</span></div>
+                            <div class="bg-white p-2.5 rounded border border-slate-200"><span class="block text-[10px] text-slate-400 font-bold uppercase">Root</span><span>${escapeHtml(d.root)||'-'}</span></div>
+                            <div class="bg-white p-2.5 rounded border border-slate-200"><span class="block text-[10px] text-slate-400 font-bold uppercase">URL</span><span>${escapeHtml(d.url)||'-'}</span></div>
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <button data-action="edit" class="text-blue-600 text-xs font-semibold px-2 py-1 hover:bg-blue-50 rounded"><i class="fa-solid fa-pen mr-1"></i> Edit</button>
+                            <button data-action="delete" class="text-red-600 text-xs font-semibold px-2 py-1 hover:bg-red-50 rounded"><i class="fa-solid fa-trash mr-1"></i> Delete</button>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        async function performAction(action, body) {
+            try {
+                const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(body) });
+                const json = await res.json();
+                if (!json.success) throw new Error(json.error);
+                await fetchMappings();
+                showGlobalToast(`Action ${action} successful`);
+            } catch(e) { setStatus(e.message, true); }
+        }
+
+        document.getElementById('addBtn').addEventListener('click', async () => {
+             const hash = document.getElementById('addHash').value.trim();
+             if(!hash) return showGlobalToast('Hash required', 'error');
+             const templateId = document.getElementById('addTemplate').value.trim();
+             const root = document.getElementById('addRoot').value.trim();
+             const url = document.getElementById('addUrl').value.trim();
+             
+             document.getElementById('addBtn').innerText = 'Adding...';
+             await performAction('Add', { action: 'add', hash, templateId, root, url });
+             document.getElementById('addBtn').innerText = 'Add Mapping';
+             ['addHash','addTemplate','addRoot','addUrl'].forEach(id=>document.getElementById(id).value='');
+        });
+
+        mappingsList.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            const expand = e.target.closest('[data-action="expand"]');
+            const item = e.target.closest('[data-row-number]');
+            if(!item) return;
+            const rNum = Number(item.dataset.rowNumber);
+            const rowData = mappings.find(r => r.rowNumber === rNum);
+
+            if(btn) {
+                const act = btn.dataset.action;
+                
+                // --- NEW: Copy Hash URL Logic ---
+                if (act === 'copy-hash-url') {
+                    // Stop propagation prevents expand/collapse when clicking copy
+                    e.stopPropagation(); 
+                    const hashVal = btn.dataset.hash;
+                    copyToClipboard(`${BASE_BLOG_URL}${hashVal}`);
+                    return; 
+                }
+
+                if(act === 'edit') item.innerHTML = createMappingItemHTML(rowData, true);
+                if(act === 'cancel') item.innerHTML = createMappingItemHTML(rowData, false);
+                if(act === 'delete') {
+                    rowToDelete = rNum;
+                    document.getElementById('delete-modal-text').innerText = `Delete "${rowData.hash}"?`;
+                    deleteModal.classList.remove('hidden');
+                }
+                if(act === 'save') {
+                    const hash = item.querySelector('[name="hash"]').value;
+                    const templateId = item.querySelector('[name="templateId"]').value;
+                    const root = item.querySelector('[name="root"]').value;
+                    const url = item.querySelector('[name="url"]').value;
+                    performAction('Update', { action: 'update', rowNumber: rNum, hash, templateId, root, url });
+                }
+            } else if(expand) {
+                const p = item.querySelector('.details-panel');
+                const i = item.querySelector('.fa-chevron-down');
+                p.classList.toggle('expanded');
+                i.style.transform = p.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        });
+        
+        document.getElementById('toggle-add-form').addEventListener('click', () => {
+             document.getElementById('add-form-panel').classList.toggle('hidden');
+        });
+        document.getElementById('searchBox').addEventListener('input', e => renderMappings(e.target.value));
+        document.getElementById('cancel-delete-btn').addEventListener('click', () => deleteModal.classList.add('hidden'));
+        document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+             if(rowToDelete) performAction('Delete', { action: 'delete', rowNumber: rowToDelete });
+             deleteModal.classList.add('hidden');
+        });
+
+        // ==========================================
+        // LOGIC 2: GITHUB EXPLORER
+        // ==========================================
+        const GH = { user: "Sachethan", repo: "salian", branch: "main" };
+        let fullTreeData = {};
+        let flatTreeData = []; 
+        let currentPathStack = []; 
+
+        async function initGitHubTree() {
+            const ui = document.getElementById('explorer-ui');
+            const loader = document.getElementById('gh-loader');
+            const errorDiv = document.getElementById('gh-errorMsg');
+            
+            ui.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            try {
+                let url = `https://api.github.com/repos/${GH.user}/${GH.repo}/git/trees/${GH.branch}?recursive=1`;
+                let res = await fetch(url);
+                if (res.status === 404 && GH.branch === 'main') {
+                    GH.branch = 'master'; 
+                    url = `https://api.github.com/repos/${GH.user}/${GH.repo}/git/trees/${GH.branch}?recursive=1`;
+                    res = await fetch(url);
+                }
+                
+                if (!res.ok) throw new Error(res.status === 403 ? "Rate Limit Exceeded" : "Repo not found");
+                
+                const data = await res.json();
+                
+                flatTreeData = data.tree.filter(i => i.type === 'tree' || i.type === 'blob').map(item => ({
+                    name: item.path.split('/').pop(),
+                    path: item.path,
+                    type: item.type === 'tree' ? 'folder' : 'file',
+                    parentPath: item.path.includes('/') ? item.path.substring(0, item.path.lastIndexOf('/')) : ''
+                }));
+
+                fullTreeData = buildTreeObj(flatTreeData);
+                currentPathStack = []; 
+                document.getElementById('gh-searchBox').value = '';
+                renderExplorer();
+                
+                isGitHubLoaded = true;
+                loader.classList.add('hidden');
+                ui.classList.remove('hidden');
+
+            } catch (err) {
+                loader.classList.add('hidden');
+                errorDiv.textContent = err.message;
+                errorDiv.classList.remove('hidden');
+                isGitHubLoaded = false;
+            }
+        }
+
+        function buildTreeObj(flatList) {
+            const root = { _children: {} };
+            flatList.forEach(item => {
+                const parts = item.path.split("/");
+                let curr = root;
+                parts.forEach((part, idx) => {
+                    if (!curr._children[part]) {
+                        curr._children[part] = {
+                            _name: part,
+                            _type: (idx === parts.length - 1 && item.type === 'file') ? 'file' : 'folder',
+                            _path: item.path,
+                            _children: {}
+                        };
+                    }
+                    curr = curr._children[part];
+                });
+            });
+            return root;
+        }
+
+        function renderExplorer() {
+            const breadcrumbEl = document.getElementById('breadcrumb-container');
+            const listBody = document.getElementById('file-list-body');
+            const countEl = document.getElementById('item-count');
+            const searchQuery = document.getElementById('gh-searchBox').value.trim().toLowerCase();
+            
+            if (searchQuery.length > 0) {
+                renderSearchResults(searchQuery, breadcrumbEl, listBody, countEl);
+                return;
+            }
+
+            let currentNode = fullTreeData;
+            currentPathStack.forEach(folder => {
+                if(currentNode._children[folder]) currentNode = currentNode._children[folder];
+            });
+
+            let bcHtml = `<span class="breadcrumb-item cursor-pointer flex items-center gap-1" onclick="navToRoot()"><i class="fa-solid fa-house"></i> Home</span>`;
+            currentPathStack.forEach((folder, index) => {
+                bcHtml += ` <span class="text-slate-300 text-xs">/</span> <span class="breadcrumb-item cursor-pointer font-medium" onclick="navToLevel(${index})">${folder}</span>`;
+            });
+            breadcrumbEl.innerHTML = bcHtml;
+
+            let listHtml = '';
+            if (currentPathStack.length > 0) {
+                listHtml += `
+                <div onclick="navUp()" class="explorer-row grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 border-b border-slate-50 cursor-pointer select-none">
+                    <div class="w-6 text-center"><i class="fa-solid fa-turn-up text-slate-400"></i></div>
+                    <div class="font-semibold text-slate-500">..</div>
+                    <div></div>
+                </div>`;
+            }
+
+            const items = Object.values(currentNode._children).sort((a, b) => {
+                if (a._type === b._type) return a._name.localeCompare(b._name);
+                return a._type === 'folder' ? -1 : 1;
+            });
+
+            if(items.length === 0) {
+                listHtml += `<div class="p-8 text-center text-slate-400 italic">Empty folder</div>`;
+            } else {
+                items.forEach(item => {
+                    const isFolder = item._type === 'folder';
+                    const icon = isFolder ? '<i class="fa-solid fa-folder folder-icon fa-lg"></i>' : '<i class="fa-regular fa-file text-slate-400 fa-lg"></i>';
+                    listHtml += `
+                    <div ${isFolder ? `onclick="navEnter('${item._name}')"` : ''} class="explorer-row grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2.5 border-b border-slate-50 ${isFolder ? 'cursor-pointer' : 'cursor-default'} items-center group">
+                        <div class="w-6 text-center flex items-center justify-center">${icon}</div>
+                        <div class="${isFolder ? 'font-semibold text-slate-700' : 'text-slate-600 font-mono text-sm'} truncate">${item._name}</div>
+                        <div>
+                            ${!isFolder ? `<button onclick="copyToClipboard('${item._path}')" class="opacity-0 group-hover:opacity-100 bg-white border border-slate-200 text-xs px-2 py-1 rounded text-slate-500 hover:text-blue-600 hover:border-blue-400 transition shadow-sm">Copy Path</button>` : ''}
+                        </div>
+                    </div>`;
+                });
+            }
+
+            listBody.innerHTML = listHtml;
+            countEl.innerText = `${items.length} items`;
+        }
+
+        function renderSearchResults(query, bcEl, listEl, countEl) {
+            bcEl.innerHTML = `<span class="text-blue-600 font-semibold"><i class="fa-solid fa-search"></i> Search Results for "${query}"</span>`;
+            const results = flatTreeData.filter(item => item.name.toLowerCase().includes(query));
+            
+            if (results.length === 0) {
+                listEl.innerHTML = `<div class="p-8 text-center text-slate-400">No matching files found.</div>`;
+                countEl.innerText = "0 results";
+                return;
+            }
+
+            let html = '';
+            results.forEach(item => {
+                const isFolder = item.type === 'folder';
+                const icon = isFolder ? '<i class="fa-solid fa-folder folder-icon fa-lg"></i>' : '<i class="fa-regular fa-file text-slate-400 fa-lg"></i>';
+                const location = item.path.includes('/') ? item.path.substring(0, item.path.lastIndexOf('/')) : 'Root';
+
+                html += `
+                <div class="explorer-row grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-3 border-b border-slate-50 cursor-default items-center group">
+                    <div class="w-6 text-center flex items-center justify-center">${icon}</div>
+                    <div class="overflow-hidden">
+                        <div class="text-sm font-semibold text-slate-700 truncate">${item.name}</div>
+                        <div class="text-xs text-slate-400 truncate">in ${location}</div>
+                    </div>
+                    <div>
+                        <button onclick="copyToClipboard('${item.path}')" class="opacity-0 group-hover:opacity-100 bg-white border border-slate-200 text-xs px-2 py-1 rounded text-slate-500 hover:text-blue-600 hover:border-blue-400 transition shadow-sm">Copy Path</button>
+                    </div>
+                </div>`;
+            });
+
+            listEl.innerHTML = html;
+            countEl.innerText = `${results.length} results`;
+        }
+
+        window.navEnter = (folderName) => { currentPathStack.push(folderName); renderExplorer(); };
+        window.navUp = () => { currentPathStack.pop(); renderExplorer(); };
+        window.navToRoot = () => { currentPathStack = []; renderExplorer(); };
+        window.navToLevel = (idx) => { currentPathStack = currentPathStack.slice(0, idx + 1); renderExplorer(); };
+
+        document.getElementById('gh-searchBox').addEventListener('input', () => { renderExplorer(); });
+        document.addEventListener('DOMContentLoaded', fetchMappings);
+
+    </script>
+</body>
+</html>

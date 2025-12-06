@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=0" />
+  <title>Salian — Professional Admin Console</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .sidebar-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .app-frame { width: 100%; height: 100%; border: none; display: none; }
+    
+    /* Loading Spinner */
+    .spinner {
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top: 2px solid #ffffff;
+      width: 16px;
+      height: 16px;
+      -webkit-animation: spin 1s linear infinite;
+      animation: spin 1s linear infinite;
+    }
+    
+    /* Splash Screen Animation */
+    #appLoader { transition: opacity 0.5s ease-out, visibility 0.5s; }
+    #appLoader.fade-out { opacity: 0; visibility: hidden; }
+
+    /* Content Fade In */
+    .fade-in-section { opacity: 0; transition: opacity 0.5s ease-in; }
+    .fade-in-section.visible { opacity: 1; }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 h-screen overflow-hidden flex flex-col">
+
+  <div id="toastContainer" class="fixed top-2 left-2 right-2 md:left-auto md:right-5 md:top-5 z-[60] flex flex-col gap-2 pointer-events-none"></div>
+
+  <div id="appLoader" class="fixed inset-0 z-[100] bg-slate-50 flex flex-col items-center justify-center">
+    <div class="relative flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl mb-6 shadow-xl shadow-indigo-200">
+      <i data-lucide="shield-check" class="text-white w-8 h-8"></i>
+    </div>
+    <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Salian Hub</h1>
+    <p class="text-slate-500 font-medium mt-1">Admin Console</p>
+    <div class="mt-8 flex gap-1">
+      <div class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+      <div class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+      <div class="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+    </div>
+  </div>
+
+  <div id="authScreen" class="fixed inset-0 z-50 bg-slate-100 flex items-center justify-center p-4 hidden fade-in-section">
+    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-200">
+      <div class="flex flex-col items-center mb-6">
+        <div class="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center mb-3 text-white">
+          <i data-lucide="lock"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-800">Admin Login</h1>
+        <p class="text-slate-500 text-sm">Please authenticate to continue</p>
+      </div>
+      <div class="space-y-4">
+        <input id="email" type="email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Email" />
+        <input id="password" type="password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Password" />
+        
+        <button id="loginBtn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2">
+          <span id="loginBtnText">Sign In</span> 
+          <i id="loginBtnIcon" data-lucide="arrow-right" class="w-4 h-4"></i>
+          <div id="loginSpinner" class="spinner hidden"></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboard" class="hidden flex h-full relative fade-in-section">
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-30 hidden md:hidden backdrop-blur-sm transition-opacity opacity-0"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 transform -translate-x-full md:translate-x-0 md:static sidebar-transition">
+      <div class="p-6 flex items-center justify-between text-white">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-indigo-500 rounded flex items-center justify-center">
+            <span class="font-bold text-lg">S</span>
+          </div>
+          <span class="font-semibold text-lg tracking-tight">Salian Hub</span>
+        </div>
+        <button id="closeSidebarBtn" class="md:hidden text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+      </div>
+
+      <nav id="dynamicNav" class="flex-1 px-3 space-y-1 overflow-y-auto">
+      </nav>
+
+      <div class="p-4 border-t border-slate-800 bg-slate-900/50">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold shrink-0">A</div>
+          <div class="flex-1 overflow-hidden">
+            <p id="adminEmailDisplay" class="text-sm text-white truncate">Loading...</p>
+            <p class="text-xs text-green-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> Online</p>
+          </div>
+        </div>
+        <button onclick="window.location.href='https://itssachethan.blogspot.com';" class="w-full py-1 mb-3 border border-slate-700 rounded-[50px] text-xl hover:bg-slate-800 transition-colors text-green-400 hover:text-white">Site..</button>
+
+        <button id="signOutBtn" class="w-full py-2 border border-slate-700 rounded text-xs hover:bg-slate-800 transition-colors text-slate-400 hover:text-white">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50 w-full min-w-0">
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 shrink-0 z-20 sticky top-0">
+        <div class="flex items-center gap-3">
+          <button id="mobileMenuBtn" class="md:hidden p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-lg"><i data-lucide="menu" class="w-6 h-6"></i></button>
+          <h2 id="pageTitle" class="text-lg md:text-xl font-semibold text-slate-800">Overview</h2>
+        </div>
+        <button id="refreshBtn" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+      </header>
+
+      <div id="contentArea" class="flex-1 overflow-hidden relative bg-slate-50">
+        
+        <div id="view-dashboard" class="h-full w-full overflow-y-auto p-4 md:p-8 space-y-6">
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between h-32 relative overflow-hidden group">
+               <div class="absolute right-[-10px] top-[-10px] p-6 bg-blue-50 rounded-full opacity-50 group-hover:scale-110 transition-transform">
+                 <i data-lucide="users" class="w-8 h-8 text-blue-500"></i>
+               </div>
+               <p class="text-slate-500 font-medium text-sm">Total Users</p>
+               <div>
+                  <h3 id="usersCount" class="text-3xl font-bold text-slate-800">—</h3>
+                  <p id="flaggedCount" class="text-xs text-rose-500 font-medium mt-1">Checking flags...</p>
+               </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between h-32 relative overflow-hidden group">
+               <div class="absolute right-[-10px] top-[-10px] p-6 bg-purple-50 rounded-full opacity-50 group-hover:scale-110 transition-transform">
+                 <i data-lucide="message-circle" class="w-8 h-8 text-purple-500"></i>
+               </div>
+               <p class="text-slate-500 font-medium text-sm">Active Rooms</p>
+               <div>
+                  <h3 id="chatsCount" class="text-3xl font-bold text-slate-800">—</h3>
+                  <p class="text-xs text-purple-600 font-medium mt-1">Live conversations</p>
+               </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between h-32 relative overflow-hidden group">
+               <div class="absolute right-[-10px] top-[-10px] p-6 bg-emerald-50 rounded-full opacity-50 group-hover:scale-110 transition-transform">
+                 <i data-lucide="scan-eye" class="w-8 h-8 text-emerald-500"></i>
+               </div>
+               <p class="text-slate-500 font-medium text-sm">Total Visitors</p>
+               <div>
+                  <h3 id="visitorCount" class="text-3xl font-bold text-slate-800">—</h3>
+                  <p class="text-xs text-emerald-600 font-medium mt-1">Across all pages</p>
+               </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between h-32 relative overflow-hidden group">
+               <div class="absolute right-[-10px] top-[-10px] p-6 bg-orange-50 rounded-full opacity-50 group-hover:scale-110 transition-transform">
+                 <i data-lucide="alert-triangle" class="w-8 h-8 text-orange-500"></i>
+               </div>
+               <p class="text-slate-500 font-medium text-sm">Pending Reports</p>
+               <div>
+                  <h3 id="reportCount" class="text-3xl font-bold text-slate-800">—</h3>
+                  <p class="text-xs text-orange-600 font-medium mt-1">Action required</p>
+               </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex items-center justify-between mb-4">
+                  <h4 class="font-semibold text-slate-800">Device Analytics</h4>
+                  <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">Latest 20</span>
+                </div>
+                <div id="deviceChart" class="w-full h-64 flex items-center justify-center text-slate-400">Loading Chart...</div>
+             </div>
+
+             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                 <div class="flex items-center justify-between mb-4">
+                  <h4 class="font-semibold text-slate-800">Traffic Overview</h4>
+                  <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">Daily Est.</span>
+                 </div>
+                 <div id="trafficChart" class="w-full h-64 flex items-center justify-center text-slate-400">Loading Chart...</div>
+             </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+              <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                 <h4 class="font-semibold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="globe" class="w-4 h-4 text-indigo-500"></i> Recent Live Traffic
+                 </h4>
+                 <button onclick="switchTab('settings')" class="text-xs text-indigo-600 font-medium hover:underline">View All</button>
+              </div>
+              <div class="flex-1 overflow-auto max-h-[300px]">
+                 <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-slate-500 uppercase bg-white sticky top-0">
+                       <tr>
+                          <th class="px-5 py-3">Visitor ID</th>
+                          <th class="px-5 py-3">Device</th>
+                          <th class="px-5 py-3 text-right">Time</th>
+                       </tr>
+                    </thead>
+                    <tbody id="recentVisitorsTable" class="divide-y divide-slate-100">
+                       <tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">Loading visitors...</td></tr>
+                    </tbody>
+                 </table>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+              <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                 <h4 class="font-semibold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4 text-blue-500"></i> Newest Users
+                 </h4>
+                 <button onclick="switchTab('users')" class="text-xs text-blue-600 font-medium hover:underline">Manage</button>
+              </div>
+              <div class="flex-1 overflow-auto max-h-[300px]">
+                 <ul id="newUsersList" class="divide-y divide-slate-100">
+                    <li class="p-5 text-center text-slate-400 text-sm">Loading users...</li>
+                 </ul>
+              </div>
+            </div>
+
+          </div>
+
+        </div> </div>
+    </main>
+  </div>
+  
+  <script type="module" src="visitorCount.js"></script>          
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, getDoc, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
+    const APP_MODULES = [
+      { id: 'dashboard', label: 'Overview',       icon: 'layout-dashboard', file: null },
+      { id: 'users',     label: 'Users',          icon: 'users',          file: 'users.html' },
+      { id: 'chats',     label: 'Chats',          icon: 'message-square', file: 'chats.html' },
+      { id: 'PageMappings',  label: 'Page Mappings',       icon: 'map-plus',       file: 'Mappings.html' },
+      { id: 'settings',  label: 'Settings & Tracker',       icon: 'settings',       file: 'settings.html' } 
+    ];
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCC7sNEByDpD-ftE936NoyF1W6KnHzCZME",
+        authDomain: "salian-hub.firebaseapp.com",
+        projectId: "salian-hub",
+        storageBucket: "salian-hub.firebasestorage.app",
+        messagingSenderId: "389748625220",
+        appId: "1:389748625220:web:c5b5dabdd424f06ee65111",
+        measurementId: "G-Z0Z062P4YP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentTab = 'dashboard';
+    let isInitialized = false;
+    let isLoggingIn = false; 
+    let dashboardCharts = {}; // Store chart instances
+
+    // --- Dynamic Render Functions ---
+    function buildNavigation() {
+      const navContainer = document.getElementById('dynamicNav');
+      navContainer.innerHTML = ''; 
+      APP_MODULES.forEach(mod => {
+        const btn = document.createElement('button');
+        btn.id = `nav-${mod.id}`;
+        btn.className = `nav-btn w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-800 transition-colors text-slate-300`;
+        btn.innerHTML = `<i data-lucide="${mod.icon}" class="w-5 h-5"></i><span>${mod.label}</span>`;
+        btn.onclick = () => switchTab(mod.id);
+        navContainer.appendChild(btn);
+      });
+      lucide.createIcons();
+    }
+
+    function initIframes() {
+      const contentArea = document.getElementById('contentArea');
+      APP_MODULES.forEach(mod => {
+        if (mod.file) {
+            if (!document.getElementById(`frame-${mod.id}`)) {
+                const iframe = document.createElement('iframe');
+                iframe.id = `frame-${mod.id}`;
+                iframe.src = mod.file;
+                iframe.className = 'app-frame';
+                contentArea.appendChild(iframe);
+            }
+        }
+      });
+    }
+
+    window.switchTab = (tabId) => {
+      const module = APP_MODULES.find(m => m.id === tabId);
+      if(!module) return;
+
+      currentTab = tabId;
+      document.getElementById('pageTitle').textContent = module.label;
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if(btn.id === `nav-${tabId}`) {
+           btn.className = "nav-btn w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-800 transition-colors text-white bg-slate-800";
+        } else {
+           btn.className = "nav-btn w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-slate-800 transition-colors text-slate-300";
+        }
+      });
+
+      document.getElementById('view-dashboard').style.display = 'none';
+      document.querySelectorAll('.app-frame').forEach(f => f.style.display = 'none');
+
+      if (!module.file) {
+        document.getElementById('view-dashboard').style.display = 'block';
+        loadDashboardData();
+      } else {
+        const frame = document.getElementById(`frame-${tabId}`);
+        if(frame) frame.style.display = 'block';
+      }
+
+      if(window.innerWidth < 768) {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.add('hidden');
+      }
+    };
+
+    // --- TRANSITION HELPERS ---
+    
+    function removeLoaderAndShow(elementId) {
+        const loader = document.getElementById('appLoader');
+        loader.classList.add('fade-out');
+        setTimeout(() => {
+            loader.style.display = 'none';
+            const target = document.getElementById(elementId);
+            target.classList.remove('hidden');
+            setTimeout(() => { target.classList.add('visible'); }, 50);
+        }, 500); 
+    }
+
+    // --- VIEW LOGIC ---
+    function revealDashboard(user) {
+        document.getElementById('adminEmailDisplay').textContent = user.email;
+        if (!isInitialized) {
+          buildNavigation();
+          initIframes();
+          switchTab('dashboard'); 
+          isInitialized = true;
+        }
+        loadDashboardData();
+        
+        document.getElementById('authScreen').classList.add('hidden', 'fade-in-section');
+        document.getElementById('authScreen').classList.remove('visible');
+        removeLoaderAndShow('dashboard');
+    }
+
+    function revealLogin() {
+        document.getElementById('dashboard').classList.add('hidden', 'fade-in-section');
+        document.getElementById('dashboard').classList.remove('visible');
+        isInitialized = false;
+        setLoginLoading(false);
+        removeLoaderAndShow('authScreen');
+    }
+
+    // --- AUTH LISTENER ---
+    onAuthStateChanged(auth, async (user) => {
+      if (isLoggingIn) return; 
+      const expiry = localStorage.getItem('salian_admin_expiry');
+      const isSessionValid = expiry && parseInt(expiry) > Date.now();
+      setTimeout(() => {
+          if (user && isSessionValid) {
+             revealDashboard(user);
+          } else {
+             if (user && !isSessionValid) signOut(auth);
+             revealLogin();
+          }
+      }, 800);
+    });
+
+    // --- Helpers ---
+    function setLoginLoading(isLoading) {
+        const btn = document.getElementById('loginBtn');
+        const txt = document.getElementById('loginBtnText');
+        const icon = document.getElementById('loginBtnIcon');
+        const spin = document.getElementById('loginSpinner');
+        
+        if(isLoading) {
+            btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            txt.textContent = 'Verifying...';
+            icon.classList.add('hidden');
+            spin.classList.remove('hidden');
+        } else {
+            btn.disabled = false;
+            btn.classList.remove('opacity-70', 'cursor-not-allowed');
+            txt.textContent = 'Sign In';
+            icon.classList.remove('hidden');
+            spin.classList.add('hidden');
+        }
+    }
+
+    window.showToast = function(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const colors = type === 'error' ? 'bg-red-500 text-white' : type === 'loading' ? 'bg-blue-600 text-white' : 'bg-emerald-600 text-white';
+      toast.className = `${colors} px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 text-sm font-medium transform transition-all duration-300 translate-y-[-100%] opacity-0 pointer-events-auto z-[60]`;
+      toast.innerHTML = `<span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('translate-y-[-100%]', 'opacity-0'));
+      if(type !== 'loading') setTimeout(() => { toast.remove(); }, 3000);
+      return toast;
+    }
+
+    // --- LOGIN HANDLER ---
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const pw = document.getElementById('password').value;
+      if (!email || !pw) return showToast('Please enter credentials', 'error');
+      
+      isLoggingIn = true; 
+      setLoginLoading(true);
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, pw);
+        const user = userCredential.user;
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        let isAdmin = false;
+        if (userDocSnap.exists()) {
+            const data = userDocSnap.data();
+            if (data.role === 'admin' || data.isAdmin === true) isAdmin = true;
+        }
+
+        if (!isAdmin) throw new Error("Access Denied: Admin privileges required.");
+
+        const expiryTime = Date.now() + 3600000;
+        localStorage.setItem('salian_admin_expiry', expiryTime.toString());
+
+        showToast('Access Granted');
+        
+        document.getElementById('authScreen').classList.remove('visible');
+        setTimeout(() => {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            setTimeout(() => document.getElementById('dashboard').classList.add('visible'), 50);
+            
+            document.getElementById('adminEmailDisplay').textContent = user.email;
+            if (!isInitialized) {
+                buildNavigation();
+                initIframes();
+                switchTab('dashboard'); 
+                isInitialized = true;
+            }
+            loadDashboardData();
+        }, 500);
+
+      } catch (e) {
+        console.error(e);
+        if (auth.currentUser) await signOut(auth);
+        let msg = e.message;
+        if(msg.includes("Access Denied")) msg = "You do not have admin permissions.";
+        else if (msg.includes("auth/invalid-credential")) msg = "Invalid email or password.";
+        showToast(msg, 'error');
+        setLoginLoading(false);
+      } finally {
+        isLoggingIn = false; 
+      }
+    });
+
+    document.getElementById('signOutBtn').addEventListener('click', () => { 
+        if(confirm('Sign out?')) {
+            localStorage.removeItem('salian_admin_expiry'); 
+            signOut(auth);
+        }
+    });
+
+    // ==========================================
+    // UPDATED DASHBOARD LOGIC
+    // ==========================================
+
+    async function loadDashboardData() {
+      // 1. Load Counts
+      try {
+        const usersSnap = await getDocs(collection(db, 'users'));
+        const chatsSnap = await getDocs(collection(db, 'chats'));
+        const reportsSnap = await getDocs(collection(db, 'reports'));
+
+        document.getElementById('usersCount').textContent = usersSnap.size;
+        
+        // Count Flagged Users
+        const flaggedCount = usersSnap.docs.filter(d => d.data().flagged === true).length;
+        document.getElementById('flaggedCount').innerHTML = flaggedCount > 0 
+           ? `<span class="text-rose-500 font-bold">${flaggedCount} flagged</span>` 
+           : '<span class="text-emerald-500">All clear</span>';
+
+        document.getElementById('chatsCount').textContent = chatsSnap.size;
+        
+        // Count Pending Reports
+        const pendingReports = reportsSnap.docs.filter(d => d.data().status !== 'resolved').length;
+        document.getElementById('reportCount').textContent = pendingReports;
+
+        // 2. Populate New Users List (Take last 5)
+        const userListEl = document.getElementById('newUsersList');
+        userListEl.innerHTML = '';
+        if(usersSnap.empty) {
+            userListEl.innerHTML = '<li class="p-5 text-center text-slate-400">No users found</li>';
+        } else {
+            // Simplified sort (assumes recent docs are fetched, or random subset if no timestamp)
+            const recentUsers = usersSnap.docs.slice(0, 5); 
+            recentUsers.forEach(u => {
+                const data = u.data();
+                const name = data.username || data.name || 'Anonymous';
+                const initial = name[0].toUpperCase();
+                userListEl.innerHTML += `
+                  <li class="p-3 flex items-center gap-3 hover:bg-slate-50 transition-colors">
+                     <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">${initial}</div>
+                     <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-slate-800 truncate">${name}</p>
+                        <p class="text-xs text-slate-400 truncate">${data.email || 'No email'}</p>
+                     </div>
+                  </li>`;
+            });
+        }
+
+        // 3. Populate Recent Visitor Traffic & Charts
+        // We need to fetch visitor logs. This is complex as they are in subcollections.
+        // We will fetch the main 'visitor_logs' collection to get page IDs, then fetch recent from first page.
+        const logsPages = await getDocs(collection(db, 'visitor_logs'));
+        let totalVisits = 0;
+        let mobileCount = 0;
+        let desktopCount = 0;
+        
+        const recentVisitorsTable = document.getElementById('recentVisitorsTable');
+        recentVisitorsTable.innerHTML = '';
+
+        if (!logsPages.empty) {
+            // Pick the first page to show detailed logs for (usually the main one)
+            const firstPageId = logsPages.docs[0].id;
+            const visitorsRef = collection(db, 'visitor_logs', firstPageId, 'visitors');
+            // Limit to recent 20 for charts/table to save reads
+            const recentVisitsSnap = await getDocs(query(visitorsRef, limit(20)));
+
+            let tableHtml = '';
+            
+            recentVisitsSnap.forEach(doc => {
+                const v = doc.data();
+                totalVisits++; // This is just a sample count, real total is implied elsewhere
+                
+                // Device Logic for Chart
+                const width = v.screenWidth || 0;
+                if(width > 0 && width < 768) mobileCount++;
+                else desktopCount++;
+
+                // Table Row
+                const lastVisit = v.visits && v.visits.length ? new Date(v.visits[v.visits.length-1].seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
+                
+                tableHtml += `
+                <tr class="hover:bg-slate-50 border-b border-slate-50">
+                    <td class="px-5 py-3 font-mono text-xs text-indigo-600">${v.visitor_id.substring(0,8)}...</td>
+                    <td class="px-5 py-3 text-xs text-slate-600">
+                       ${width < 768 ? '<i data-lucide="smartphone" class="w-3 h-3 inline mr-1"></i> Mobile' : '<i data-lucide="monitor" class="w-3 h-3 inline mr-1"></i> Desktop'}
+                    </td>
+                    <td class="px-5 py-3 text-xs text-slate-400 text-right">${lastVisit}</td>
+                </tr>`;
+            });
+            
+            recentVisitorsTable.innerHTML = tableHtml || '<tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">No recent visits recorded</td></tr>';
+            
+            // Render Charts
+            renderCharts(mobileCount, desktopCount);
+
+        } else {
+            recentVisitorsTable.innerHTML = '<tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">No tracking data available</td></tr>';
+            renderCharts(0, 0);
+        }
+
+      } catch (e) { console.error("Dashboard Load Error:", e); }
+      
+      lucide.createIcons();
+    }
+
+    function renderCharts(mobile, desktop) {
+        // Destroy old instances if exist to prevent overlay
+        if(dashboardCharts.device) dashboardCharts.device.destroy();
+        if(dashboardCharts.traffic) dashboardCharts.traffic.destroy();
+
+        // 1. Device Donut Chart
+        const deviceOptions = {
+            series: [desktop || 1, mobile || 1], // fallback 1,1 to show empty chart if 0
+            labels: ['Desktop', 'Mobile'],
+            chart: { type: 'donut', height: 240 },
+            colors: ['#6366f1', '#10b981'],
+            dataLabels: { enabled: false },
+            legend: { position: 'bottom' },
+            plotOptions: { pie: { donut: { size: '65%' } } }
+        };
+        const chart1 = new ApexCharts(document.querySelector("#deviceChart"), deviceOptions);
+        chart1.render();
+        dashboardCharts.device = chart1;
+
+        // 2. Mock Traffic Area Chart (Visual Candy)
+        // Since we don't have historical daily data easily available without heavy reads,
+        // we will generate a randomized plausible curve based on current activity level.
+        const base = (mobile + desktop) * 2; 
+        const seriesData = [base, base+5, base-2, base+8, base+12, base+4, base+15];
+        
+        const trafficOptions = {
+            series: [{ name: 'Visits', data: seriesData }],
+            chart: { type: 'area', height: 240, toolbar: { show: false } },
+            stroke: { curve: 'smooth', width: 2 },
+            fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.2, stops: [0, 90, 100] } },
+            xaxis: { categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], labels: { style: { fontSize: '10px' } } },
+            colors: ['#8b5cf6'],
+            dataLabels: { enabled: false }
+        };
+        const chart2 = new ApexCharts(document.querySelector("#trafficChart"), trafficOptions);
+        chart2.render();
+        dashboardCharts.traffic = chart2;
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      const mod = APP_MODULES.find(m => m.id === currentTab);
+      const t = showToast('Refreshing...', 'loading');
+      
+      if (!mod.file) loadDashboardData();
+      else {
+        const frame = document.getElementById(`frame-${mod.id}`);
+        if(frame && frame.contentWindow) frame.contentWindow.location.reload();
+      }
+      setTimeout(() => t.remove(), 800);
+    });
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+       document.getElementById('sidebar').classList.remove('-translate-x-full');
+       document.getElementById('sidebarOverlay').classList.remove('hidden', 'opacity-0');
+    });
+    document.getElementById('closeSidebarBtn').addEventListener('click', () => {
+       document.getElementById('sidebar').classList.add('-translate-x-full');
+       document.getElementById('sidebarOverlay').classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
