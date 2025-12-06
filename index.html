@@ -42,6 +42,7 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li id="adminConsole" style="display:none;"><a href="https://itssachethan.blogspot.com/#admin-console">Admin Console</a></li>
       </ul>
 
       <div class="nav-actions">
@@ -349,6 +350,8 @@
       );
     });
 
+
+
     // ✅ Listen for cross-origin messages (e.g., from bajene/index.html)
     window.addEventListener("message", function (event) {
       // Optional: Allow only from GitHub Pages
@@ -522,23 +525,43 @@
       }
 
       // Load stored user data and update UI
-      const storedData = localStorage.getItem("userInfo");
-      if (storedData) {
-        try {
-          const userInfo = JSON.parse(storedData);
-          userdisplay.textContent = userInfo.username;
-          document.getElementById("userPname").textContent = userInfo.username;
-          document.querySelector("input[name='name']").value = userInfo.username;
-          document.querySelector("input[name='email']").value = userInfo.email;
-        } catch (error) {
-          console.error("Failed to parse user info:", error);
-          localStorage.removeItem("userInfo"); // Clear corrupted data
-        } finally {
-          loader.classList.remove('show'); // Hide loader once user data is loaded or if error
-        }
-      } else {
-        loader.classList.remove('show'); // Hide loader if no user data
+// Load stored user data and update UI
+const storedData = localStorage.getItem("userInfo");
+
+if (storedData) {
+  try {
+    const userInfo = JSON.parse(storedData);
+
+    // ✅ Update user UI
+    if (userdisplay) userdisplay.textContent = userInfo.username;
+    if (document.getElementById("userPname")) {
+      document.getElementById("userPname").textContent = userInfo.username;
+    }
+
+    const nameInput = document.querySelector("input[name='name']");
+    const emailInput = document.querySelector("input[name='email']");
+
+    if (nameInput) nameInput.value = userInfo.username;
+    if (emailInput) emailInput.value = userInfo.email;
+
+    // ✅ ADMIN ROLE CHECK
+    if (userInfo.role === "admin") {
+      const adminConsole = document.getElementById("adminConsole");
+      if (adminConsole) {
+        adminConsole.style.display = "block";
       }
+    }
+
+  } catch (error) {
+    console.error("Failed to parse user info:", error);
+    localStorage.removeItem("userInfo"); // Clear corrupted data
+  } finally {
+    loader.classList.remove('show'); // Hide loader once complete
+  }
+} else {
+  loader.classList.remove('show'); // Hide loader if no user data
+}
+
 
       // Register click handler for the "Register" link in the message
       document.body.addEventListener("click", function (e) {
