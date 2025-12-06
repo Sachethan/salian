@@ -1,428 +1,447 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="transition-colors duration-300">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Profile</title>
+  
+  <!-- Tailwind CSS with Dark Mode Configuration -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              900: '#4c1d95',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    :root {
-      --bg-light: #f3f4f6;
-      --text-light: #1f2937;
-      --card-bg-light: rgba(255, 255, 255, 0.6);
-      --input-bg-light: rgba(255, 255, 255, 0.7);
-      --input-border-light: #d1d5db;
-      --accent-light: #4f46e5;
-      --accent-hover-light: #4338ca;
-      --danger-light: #dc2626;
-      --danger-hover-light: #b91c1c;
-
-      --bg-dark: #111827;
-      --text-dark: #f3f4f6;
-      --card-bg-dark: rgba(31, 41, 55, 0.5);
-      --input-bg-dark: rgba(55, 65, 81, 0.5);
-      --input-border-dark: #4b5563;
-      --accent-dark: #6366f1;
-      --accent-hover-dark: #818cf8;
-      --danger-dark: #ef4444;
-      --danger-hover-dark: #f87171;
+    /* Animated Gradient Background */
+    .bg-animate {
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
     }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-light);
-      color: var(--text-light);
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    body.dark {
-      background-color: var(--bg-dark);
-      color: var(--text-dark);
-    }
-    
-    .animated-gradient {
-        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-        background-size: 400% 400%;
-        animation: gradient 15s ease infinite;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-    }
-
     @keyframes gradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
-    .form-container {
-      background-color: var(--card-bg-light);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: background-color 0.3s ease;
-      animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-    }
-    
-    .dark .form-container {
-      background-color: var(--card-bg-dark);
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .form-input {
-      background-color: var(--input-bg-light) !important;
-      border-color: var(--input-border-light) !important;
-      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease;
-    }
-    
-    .dark .form-input {
-      background-color: var(--input-bg-dark) !important;
-      border-color: var(--input-border-dark) !important;
-      color: var(--text-dark);
-    }
-    .dark .form-input::placeholder {
-        color: #9ca3af;
-    }
-
-    .btn-primary {
-        background-color: var(--accent-light);
-    }
-    .btn-primary:hover {
-        background-color: var(--accent-hover-light);
-    }
-    .dark .btn-primary {
-        background-color: var(--accent-dark);
-    }
-    .dark .btn-primary:hover {
-        background-color: var(--accent-hover-dark);
-    }
-
-    .btn-danger {
-        background-color: var(--danger-light);
-    }
-    .btn-danger:hover {
-        background-color: var(--danger-hover-light);
-    }
-    .dark .btn-danger {
-        background-color: var(--danger-dark);
-    }
-    .dark .btn-danger:hover {
-        background-color: var(--danger-hover-dark);
-    }
-
+    /* Custom Spinner */
     .spinner {
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      width: 20px;
-      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       border-left-color: #fff;
-      animation: spin 1s ease infinite;
+      animation: spin 1s linear infinite;
     }
-
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
-
-    .close-icon {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: none;
-      border: none;
-      padding: 0.5rem;
-      cursor: pointer;
-      line-height: 1;
-      z-index: 10;
-      transition: transform 0.2s ease;
-    }
-    .close-icon svg {
-      width: 1.5rem;
-      height: 1.5rem;
-      stroke: currentColor;
-      opacity: 0.7;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-    }
-    .close-icon:hover svg {
-      opacity: 1;
-      transform: rotate(90deg);
-    }
-
-    .modal-container {
-        animation: modalFadeIn 0.3s ease-out;
-    }
-    @keyframes modalFadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
+    
+    /* Smooth theme transitions */
+    * {
+        transition-property: background-color, border-color, color, fill, stroke;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 200ms;
     }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4 sm:p-6">
-  <div class="animated-gradient"></div>
-  <div class="form-container p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-md relative">
-    <button onclick="history.back()" class="close-icon" aria-label="Close edit form">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-    <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">Edit Your Details</h2>
-    <form id="editUserForm" class="space-y-6">
-      <div>
-        <label for="useremail" class="block text-sm font-medium mb-1">Your Email</label>
-        <input type="text" id="useremail" placeholder="Auto Filled"
-               class="form-input w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-opacity-50 transition duration-150 ease-in-out" disabled>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-300">
+
+  <!-- Background Decoration -->
+  <div class="absolute inset-0 z-0 opacity-40 dark:opacity-20 pointer-events-none bg-animate bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-200 dark:from-indigo-900 dark:via-purple-900 dark:to-slate-900"></div>
+  <div class="absolute -top-20 -left-20 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+  <div class="absolute -bottom-20 -right-20 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+
+  <!-- Theme Toggle -->
+  <button id="themeToggle" class="absolute top-6 right-6 z-20 p-2 rounded-full bg-white/30 dark:bg-black/30 backdrop-blur-md border border-white/20 dark:border-white/10 text-gray-700 dark:text-gray-200 shadow-lg hover:scale-110 transition-transform">
+    <i id="sunIcon" data-lucide="sun" class="w-5 h-5 hidden"></i>
+    <i id="moonIcon" data-lucide="moon" class="w-5 h-5"></i>
+  </button>
+
+  <!-- Card Container -->
+  <div class="w-full max-w-md z-10">
+    <div class="bg-white/70 dark:bg-gray-800/60 backdrop-blur-xl border border-white/50 dark:border-gray-700 shadow-2xl rounded-2xl p-6 sm:p-8 relative">
+      
+      <!-- Back Button -->
+      <button onclick="history.back()" class="absolute top-5 left-5 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors" aria-label="Back">
+        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Header -->
+      <div class="mb-8 text-center mt-4">
+        <div class="w-16 h-16 bg-gradient-to-tr from-violet-500 to-fuchsia-500 rounded-full mx-auto flex items-center justify-center shadow-lg mb-4">
+            <i data-lucide="user-cog" class="w-8 h-8 text-white"></i>
+        </div>
+        <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400">Edit Profile</h2>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Update your personal details</p>
       </div>
-      <div>
-        <label for="NewUsername" class="block text-sm font-medium mb-1">New Username</label>
-        <input type="text" id="NewUsername" placeholder="Enter new username"
-               class="form-input w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-opacity-50 transition duration-150 ease-in-out">
-      </div>
-      <div>
-        <label for="NewPassword" class="block text-sm font-medium mb-1">Password</label>
-        <div class="relative">
-          <input type="password" id="NewPassword" placeholder="Enter new password or view current"
-                 class="form-input w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-opacity-50 transition duration-150 ease-in-out pr-10">
-          <button type="button" id="togglePasswordVisibility" class="absolute inset-y-0 right-0 px-3 flex items-center opacity-60 hover:opacity-100 focus:outline-none transition">
-            <i id="eyeIcon" class="fa-solid fa-eye"></i>
-            <i id="eyeSlashIcon" class="fa-solid fa-eye-slash hidden"></i>
+
+      <!-- Form -->
+      <form id="editUserForm" class="space-y-5">
+        
+        <!-- Email Field -->
+        <div class="group">
+          <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5 ml-1">Email Address</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+            </div>
+            <input type="text" id="useremail" placeholder="loading..." disabled
+                   class="w-full pl-10 pr-3 py-3 bg-gray-50/50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-500 dark:text-gray-400 text-sm focus:outline-none cursor-not-allowed select-none">
+          </div>
+        </div>
+
+        <!-- Username Field -->
+        <div class="group">
+          <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5 ml-1">Username</label>
+          <div class="relative transition-all duration-300 focus-within:transform focus-within:scale-[1.01]">
+             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary-500">
+              <i data-lucide="user" class="w-4 h-4"></i>
+            </div>
+            <input type="text" id="NewUsername" placeholder="Enter new username"
+                   class="w-full pl-10 pr-3 py-3 bg-white dark:bg-gray-900/80 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all shadow-sm placeholder:text-gray-400">
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="group">
+          <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5 ml-1">New Password</label>
+          <div class="relative transition-all duration-300 focus-within:transform focus-within:scale-[1.01]">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary-500">
+              <i data-lucide="lock" class="w-4 h-4"></i>
+            </div>
+            <input type="password" id="NewPassword" placeholder="Leave empty to keep current"
+                   class="w-full pl-10 pr-10 py-3 bg-white dark:bg-gray-900/80 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all shadow-sm placeholder:text-gray-400">
+            <button type="button" id="togglePasswordVisibility" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-primary-500 cursor-pointer focus:outline-none transition-colors">
+              <i id="eyeIcon" data-lucide="eye" class="w-4 h-4"></i>
+              <i id="eyeSlashIcon" data-lucide="eye-off" class="w-4 h-4 hidden"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pt-4 space-y-3">
+          <button type="submit" id="updateButton"
+                  class="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200 transform active:scale-[0.98]">
+            <span id="buttonText">Save Changes</span>
+            <div id="loadingSpinner" class="spinner ml-2 hidden"></div>
+          </button>
+          
+          <button type="button" id="deleteButton" style="display:none" 
+                  class="w-full flex items-center justify-center px-4 py-3 bg-transparent border border-red-200 dark:border-red-900/30 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium text-sm rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+            Delete Account
           </button>
         </div>
-        <p class="mt-1 text-xs opacity-70">You can view your current password or enter a new one to change it.</p>
-      </div>
-      <button type="submit" id="updateButton"
-              class="btn-primary w-full flex items-center justify-center px-4 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-150 ease-in-out transform hover:scale-105 active:scale-100">
-        <span id="buttonText">Update Details</span>
-        <div id="loadingSpinner" class="spinner ml-2 hidden"></div>
-      </button>
-      <button type="button" id="deleteButton" style="display:none" class="btn-danger w-full flex items-center justify-center px-4 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-150 ease-in-out transform hover:scale-105 active:scale-100">
-        <span>Delete Account Permanently</span>
-      </button>
-      <div id="popupMessage" class="text-center mt-4 text-sm font-medium"></div>
-    </form>
+
+        <!-- Status Message -->
+        <div id="popupMessage" class="text-center text-sm font-medium min-h-[20px]"></div>
+      </form>
+    </div>
   </div>
 
-  <!-- Modal -->
-  <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50 p-4">
-    <div class="modal-container form-container p-6 w-full max-w-sm">
-      <h2 class="text-xl font-semibold text-red-500 mb-4">Confirm Deletion</h2>
-      <p class="mb-2 opacity-80">To delete your account, type <strong class="text-red-500">delete</strong> below:</p>
-      <input type="text" id="deleteInput" class="form-input w-full border rounded px-3 py-2 mb-4 focus:ring-2 focus:ring-red-500" placeholder="Type 'delete' to confirm">
-      <div class="flex justify-end space-x-3">
-        <button id="closedeleteModal" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500 transition">Cancel</button>
-        <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Confirm</button>
+  <!-- Delete Modal -->
+  <div id="deleteModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4 opacity-0 transition-opacity duration-300">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 w-full max-w-sm transform scale-95 transition-transform duration-300 border border-gray-100 dark:border-gray-700">
+      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 mx-auto mb-4">
+        <i data-lucide="alert-triangle" class="w-6 h-6 text-red-600 dark:text-red-400"></i>
+      </div>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white text-center mb-2">Delete Account</h2>
+      <p class="text-gray-500 dark:text-gray-400 text-sm text-center mb-6">
+        This action is permanent. Type <strong class="text-gray-900 dark:text-gray-200">delete</strong> to confirm.
+      </p>
+      
+      <input type="text" id="deleteInput" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl mb-6 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 placeholder-gray-400" placeholder="Type 'delete' to confirm">
+      
+      <div class="grid grid-cols-2 gap-3">
+        <button id="closedeleteModal" class="px-4 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 font-medium text-sm transition-colors">Cancel</button>
+        <button id="confirmDelete" class="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium text-sm transition-colors shadow-lg shadow-red-500/30">Confirm</button>
       </div>
     </div>
   </div>
-  
- 
- <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import {getAuth, onAuthStateChanged, updatePassword, deleteUser} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-import{getFirestore, getDoc, doc, updateDoc, deleteDoc} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCC7sNEByDpD-ftE936NoyF1W6KnHzCZME",
-    authDomain: "salian-hub.firebaseapp.com",
-    projectId: "salian-hub",
-    storageBucket: "salian-hub.firebasestorage.app",
-    messagingSenderId: "389748625220",
-    appId: "1:389748625220:web:c5b5dabdd424f06ee65111",
-    measurementId: "G-Z0Z062P4YP"
-  };
- 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth();
-  const db = getFirestore();
-  
-  const editUserForm = document.getElementById("editUserForm");
-  const newUsernameInput = document.getElementById("NewUsername");
-  const newPasswordInput = document.getElementById("NewPassword");
-  const popupMessage = document.getElementById("popupMessage");
-  const updateButton = document.getElementById("updateButton");
-  const deleteButton = document.getElementById("deleteButton");
-  const buttonText = document.getElementById("buttonText");
-  const loadingSpinner = document.getElementById("loadingSpinner");
-  const togglePasswordVisibilityButton = document.getElementById("togglePasswordVisibility");
-  const eyeIcon = document.getElementById("eyeIcon");
-  const eyeSlashIcon = document.getElementById("eyeSlashIcon");
-  const useremailInput = document.getElementById("useremail");
-  const deleteModal = document.getElementById('deleteModal');
-  const closedeleteModalBtn = document.getElementById("closedeleteModal");
-  const confirmDeleteBtn = document.getElementById("confirmDelete");
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+    import { getFirestore, getDoc, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"
 
-  // Utility Functions
-  function showPopupMessage(message, isError = false) {
-    popupMessage.textContent = message;
-    popupMessage.className = `text-center mt-4 text-sm font-medium ${isError ? 'text-red-500' : 'text-green-500'}`;
-  }
-  function clearPopupMessage() {
-    popupMessage.textContent = "";
-  }
-  
-  function setLoadingState(isLoading) {
-    if (isLoading) {
-      buttonText.textContent = "Processing...";
-      loadingSpinner.classList.remove("hidden");
-      updateButton.disabled = true;
-      updateButton.classList.add("opacity-75", "cursor-not-allowed");
-    } else {
-      buttonText.textContent = "Update Details";
-      loadingSpinner.classList.add("hidden");
-      updateButton.disabled = false;
-      updateButton.classList.remove("opacity-75", "cursor-not-allowed");
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCC7sNEByDpD-ftE936NoyF1W6KnHzCZME",
+      authDomain: "salian-hub.firebaseapp.com",
+      projectId: "salian-hub",
+      storageBucket: "salian-hub.firebasestorage.app",
+      messagingSenderId: "389748625220",
+      appId: "1:389748625220:web:c5b5dabdd424f06ee65111",
+      measurementId: "G-Z0Z062P4YP"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore();
+
+    // DOM Elements
+    const editUserForm = document.getElementById("editUserForm");
+    const newUsernameInput = document.getElementById("NewUsername");
+    const newPasswordInput = document.getElementById("NewPassword");
+    const popupMessage = document.getElementById("popupMessage");
+    const updateButton = document.getElementById("updateButton");
+    const deleteButton = document.getElementById("deleteButton");
+    const buttonText = document.getElementById("buttonText");
+    const loadingSpinner = document.getElementById("loadingSpinner");
+    const togglePasswordVisibilityButton = document.getElementById("togglePasswordVisibility");
+    const eyeIcon = document.getElementById("eyeIcon");
+    const eyeSlashIcon = document.getElementById("eyeSlashIcon");
+    const useremailInput = document.getElementById("useremail");
+    const deleteModal = document.getElementById('deleteModal');
+    const closedeleteModalBtn = document.getElementById("closedeleteModal");
+    const confirmDeleteBtn = document.getElementById("confirmDelete");
+    const themeToggle = document.getElementById("themeToggle");
+    const sunIcon = document.getElementById("sunIcon");
+    const moonIcon = document.getElementById("moonIcon");
+
+    // Theme Logic
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+            document.documentElement.classList.add('dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
     }
-  }
-  
-  function togglePasswordVisibility() {
-    const type = newPasswordInput.type === "password" ? "text" : "password";
-    newPasswordInput.type = type;
-    eyeIcon.classList.toggle("hidden");
-    eyeSlashIcon.classList.toggle("hidden");
-  }
 
-  // Load user data
-  async function loadUserData() {
-    setLoadingState(true);
-    clearPopupMessage();
+    function toggleTheme() {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        }
+    }
 
-    onAuthStateChanged(auth, async (user) => {
+    themeToggle.addEventListener('click', toggleTheme);
+
+    // UI Helpers
+    function showPopupMessage(message, isError = false) {
+      popupMessage.textContent = message;
+      // Using Tailwind colors for success/error
+      popupMessage.className = `text-center mt-4 text-sm font-medium ${isError ? 'text-red-500 dark:text-red-400' : 'text-emerald-500 dark:text-emerald-400'}`;
+    }
+
+    function clearPopupMessage() {
+      popupMessage.textContent = "";
+    }
+
+    function setLoadingState(isLoading) {
+      if (isLoading) {
+        buttonText.textContent = "Processing...";
+        loadingSpinner.classList.remove("hidden");
+        updateButton.disabled = true;
+        updateButton.classList.add("opacity-75", "cursor-not-allowed");
+      } else {
+        buttonText.textContent = "Save Changes";
+        loadingSpinner.classList.add("hidden");
+        updateButton.disabled = false;
+        updateButton.classList.remove("opacity-75", "cursor-not-allowed");
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const type = newPasswordInput.type === "password" ? "text" : "password";
+      newPasswordInput.type = type;
+      eyeIcon.classList.toggle("hidden");
+      eyeSlashIcon.classList.toggle("hidden");
+    }
+
+    // Modal Logic
+    function openModal() {
+      deleteModal.classList.remove('hidden');
+      void deleteModal.offsetWidth; 
+      deleteModal.classList.remove('opacity-0');
+      deleteModal.querySelector('div').classList.remove('scale-95');
+      deleteModal.querySelector('div').classList.add('scale-100');
+    }
+
+    function closeModal() {
+      deleteModal.classList.add('opacity-0');
+      deleteModal.querySelector('div').classList.remove('scale-100');
+      deleteModal.querySelector('div').classList.add('scale-95');
+      
+      setTimeout(() => {
+        deleteModal.classList.add('hidden');
+        document.getElementById('deleteInput').value = '';
+      }, 300);
+    }
+
+    // Load User Data
+    async function loadUserData() {
+      setLoadingState(true);
+      clearPopupMessage();
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          try {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              const userData = docSnap.data();
+              useremailInput.value = user.email;
+              newUsernameInput.value = userData.username;
+              deleteButton.style.display = "flex";
+            } else {
+              showPopupMessage("User profile not found.", true);
+            }
+          } catch (error) {
+            console.error("Error getting document:", error.message);
+            showPopupMessage("Error loading data.", true);
+          } finally {
+            setLoadingState(false);
+          }
+        } else {
+            // Optional: Redirect if not logged in
+            // window.location.href = '../../index.html';
+            setLoadingState(false);
+        }
+      });
+    }
+
+    // Update Handler
+    async function modifyUserDetails(e) {
+      e.preventDefault();
+      clearPopupMessage();
+
+      const username = newUsernameInput.value.trim();
+      const password = newPasswordInput.value;
+
+      if (!username) {
+        showPopupMessage("Username cannot be empty.", true);
+        return;
+      }
+
+      setLoadingState(true);
+      const user = auth.currentUser;
+
       if (user) {
         try {
-          const docRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(docRef);
+          const userDocRef = doc(db, "users", user.uid);
+          await updateDoc(userDocRef, { username: username });
 
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
-            useremailInput.value = user.email;
-            newUsernameInput.value = userData.username;
-            deleteButton.style.display = "flex";
-            showPopupMessage("Your details are loaded.", false);
-          } else {
-            showPopupMessage("User data not found in database.", true);
+          if (password.trim() !== "") {
+            await updatePassword(user, password);
           }
+          showPopupMessage("Profile updated successfully!");
+          newPasswordInput.value = ""; 
         } catch (error) {
-          console.error("Error getting document:", error.message);
-          showPopupMessage("Error loading your data.", true);
+          console.error("Update error:", error.message);
+          let errorMsg = error.message;
+          if(error.code === 'auth/requires-recent-login') {
+             errorMsg = "Please logout and login again to change sensitive details.";
+          }
+          showPopupMessage(errorMsg, true);
         } finally {
           setLoadingState(false);
         }
       } else {
-        showPopupMessage("You are not logged in. Redirecting...", true);
-        setTimeout(() => window.location.href = '../../index.html', 2000);
-      }
-    });
-  }
-
-  // Update user details
-  async function modifyUserDetails(e) {
-    e.preventDefault();
-    clearPopupMessage();
-
-    const username = newUsernameInput.value.trim();
-    const password = newPasswordInput.value;
-
-    if (!username) {
-      showPopupMessage("Username cannot be empty.", true);
-      return;
-    }
-
-    setLoadingState(true);
-    const user = auth.currentUser;
-
-    if (user) {
-      try {
-        const userDocRef = doc(db, "users", user.uid);
-        await updateDoc(userDocRef, { username: username });
-
-        if (password.trim() !== "") {
-          await updatePassword(user, password);
-        }
-        showPopupMessage("Details updated successfully!");
-      } catch (error) {
-        console.error("Update error:", error.message);
-        showPopupMessage(`Failed to update: ${error.message}`, true);
-      } finally {
+        showPopupMessage("User not logged in.", true);
         setLoadingState(false);
       }
-    } else {
-      showPopupMessage("User not logged in.", true);
-      setLoadingState(false);
-    }
-  }
-
-  // Delete user
-  function openModal() {
-    deleteModal.classList.remove('hidden');
-  }
-  function closeModal() {
-    deleteModal.classList.add('hidden');
-    document.getElementById('deleteInput').value = '';
-  }
-  
-  async function confirmDelete() {
-    const input = document.getElementById('deleteInput').value.trim().toLowerCase();
-    if (input !== 'delete') {
-      alert("Please type 'delete' to confirm.");
-      return;
     }
 
-    const user = auth.currentUser;
-    if (user) {
-      try {
-        await deleteDoc(doc(db, "users", user.uid));
-        await deleteUser(user);
-        alert("Account deleted successfully.");
-        logout();
-      } catch (error) {
-        console.error("Delete error:", error.message);
-        alert(`Failed to delete account: ${error.message}`);
-        closeModal();
+    // Delete Handler
+    async function confirmDelete() {
+      const input = document.getElementById('deleteInput').value.trim().toLowerCase();
+      if (input !== 'delete') {
+        alert("Please type 'delete' to confirm.");
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await deleteDoc(doc(db, "users", user.uid));
+          await deleteUser(user);
+          logout();
+        } catch (error) {
+          console.error("Delete error:", error.message);
+          let errorMsg = error.message;
+          if(error.code === 'auth/requires-recent-login') {
+             errorMsg = "Please re-login recently to perform this action.";
+          }
+          alert(`Failed to delete account: ${errorMsg}`);
+          closeModal();
+        }
       }
     }
-  }
 
-  // Logout
-  function logout() {
-    // A more robust way to clear relevant local storage
-    Object.keys(localStorage).forEach(key => {
-        if (key.includes('firebase') || ['isLoggedIn', 'userEmail', 'username'].includes(key)) {
-            localStorage.removeItem(key);
+    function logout() {
+      Object.keys(localStorage).forEach(key => {
+          if (key.includes('firebase') || ['isLoggedIn', 'userEmail', 'username'].includes(key)) {
+              localStorage.removeItem(key);
+          }
+      });
+      window.location.href = '../../index.html';
+    }
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+
+      if (!localStorage.getItem('isLoggedIn')) {
+         // setTimeout(() => window.location.href = '../../index.html', 100);
+      } else {
+          loadUserData();
+      }
+
+      if (editUserForm) editUserForm.addEventListener("submit", modifyUserDetails);
+      if (deleteButton) deleteButton.addEventListener("click", openModal);
+      if (closedeleteModalBtn) closedeleteModalBtn.addEventListener("click", closeModal);
+      if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", confirmDelete);
+      if (togglePasswordVisibilityButton) togglePasswordVisibilityButton.addEventListener("click", togglePasswordVisibility);
+      
+      window.addEventListener('click', (e) => {
+        if (e.target === deleteModal) {
+          closeModal();
         }
+      });
     });
-    window.location.href = '../../index.html'; // Or your main portfolio page
-  }
-
-  // Initial Checks
-  document.addEventListener('DOMContentLoaded', () => {
-    if (!localStorage.getItem('isLoggedIn')) {
-        setTimeout(() => window.location.href = '../../index.html', 100);
-    } else {
-        loadUserData();
-    }
-
-    // Theme
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'dark') {
-        document.body.classList.add('dark');
-    }
-
-    // Events
-    if (editUserForm) editUserForm.addEventListener("submit", modifyUserDetails);
-    if (deleteButton) deleteButton.addEventListener("click", openModal);
-    if (closedeleteModalBtn) closedeleteModalBtn.addEventListener("click", closeModal);
-    if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", confirmDelete);
-    if (togglePasswordVisibilityButton) togglePasswordVisibilityButton.addEventListener("click", togglePasswordVisibility);
-  });
-</script>
+  </script>
 </body>
 </html>
