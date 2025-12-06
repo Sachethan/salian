@@ -107,10 +107,6 @@ function processConfigs(configs) {
 if (!hash) {
   logProgress("No #tag found. Showing default info message.", 1);
     loader.classList.remove('show');
-  showMessage(
-    "<strong>Note:</strong> If you're a new user, please click to <a href='#' id='registerMessageLink'>Register</a>, if not then <a href='pages/login/login.html'>Login</a>.",
-    "info"
-  );
 }
 
 // ✅ Always show loader if first load or #root- present
