@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="color-scheme" content="light">
- <base href="https://sachethan.github.io/salian/pages/online tool/posters/annapoorna/"/>
+<!--  <base href="https://sachethan.github.io/salian/pages/online tool/posters/annapoorna/"/> -->
   <title>ಅನ್ನಪೂರ್ಣ Poster Editor</title>
 
   <!-- Google tag (gtag.js) -->
@@ -195,10 +195,86 @@
     </div>
 </div>
 
+
+  <div class="w-full mt-0 max-w-md">
+        <!-- Controls Container -->
+        <div class="bg-slate-800/80 backdrop-blur-sm p-3 rounded-xl shadow-lg flex justify-center items-center gap-4 border border-slate-700">
+<button onclick="window.location.href = 'updates.html';" class="flex items-center gap-2 px-2 py-2 pt-3 text-[10px] font-medium text-white bg-gray-500 rounded-lg hover:bg-gray-600 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800 focus-visible:ring-gray-400 shadow-md hover:shadow-gray-500/40">
+        Whats New? v1.1
+    </button>
+        </div>
+    </div>
+
+    <!-- 1. The Dark Overlay -->
+    <div id="popupOverlay" class="popup-overlay"></div>
+
+    <!-- 2. The Popup Box -->
+    <div id="updatePopup" style="
+        background: #1f2937; /* Dark Gray Theme */
+        color: white;
+        padding: 25px;
+        width: 85%;            /* Responsive width */
+        max-width: 320px;      /* Max width */
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        text-align: center;
+        display: none;         /* Hidden by default */
+        border: 1px solid rgba(255,255,255,0.1);
+    " class="centered-popup">
+        
+        <!-- Icon -->
+        <div style="font-size: 40px; margin-bottom: 10px;">🔔</div>
+
+        <h3 style="margin:0; font-size:20px; font-weight:700;">New Update Available!</h3>
+        
+        <p style="font-size:14px; opacity:0.9; margin-top:10px; line-height:1.5; color:#e5e7eb;">
+            We have added new sharing options to make inviting friends easier.
+        </p>
+
+        <!-- Main Button -->
+        <button id="updateBtn" style="
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #10B981; /* Emerald Green */
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+        ">
+            Check Update
+        </button>
+
+        <!-- Secondary Button -->
+        <button id="laterBtn" style="
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 12px;
+            background: transparent;
+            border: none;
+            color: #9ca3af; /* Gray text */
+            font-size: 14px;
+            cursor: pointer;
+        ">
+            Dismiss
+        </button>
+    </div>
+
 <!-- Firebase + Save Data + Download Poster -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import {
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+ 
   import * as htmlToImage from "https://cdn.skypack.dev/html-to-image";
 
   // Firebase config
@@ -215,6 +291,87 @@
   // Init Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+
+// 🔒 Track user only if admin enables tracking
+const configRef = doc(db, "settings", "config");
+const configSnap = await getDoc(configRef);
+
+if (configSnap.exists() && configSnap.data().tracking_enabled) {
+
+  // ✅ 1. DEFINE PAGE NAME DYNAMICALLY
+  // We use document.title, cleaning out slashes (which break paths)
+  // Fallback to "Untitled Page" if title is missing
+  const rawTitle = document.title || "Untitled Page";
+  const PAGE_NAME = rawTitle.replace(/\//g, "-").trim();
+
+  // ✅ 2. REGISTER THE PAGE
+  // This writes to the parent document so 'settings.html' can find this page
+  const timestamp = new Date().toISOString();
+  await setDoc(doc(db, "visitor_logs", PAGE_NAME), { 
+      last_active: timestamp,
+      page_title: rawTitle
+  }, { merge: true });
+
+  // ✅ 3. IDENTIFY VISITOR
+  let visitorId = null;
+
+  try {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo && userInfo.email) {
+      visitorId = userInfo.email; // Use email if logged in
+    }
+  } catch (e) {
+    console.warn("Invalid userInfo in localStorage");
+  }
+
+  // If no email, use persistent random ID
+  if (!visitorId) {
+    visitorId = localStorage.getItem("visitor_id") || crypto.randomUUID();
+    localStorage.setItem("visitor_id", visitorId);
+  }
+
+  // ✅ 4. LOG THE VISIT (Subcollection)
+  const visitRef = doc(
+    db,
+    "visitor_logs",
+    PAGE_NAME,
+    "visitors",
+    visitorId
+  );
+
+  const visitSnap = await getDoc(visitRef);
+
+  if (!visitSnap.exists()) {
+    // New Visitor
+    await setDoc(visitRef, {
+      visitor_id: visitorId,
+      screenWidth: window.screen.width,
+      screenHeight: window.screen.height,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      visitCount: 1,
+      visits: [timestamp]
+    });
+    console.log(`✅ Tracked new visitor on: ${PAGE_NAME}`);
+  } else {
+    // Returning Visitor
+    const data = visitSnap.data();
+    const newCount = (data.visitCount || 0) + 1;
+    
+    // Keep only last 5 timestamps
+    const oldVisits = data.visits || [];
+    const updatedVisits = [...oldVisits, timestamp].slice(-5);
+
+    await updateDoc(visitRef, {
+      visitCount: newCount,
+      visits: updatedVisits
+    });
+    console.log(`🔁 Tracked visit #${newCount} on: ${PAGE_NAME}`);
+  }
+
+} else {
+  console.log("ℹ️ Visitor tracking is disabled by admin.");
+}
 
     const fontModalButton = document.getElementById('font-modal-button');
     const downloadButton = document.getElementById('download-button');
@@ -411,7 +568,7 @@ function updateMessageContent() {
       const msgformate = `🕉️ಶ್ರೀ ಗುರುಭ್ಯೋ ನಮಃ🕉️
 ಶ್ರೀ ಶರಭೇಶ್ವರಾಯ ನಮಃ
 ಶ್ರೀ ಅಂಬಿಕಾ ಅನ್ನಪೂರ್ಣೇಶ್ವರಿ ನಮಃ🚩🕉️
-*ಆಶೀರ್ವಾದ ಗೆಳೆಯರ ಬಳಗ( ರಿ )ಸೇವಾ ಟ್ರಸ್ಟ್ ಪೆರ್ಲ ಬಿಯಪಾದೆ. ಅನ್ನಪೂರ್ಣ ಆಶೀರ್ವಾದ ಸೇವಾ ಸಮಿತಿ ಇದರ ವತಿಯಿಂದ ಜ್ಞಾನ ಮಂದಿರ ನಿರ್ಮಿಸುವ ಸಲುವಾಗಿ ನಡೆಸಲಾಗುವ ವಾರದ ಮನೆ ಮನೆ ಭಜನೆಯನ್ನು ${formattedDate || 'date'} ಶುಕ್ರವಾರ ${change2} ಇಲ್ಲಿ ಹರಿ ಸಂಕೀರ್ತನೆ ನಡೆಯಿತು . ಭಾಗಿಯಾದ  ಎಲ್ಲರಿಗೂ ಅಭಿನಂದನೆಗಳು. ಇನ್ನು ಮುಂದೆಯು ನಿಮ್ಮ ಸಹಕಾರವನ್ನು ಬಯಸುತ್ತಾ ,ಶ್ರೀಗುರುದೇವರ ಕೃಪಾಶೀರ್ವಾದದೊಂದಿಗೆ, ದೈವ ದೇವರುಗಳು ಸಂಪೂರ್ಣವಾಗಿ ಅನುಗ್ರಹಿಸಿ, ಒಳಿತನ್ನು ಮಾಡಲಿ... ಎಂದು ಪ್ರಾರ್ಥಿಸುತ್ತೇವೆ*...🙏🙏
+*ಆಶೀರ್ವಾದ ಗೆಳೆಯರ ಬಳಗ( ರಿ )ಸೇವಾ ಟ್ರಸ್ಟ್ ಪೆರ್ಲ ಬಿಯಪಾದೆ. ಅನ್ನಪೂರ್ಣ ಆಶೀರ್ವಾದ ಸೇವಾ ಸಮಿತಿ ಇದರ ವತಿಯಿಂದ ಜ್ಞಾನ ಮಂದಿರ ನಿರ್ಮಿಸುವ ಸಲುವಾಗಿ ನಡೆಸಲಾಗುವ ವಾರದ ಮನೆ ಮನೆ ಭಜನೆಯನ್ನು ${formattedDate || 'date'} ಶುಕ್ರವಾರ ${change2} ಇಲ್ಲಿ ಹರಿ ಸಂಕೀರ್ತನೆ ನಡೆಯಿತು . ಭಾಗಿಯಾದ  ಎಲ್ಲರಿಗೂ ಅಭಿನಂದನೆಗಳು. ಇನ್ನು ಮುಂದೆಯು ನಿಮ್ಮ ಸಹಕಾರವನ್ನು ಬಯಸುತ್ತಾ ,ಶ್ರೀಗುರುದೇವ ರ ಕೃಪಾಶೀರ್ವಾದದೊಂದಿಗೆ, ದೈವ ದೇವರುಗಳು ಸಂಪೂರ್ಣವಾಗಿ ಅನುಗ್ರಹಿಸಿ, ಒಳಿತನ್ನು ಮಾಡಲಿ... ಎಂದು ಪ್ರಾರ್ಥಿಸುತ್ತೇವೆ*...🙏🙏
       `;
 
       // Example: display it in an element
@@ -560,6 +717,37 @@ document.getElementById("copyBtn").addEventListener("click", () => {
   });
 });
 </script>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Check if user has seen update
+            const hasSeenUpdate = localStorage.getItem("updates_seen");
+
+            // 2. If NOT seen, show popup + overlay
+            if (hasSeenUpdate !== "true") {
+                setTimeout(() => {
+                    document.getElementById("updatePopup").style.display = "block";
+                    document.getElementById("popupOverlay").style.display = "block";
+                }, 1000);
+            }
+        });
+
+        // Go to updates page
+        document.getElementById("updateBtn").addEventListener("click", () => {
+            window.location.href = "updates.html"; 
+        });
+
+        // Close Popup
+        document.getElementById("laterBtn").addEventListener("click", closePopup);
+        document.getElementById("popupOverlay").addEventListener("click", closePopup); // Close when clicking background
+
+        function closePopup() {
+            document.getElementById("updatePopup").style.display = "none";
+            document.getElementById("popupOverlay").style.display = "none";
+        }
+    </script>
+
 
 </body>
 </html>
