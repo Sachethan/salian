@@ -3,267 +3,229 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sachethan Salian - Template Editor</title>
+    <title>Sachethan Salian - Template Studio</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            900: '#0f172a', /* Slate 900 */
+                            800: '#1e293b', /* Slate 800 */
+                            700: '#334155', /* Slate 700 */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Custom styles to apply the Inter font */
         body {
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        /* Ensure the main content area can scroll independently */
-        main {
-            overflow-y: auto;
-            /* Take up all available height */
-            height: 100%;
-        }
-        /* Simple fade-out transition for the loader */
+
+        /* Smooth fading */
         .loader-fade-out {
             opacity: 0;
-            transition: opacity 0.5s ease-out;
-        }
-        .flex-grow {
-            /* Corrected to background-image */
-            background: linear-gradient(90deg, rgba(252, 254, 255, 1) 0%, rgba(251, 255, 222, 1) 51%, rgb(245, 164, 3) 100%);
-            /* Define the animation */
-            animation: gradient-shift 10s ease-in-out infinite alternate;
-            /* Optional: Ensure the background covers the entire element */
-            background-size: 400% 400%; 
+            transition: opacity 0.4s ease-out;
+            pointer-events: none;
         }
 
-        @keyframes gradient-shift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Custom height for iframe container to fill available space below the sub-header */
-        #iframe-container.dynamic-height {
-            height: calc(100% - var(--subheader-height, 41px));
-        }
-        /* Ensure body and html take full height for embedding */
-        html, body {
-            height: 100%;
-            overflow: hidden; /* Prevent double scrollbars */
-        }
-        /* Custom scrollbar for main content */
-        main::-webkit-scrollbar {
+        /* Custom Scrollbar for Dark Mode */
+        ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
-        main::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
         }
-        main::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
         }
-        main::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        .blink {
-            animation: blinkAnim 2s infinite;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
         }
 
-        @keyframes blinkAnim {
-            0%, 50%, 100% { opacity: 1; }
-            25%, 75% { opacity: 0; }
+        /* Iframe Container Logic */
+        #iframe-container.dynamic-height {
+            height: calc(100vh - 96px); /* Subtract new header height (h-24 = 96px) */
         }
-
-        /* Custom CSS to be included in your stylesheet */
-        .btn-pulse {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-            animation: pulse-shadow 2s infinite ease-in-out;
-            will-change: box-shadow; 
-        }
-
-        @keyframes pulse-shadow {
-            0% { box-shadow: 0 0 0 0 rgba(255, 72, 0, 0.7); }
-            50% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
-            100% { box-shadow: 0 0 0 0 rgb(255, 174, 0); }
-        }
-
-        #loadimg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: transparent;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-
-        #loadimg div {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        #loadimg img.logo {
-            width: 75px; 
-            height: auto;
-            z-index: 1000;
-        }
-
-        #loadimg span {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border: 4px solid transparent;
-            border-top: 4px solid #8A2BE2;
+        
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(99, 102, 241, 0.3);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 1000;
+            border-top-color: #6366f1; /* Indigo */
+            animation: spin 0.8s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* Card Hover Effect */
+        .template-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            border-color: #6366f1; /* Indigo border on hover */
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #818cf8, #c084fc, #22d3ee);
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col h-screen">
+<body class="bg-dark-900 text-slate-200 flex flex-col h-screen overflow-hidden selection:bg-indigo-500 selection:text-white">
 
-    <!-- Sub Header / Breadcrumb for iframe view -->
-    <div id="sub-header" class="bg-slate-100 border-b border-slate-200 hidden z-20 flex-shrink-0">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-            <nav class="text-sm font-medium">
-                <span id="home-breadcrumb-link" class="text-indigo-600 hover:text-indigo-800 cursor-pointer transition-colors">Home</span>
-                <span class="text-slate-400 mx-2">/</span>
-                <span id="template-breadcrumb" class="text-slate-600">Editor</span>
+    <!-- Header / Navigation -->
+    <!-- Increased Height to h-24 (96px) and added gradient background -->
+    <header class="h-12 flex-shrink-0 z-30 relative border-b border-slate-700/50 bg-dark-900/90 backdrop-blur-md shadow-lg">
+        <div class="absolute inset-0 bg-gradient-to-r from-indigo-900/20 via-purple-900/20 to-slate-900/20 pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between relative">
+            <div class="flex items-center gap-6">
+                <button onclick="window.history.back()" 
+                    class="group flex items-center justify-center p-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all focus:outline-none border border-transparent hover:border-slate-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </button>
+                
+                <div class="flex flex-col justify-center">
+                    <h1 id="page-title" class="text-1xl font-bold tracking-tight text-white">
+                        Template <span class="text-gradient">Studio</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mt-0.5">Design Suite</p>
+                </div>
+            </div>
+            
+            <!-- Breadcrumb for Editor Mode (Hidden by default) -->
+            <nav id="editor-nav" class="hidden text-sm font-medium bg-slate-800/50 px-4 py-2 rounded-full border border-slate-700">
+                <span class="text-slate-400">Editing:</span>
+                <span id="template-breadcrumb" class="text-indigo-400 ml-2 font-semibold tracking-wide">Untitled</span>
             </nav>
         </div>
-    </div>
+    </header>
 
-    <!-- Main Content (Scrollable) -->
-    <main class="flex-grow">
-        <!-- Template Selection View -->
-        <div id="template-selector" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-10 h-full overflow-y-auto">
-            <div class="text-center mb-2">
-                <p class="mt-3 text-sm text-slate-600">Choose a template to start your creative journey</p>
-            </div>
-
-            <!-- Search and Tabs Section -->
-            <div class="mb-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <!-- Back Button -->
-                <button onclick="window.history.back()" 
-                    class="absolute z-10 top-1 left-1 m-0 opacity-75 items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-gray-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95">
-                    &larr; Back
-                </button>
-
-                <div class="relative w-full sm:w-1/2 md:w-1/3">
-                    <input type="text" id="search-input" placeholder="Search templates..."
-                        class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                    <button id="clear-search-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-700 hidden">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </div>
-
-                <!-- Tabs -->
-                <div class="flex space-x-2 bg-slate-200 rounded-lg p-1 shadow-inner">
-                    <button data-category="all" class="tab-button px-4 py-2 rounded-md text-sm font-medium text-slate-700 bg-white shadow-sm transition-all hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1">
-                        All
-                    </button>
-                    <button data-category="devotional" class="tab-button px-4 py-2 rounded-md text-sm font-medium text-slate-700 transition-all hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1">
-                        Devotional
-                    </button>
-                    <button data-category="favorite" class="tab-button px-4 py-2 rounded-md text-sm font-medium text-slate-700 transition-all hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1">
-                        Favorite
-                    </button>
-                </div>
-            </div>
-
-            <!-- Grid for templates will be dynamically inserted here -->
-            <div id="template-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <!-- Template cards will be generated by JavaScript -->
-            </div>
-
-            <!-- Loading Spinner (Initial) -->
-            <div id="templateLoader" class="space-y-6 w-full max-w-lg mx-auto">
-                <div id="loadimg">
-                    <div>
-                        <img src="https://saliantech.github.io/Saliantech/Files/resources/loading.gif" alt="Logo" class="logo"/>
-                        <span></span>
-                    </div>  
-                </div>      
-                <!-- Loading Placeholders -->
-                <div class="w-full bg-white rounded-xl shadow-lg p-6">
-                    <div class="flex animate-pulse flex-col space-y-4">
-                        <div class="h-8 w-3/4 rounded-md bg-gray-200"></div>
-                        <div class="h-4 w-1/2 rounded-md bg-gray-200"></div>
-                        <div class="h-4"></div>
-                        <div class="space-y-2">
-                            <div class="h-3 w-1/3 rounded-md bg-gray-200"></div>
-                            <div class="h-3 w-2/3 rounded-md bg-gray-200"></div>
+    <!-- Main Content Area -->
+    <main class="flex-grow relative h-full overflow-hidden bg-gradient-to-br from-dark-900 to-slate-900">
+        
+        <!-- Scrollable Template List Container -->
+        <div id="template-selector" class="h-full overflow-y-auto scroll-smooth">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-24">
+                <!-- Toolbar: Search & Filter -->
+                <div class="mb-10 flex flex-col md:flex-row justify-between items-center gap-4 bg-dark-800/50 p-2 rounded-2xl border border-slate-700/50 backdrop-blur-sm sticky top-0 z-40 shadow-xl">
+                    
+                    <!-- Search Input -->
+                    <div class="relative w-full md:w-96 group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
-                        <div class="h-4"></div>
-                        <div class="flex justify-between items-center">
-                            <div class="h-10 w-32 rounded-lg bg-blue-500"></div>
-                            <div class="size-10 rounded-full bg-gray-200"></div>
+                        <input type="text" id="search-input" placeholder="Search templates..."
+                            class="w-full pl-10 pr-10 py-3 bg-dark-900 border border-transparent focus:border-indigo-500 rounded-xl focus:ring-2 focus:ring-indigo-500/20 text-sm text-slate-200 placeholder-slate-500 transition-all outline-none">
+                        <button id="clear-search-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-white hidden transition-colors">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Category Tabs -->
+                    <div class="flex space-x-1 bg-dark-900 p-1.5 rounded-xl w-full md:w-auto overflow-x-auto border border-slate-800">
+                        <button data-category="all" class="tab-button flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200">
+                            All
+                        </button>
+                        <button data-category="devotional" class="tab-button flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200">
+                            Devotional
+                        </button>
+                        <button data-category="favorite" class="tab-button flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2">
+                            <span>Favorites</span>
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Template Grid -->
+                <div id="template-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Cards injected via JS -->
+                </div>
+
+                <!-- Loading State (Skeleton) -->
+                <div id="templateLoader" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 opacity-100 transition-opacity duration-300">
+                    <!-- Skeleton Card 1 -->
+                    <div class="bg-dark-800 rounded-2xl border border-slate-700 p-5 space-y-4 shadow-lg">
+                        <div class="h-44 bg-slate-700/50 rounded-xl animate-pulse"></div>
+                        <div class="space-y-3">
+                            <div class="h-6 w-3/4 bg-slate-700/50 rounded animate-pulse"></div>
+                            <div class="h-4 w-1/2 bg-slate-700/50 rounded animate-pulse"></div>
+                        </div>
+                    </div>
+                    <!-- Skeleton Card 2 -->
+                    <div class="bg-dark-800 rounded-2xl border border-slate-700 p-5 space-y-4 shadow-lg hidden sm:block">
+                        <div class="h-44 bg-slate-700/50 rounded-xl animate-pulse"></div>
+                        <div class="space-y-3">
+                            <div class="h-6 w-3/4 bg-slate-700/50 rounded animate-pulse"></div>
+                            <div class="h-4 w-1/2 bg-slate-700/50 rounded animate-pulse"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-        <!-- Full Iframe View -->
-        <div id="iframe-container" class="hidden h-full bg-slate-200 relative">
-            <!-- Loading Overlay -->
-            <div id="loading-overlay" class="absolute inset-0 bg-slate-200 bg-opacity-80 flex items-center justify-center z-10">
+        <!-- Iframe Viewer Container -->
+        <div id="iframe-container" class="hidden absolute inset-0 bg-dark-900 z-40">
+            <!-- Loading Overlay for Iframe -->
+            <div id="loading-overlay" class="absolute inset-0 bg-dark-900/95 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
                 <div class="flex flex-col items-center">
-                    <div id="loadimg">
-                        <div>
-                            <img src="https://saliantech.github.io/Saliantech/Files/resources/loading.gif" alt="Logo" class="logo"/>
-                            <span></span>
-                        </div>              
-                    </div>      
-                    <p class="absolute bottom-[20%] text-lg font-medium text-slate-700">Loading Editor...</p>          
+                    <div class="spinner mb-6"></div>
+                    <p class="text-lg font-medium text-slate-300 animate-pulse tracking-wide">Loading Studio...</p>
                 </div>
             </div>
             <iframe id="viewer" src="about:blank" title="Editor" class="w-full h-full border-0"></iframe>
         </div>
 
-        <!-- Confirmation Modal -->
-        <div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
-            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                <div class="mt-3 text-center">
-                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
-                        <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    </div>
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Are you sure?</h3>
-                    <div class="mt-2 px-7 py-3">
-                        <p class="text-sm text-gray-500">
-                            Any unsaved changes will be lost. Do you want to return to the template selection?
-                        </p>
-                    </div>
-                    <div class="items-center px-4 py-3 space-x-4">
-                        <button id="cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                            Cancel
-                        </button>
-                        <button id="confirm-back-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Confirm
-                        </button>
-                    </div>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm overflow-y-auto h-full w-full z-50 hidden flex items-center justify-center">
+        <div class="bg-dark-800 border border-slate-700 rounded-2xl shadow-2xl p-8 w-96 max-w-full m-4 transform transition-all scale-100 ring-1 ring-white/10">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-amber-500/10 mb-6">
+                    <svg class="h-7 w-7 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white">Leave Editor?</h3>
+                <p class="text-slate-400 mt-3 leading-relaxed">
+                    Any unsaved changes will be lost. Are you sure you want to go back to the gallery?
+                </p>
+                <div class="mt-8 flex gap-3 justify-center">
+                    <button id="cancel-btn" class="px-5 py-2.5 bg-slate-700 text-slate-200 text-sm font-medium rounded-xl hover:bg-slate-600 focus:outline-none transition-colors">
+                        Stay here
+                    </button>
+                    <button id="confirm-back-btn" class="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-500 focus:outline-none shadow-lg shadow-indigo-900/50 transition-colors">
+                        Leave & Discard
+                    </button>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -272,7 +234,7 @@
             const templates = [
                 {
                     id: 'poster-anna-poorna',
-                    title: 'ಅನ್ನಪೂರ್ಣ ಆಶೀರ್ವಾದ ಸೇವಾ ಸಮಿತಿ - Poster',
+                    title: 'ಅನ್ನಪೂರ್ಣ ಆಶೀರ್ವಾದ - Poster',
                     description: 'A poster editor for the Annapoorna Seva Samithi event.',
                     previewImage: 'annapoorna/image/preview.jpg',
                     url: 'annapoorna/annapoorna1.html',
@@ -282,45 +244,50 @@
                 },
                 {
                     id: 'poster-sarapady',
-                    title: 'ಶ್ರೀ ಶರಭೇಶ್ವರ ಭಜನೆ ಮಂಡಳಿ - Poster.',
+                    title: 'ಶ್ರೀ ಶರಭೇಶ್ವರ ಭಜನೆ - Poster',
                     description: 'A poster editor for the Sarapady event.',
                     previewImage: 'sharabeswara/image/preview.png',
                     url: 'sharabeswara/sharabeswara.html',
                     category: 'devotional',
                     isFavorite: false
-                },               
+                },
             ];
 
-            // --- DOM Element Selection ---
-            const mainContent = document.querySelector('main');
+            // --- DOM Elements ---
             const templateSelector = document.getElementById('template-selector');
-            const subHeader = document.getElementById('sub-header');
             const iframeContainer = document.getElementById('iframe-container');
             const viewerIframe = document.getElementById('viewer');
             const loadingOverlay = document.getElementById('loading-overlay');
-            const homeBreadcrumbLink = document.getElementById('home-breadcrumb-link');
+            
+            const pageTitle = document.getElementById('page-title').parentElement; // Get parent div of title
+            const editorNav = document.getElementById('editor-nav');
             const templateBreadcrumb = document.getElementById('template-breadcrumb');
+            
             const confirmationModal = document.getElementById('confirmation-modal');
             const confirmBackBtn = document.getElementById('confirm-back-btn');
             const cancelBtn = document.getElementById('cancel-btn');
+            
             const templateGrid = document.getElementById('template-grid');
+            const templateLoader = document.getElementById('templateLoader');
+            
             const searchInput = document.getElementById('search-input');
             const clearSearchBtn = document.getElementById('clear-search-btn');
             const tabButtons = document.querySelectorAll('.tab-button');
+            const backButton = document.querySelector('header button'); // Back button in header
 
-            // --- State Variables ---
+            // --- State ---
             const blankPageUrl = 'about:blank';
             let currentSearchQuery = '';
-            let currentCategory = 'all'; // Default category
+            let currentCategory = 'all';
 
             // --- Messaging ---
             window.parent.postMessage({
                 type: "showMessage",
-                message: `This is the Editing Panel. Click on 'Open Editor' to edit a poster.`,
+                message: `Welcome to the Studio. Select a template to begin.`,
                 variant: "info"
             }, "*");
 
-            // --- Changes template Url based on Hash ---
+            // --- URL Params Handling ---
             const urlParams = new URLSearchParams(window.location.search);
             const openId = urlParams.get('open');
             const overrideUrl = urlParams.get('override');
@@ -328,18 +295,15 @@
             if (openId) {
                 const template = templates.find(t => t.id === openId);
                 if (template) {
-                    if (overrideUrl) {
-                        template.url = overrideUrl;
-                    }
-                    if (template.url !== 'about:blank') {
+                    if (overrideUrl) template.url = overrideUrl;
+                    if (template.url !== blankPageUrl) {
                         showEditor(template.url, template.title);
                     }
                 }
             }
 
-            /**
-             * Loads favorite template IDs from localStorage.
-             */
+            // --- Functions ---
+
             function loadFavorites() {
                 const favoriteTemplateIds = JSON.parse(localStorage.getItem('favoriteTemplates') || '[]');
                 templates.forEach(template => {
@@ -347,26 +311,23 @@
                 });
             }
 
-            /**
-             * Saves the current favorite template IDs to localStorage.
-             */
             function saveFavorites() {
                 const favoriteIds = templates.filter(t => t.isFavorite).map(t => t.id);
                 localStorage.setItem('favoriteTemplates', JSON.stringify(favoriteIds));
             }
 
-            /**
-             * Renders the template cards.
-             */
             function renderTemplates(templatesToRender) {
                 templateGrid.innerHTML = '';
-                document.getElementById('templateLoader').classList.add('hidden');
+                templateLoader.classList.add('hidden'); // Hide skeleton
                 
                 if (!templatesToRender || templatesToRender.length === 0) {
                     templateGrid.innerHTML = `
-                      <div class="col-span-full text-center py-10">
-                        <p class="text-slate-500 text-lg">No templates found matching your criteria.</p>
-                        <p class="text-slate-400 text-sm mt-2">Try adjusting your search or selecting a different category.</p>
+                      <div class="col-span-full text-center py-20">
+                        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-800 mb-6 border border-slate-700">
+                            <svg class="w-10 h-10 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white">No templates found</h3>
+                        <p class="text-slate-500 mt-2">Try adjusting your search or category filter.</p>
                       </div>
                     `;
                     return;
@@ -374,46 +335,53 @@
 
                 templatesToRender.forEach(template => {
                     const card = document.createElement('div');
-                    card.className = 'group relative flex flex-col bg-white border border-slate-200 rounded-xl shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1';
+                    card.className = 'template-card group bg-dark-800 border border-slate-700/50 rounded-2xl overflow-hidden flex flex-col h-full shadow-lg hover:shadow-indigo-500/10';
 
-                    const isDisabled = template.url === 'about:blank';
-                    let primaryBtnHTML = "";
-
+                    const isDisabled = template.url === blankPageUrl;
+                    
+                    // Button Logic
+                    let actionBtn = '';
                     if (isDisabled) {
-                        primaryBtnHTML = `
-                        <button class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-slate-400 cursor-not-allowed" disabled>
-                          Coming Soon
+                        actionBtn = `
+                        <button disabled class="w-full py-2.5 px-4 bg-slate-700/50 text-slate-500 text-sm font-medium rounded-xl cursor-not-allowed border border-transparent">
+                            Coming Soon
                         </button>`;
                     } else {
-                        primaryBtnHTML = `
-                        <button
-                          class="inline-flex items-center justify-center px-4 py-2 text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition-transform duration-150 active:scale-95 btn-pulse"
-                          data-url="${template.url}"
-                          data-title="${template.title}">
-                          Edit
+                        actionBtn = `
+                        <button class="flex-1 py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-indigo-500/30 transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-indigo-500"
+                            data-url="${template.url}"
+                            data-title="${template.title}">
+                            Open Editor
                         </button>`;
                     }
 
+                    // Fallback Image Logic
+                    const fallbackImg = "https://placehold.co/600x400/1e293b/475569?text=No+Preview";
+
                     card.innerHTML = `
-                      <div class="aspect-w-16 aspect-h-9 bg-slate-100">
-                        <img src="${template.previewImage}" alt="${template.title} Preview" class="w-full h-48 object-cover"
-                             onerror="this.onerror=null;this.src='https://placehold.co/600x400/e2e8f0/475569?text=Image+Not+Found';">
+                      <div class="relative aspect-[16/9] bg-slate-900 overflow-hidden border-b border-slate-700/50">
+                        <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors z-10 pointer-events-none"></div>
+                        <img src="${template.previewImage}" alt="${template.title}" 
+                             class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                             onerror="this.onerror=null;this.src='${fallbackImg}';">
+                        
+                        <!-- Floating Favorite Button -->
+                        <button class="favorite-button absolute top-3 right-3 p-2.5 rounded-full bg-slate-900/80 backdrop-blur-md shadow-lg hover:bg-slate-800 transition-all duration-200 z-20 border border-white/10 ${template.isFavorite ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}"
+                            data-template-id="${template.id}"
+                            title="${template.isFavorite ? 'Remove Favorite' : 'Add Favorite'}">
+                            <svg class="w-5 h-5" fill="${template.isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        </button>
                       </div>
-                      <div class="p-5 flex-grow flex flex-col">
-                        <h3 class="text-xl font-semibold text-slate-900 mb-2">${template.title}</h3>
-                        <p class="text-sm text-slate-600 flex-grow mb-4">${template.description}</p>
-                        <div class="flex items-center justify-between mt-auto">
-                          ${primaryBtnHTML}
-                        <button
-                       class="favorite-button ml-4 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200
-                       ${template.isFavorite ? 'bg-yellow-500 text-white hover:bg-yellow-600' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
-                       data-template-id="${template.id}"
-                       title="${template.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}">
-                       <svg class="h-5 w-5 inline-block align-middle" fill="${template.isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${template.isFavorite ? 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z' : 'M11.049 2.927c.3-.532.96-.532 1.26 0l2.365 4.103a.75.75 0 00.65.362h4.73a.75.75 0 01.65 1.088l-3.83 3.166a.75.75 0 00-.24.788l1.45 4.54a.75.75 0 01-1.15 1.01l-4.06-2.5a.75.75 0 00-.81 0l-4.06 2.5a.75.75 0 01-1.15-1.01l1.45-4.54a.75.75 0 00-.24-.788L2.094 8.48a.75.75 0 01.65-1.088h4.73a.75.75 0 00.65-.362l2.365-4.103z'}"></path>
-                       </svg>
-                       </button>
-                       </div>
+                      
+                      <div class="p-6 flex flex-col flex-grow">
+                        <div class="mb-5">
+                            <h3 class="text-lg font-bold text-white line-clamp-1 mb-1" title="${template.title}">${template.title}</h3>
+                            <p class="text-sm text-slate-400 line-clamp-2 leading-relaxed h-10">${template.description}</p>
+                        </div>
+                        
+                        <div class="mt-auto pt-5 flex gap-3 border-t border-slate-700/50">
+                          ${actionBtn}
+                        </div>
                       </div>
                     `;
 
@@ -421,9 +389,6 @@
                 });
             }
 
-            /**
-             * Filters templates based on search and category.
-             */
             function filterAndRenderTemplates() {
                 const lowerCaseQuery = currentSearchQuery.toLowerCase();
                 const filtered = templates.filter(template => {
@@ -431,29 +396,24 @@
                                           template.description.toLowerCase().includes(lowerCaseQuery);
 
                     let matchesCategory = false;
-                    if (currentCategory === 'all') {
-                        matchesCategory = true;
-                    } else if (currentCategory === 'favorite') {
-                        matchesCategory = template.isFavorite;
-                    } else {
-                        matchesCategory = template.category === currentCategory;
-                    }
+                    if (currentCategory === 'all') matchesCategory = true;
+                    else if (currentCategory === 'favorite') matchesCategory = template.isFavorite;
+                    else matchesCategory = template.category === currentCategory;
+                    
                     return matchesSearch && matchesCategory;
                 });
                 renderTemplates(filtered);
             }
 
-            /**
-             * Updates active tab styling.
-             */
             function updateActiveTab() {
                 tabButtons.forEach(button => {
-                    if (button.dataset.category === currentCategory) {
-                        button.classList.add('bg-white', 'shadow-sm');
-                        button.classList.remove('bg-slate-200');
+                    const isSelected = button.dataset.category === currentCategory;
+                    if (isSelected) {
+                        button.classList.remove('text-slate-400', 'hover:bg-slate-800', 'hover:text-white', 'bg-transparent');
+                        button.classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-900/50');
                     } else {
-                        button.classList.remove('bg-white', 'shadow-sm');
-                        button.classList.add('bg-slate-200');
+                        button.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white', 'bg-transparent');
+                        button.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'shadow-indigo-900/50');
                     }
                 });
             }
@@ -462,40 +422,54 @@
                 loadingOverlay.classList.add('loader-fade-out');
                 setTimeout(() => {
                     loadingOverlay.classList.add('hidden');
-                }, 500);
+                    loadingOverlay.classList.remove('loader-fade-out'); // Reset for next time
+                }, 400);
             }
 
             function showEditor(url, title) {
-                loadingOverlay.classList.remove('hidden', 'loader-fade-out');
+                // Reset loading state
+                loadingOverlay.classList.remove('hidden');
                 loadingOverlay.style.opacity = '1';
 
+                // Switch Views
                 templateSelector.classList.add('hidden');
                 iframeContainer.classList.remove('hidden');
-                subHeader.classList.remove('hidden');
-
-                document.documentElement.style.setProperty('--subheader-height', `${subHeader.offsetHeight}px`);
-                iframeContainer.classList.add('dynamic-height');
-
+                
+                // Update Header
+                pageTitle.classList.add('hidden');
+                editorNav.classList.remove('hidden');
+                editorNav.classList.add('inline-flex', 'items-center');
                 templateBreadcrumb.textContent = title;
+
+                // Load Content
                 viewerIframe.src = url;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
             function showTemplateSelector() {
                 viewerIframe.src = blankPageUrl;
+                
                 templateSelector.classList.remove('hidden');
                 iframeContainer.classList.add('hidden');
-                subHeader.classList.add('hidden');
+                
+                // Reset Header
+                pageTitle.classList.remove('hidden');
+                editorNav.classList.add('hidden');
+                editorNav.classList.remove('inline-flex', 'items-center');
+
                 closeConfirmationModal();
             }
 
-            function openConfirmationModal() {
+            // --- Header Back Button Logic ---
+            backButton.onclick = (e) => {
+                e.preventDefault();
                 if (!iframeContainer.classList.contains('hidden')) {
+                    // We are in editor mode
                     confirmationModal.classList.remove('hidden');
                 } else {
-                    showTemplateSelector();
+                    // We are in gallery mode
+                    window.history.back();
                 }
-            }
+            };
 
             function closeConfirmationModal() {
                 confirmationModal.classList.add('hidden');
@@ -505,44 +479,47 @@
             viewerIframe.addEventListener('load', hideLoader);
 
             templateGrid.addEventListener('click', (e) => {
-                const favoriteButton = e.target.closest('.favorite-button');
-                if (favoriteButton) {
-                    const templateId = favoriteButton.dataset.templateId;
-                    const template = templates.find(t => t.id === templateId);
-                    if (template) {
-                        template.isFavorite = !template.isFavorite;
+                const favBtn = e.target.closest('.favorite-button');
+                if (favBtn) {
+                    const id = favBtn.dataset.templateId;
+                    const tmpl = templates.find(t => t.id === id);
+                    if (tmpl) {
+                        tmpl.isFavorite = !tmpl.isFavorite;
                         saveFavorites();
-                        filterAndRenderTemplates();
+                        if (currentCategory === 'favorite') {
+                            filterAndRenderTemplates();
+                        } else {
+                            // Quick visual toggle
+                            favBtn.classList.toggle('text-amber-400');
+                            favBtn.classList.toggle('text-slate-400');
+                            favBtn.querySelector('svg').setAttribute('fill', tmpl.isFavorite ? 'currentColor' : 'none');
+                            favBtn.title = tmpl.isFavorite ? 'Remove Favorite' : 'Add Favorite';
+                        }
                     }
                     return;
                 }
 
-                const openEditorButton = e.target.closest('button[data-url]');
-                if (openEditorButton && openEditorButton.dataset.url) {
-                    const { url, title } = openEditorButton.dataset;
+                const openBtn = e.target.closest('button[data-url]');
+                if (openBtn) {
+                    const { url, title } = openBtn.dataset;
+                    if (openBtn.disabled) return;
                     if (url && url !== blankPageUrl) {
                         showEditor(url, title);
                     }
                 }
             });
 
-            homeBreadcrumbLink.addEventListener('click', openConfirmationModal);
             confirmBackBtn.addEventListener('click', showTemplateSelector);
             cancelBtn.addEventListener('click', closeConfirmationModal);
-
-            window.addEventListener('click', (event) => {
-                if (event.target === confirmationModal) {
-                    closeConfirmationModal();
-                }
+            
+            confirmationModal.addEventListener('click', (e) => {
+                if (e.target === confirmationModal) closeConfirmationModal();
             });
 
+            // Search
             searchInput.addEventListener('input', (e) => {
                 currentSearchQuery = e.target.value;
-                if (currentSearchQuery.length > 0) {
-                    clearSearchBtn.classList.remove('hidden');
-                } else {
-                    clearSearchBtn.classList.add('hidden');
-                }
+                clearSearchBtn.classList.toggle('hidden', currentSearchQuery.length === 0);
                 filterAndRenderTemplates();
             });
 
@@ -553,6 +530,7 @@
                 filterAndRenderTemplates();
             });
 
+            // Tabs
             tabButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     currentCategory = button.dataset.category;
@@ -562,19 +540,16 @@
                 });
             });
 
-            // --- Initial Load ---
+            // --- Init ---
             loadFavorites();
             const savedCategory = localStorage.getItem('lastCategory');
             currentCategory = savedCategory || 'all';
-            updateActiveTab();
-            filterAndRenderTemplates();
-        });
-
-        // Optional message handling from parent
-        window.addEventListener("message", (event) => {
-            if (event.data?.type === "showMessage") {
-                window.parent.postMessage(event.data, "*");
-            }
+            
+            // Artificial delay for smooth initial load
+            setTimeout(() => {
+                updateActiveTab();
+                filterAndRenderTemplates();
+            }, 600);
         });
     </script>
 </body>
