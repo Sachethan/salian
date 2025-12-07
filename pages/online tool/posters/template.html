@@ -229,32 +229,6 @@
 
  <script type="module">
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    doc,
-    getDoc,
-    setDoc,
-    updateDoc,
-    addDoc
-  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-  import * as htmlToImage from "https://cdn.skypack.dev/html-to-image";
-
-  // Firebase config (already present)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCZejpQv-Ru-OlzWsjzFF_37e8b8DIC3u8",
-    authDomain: "posterdata-113da.firebaseapp.com",
-    projectId: "posterdata-113da",
-    storageBucket: "posterdata-113da.appspot.com",
-    messagingSenderId: "702186025024",
-    appId: "1:702186025024:web:488eec752f7f6c382cefa5",
-    measurementId: "G-YQHKJTNHKG"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
 
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -580,6 +554,34 @@
                 filterAndRenderTemplates();
             }, 600);
         });
+  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    addDoc
+  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  import * as htmlToImage from "https://cdn.skypack.dev/html-to-image";
+
+  // Firebase config (already present)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCZejpQv-Ru-OlzWsjzFF_37e8b8DIC3u8",
+    authDomain: "posterdata-113da.firebaseapp.com",
+    projectId: "posterdata-113da",
+    storageBucket: "posterdata-113da.appspot.com",
+    messagingSenderId: "702186025024",
+    appId: "1:702186025024:web:488eec752f7f6c382cefa5",
+    measurementId: "G-YQHKJTNHKG"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
   
  // 🔒 Track user only if admin enables tracking
 const configRef = doc(db, "settings", "config");
