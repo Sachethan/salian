@@ -117,18 +117,35 @@
 
                     <!-- Text Content Area -->
                     <div class="contant_box_404">
+                                <!-- Current URL Display -->
+<div id="currentUrlBox" class="mt-4 px-4 py-2 bg-light border rounded-pill text-dark small d-inline-block">
+    Loading page URL...
+</div>
                         <h3>Looks like you're lost</h3>
                         <p>The page you are looking for is not available!</p>
+                          
                         
                         <a href="https://sachethan.github.io/salian" class="link_404">Go to Home</a>
                     </div>
 
                 </div>
+                          
             </div>
         </div>
+
+                
     </section>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-</body>
+<script>
+    // Get current accessed URL
+    const currentURL = window.location.href;
+
+    // Show it inside the rounded div
+    document.getElementById("currentUrlBox").textContent = currentURL;
+</script>
+
+                          
+                          </body>
 </html>
