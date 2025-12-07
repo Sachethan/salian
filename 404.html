@@ -1,151 +1,193 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="transition-colors duration-300">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>404 - Page Not Found</title>
     
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
-    <!-- Google Fonts: 'Poppins' for a modern, clean look -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        /*====================== Global Settings =======================*/
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f9fbfd; /* Softer white background */
-            color: #1a1a1a;
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
-        /*====================== 404 Page Styles =======================*/
-        .page_404 {
-            padding: 80px 0;
-            background: #f9fbfd;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
+        /* Animated Gradient Background */
+        .bg-animate {
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .four_zero_four_bg {
-            /* Using a high-quality, professional GIF or Image URL. 
-               Note: For production, download this image and serve locally. */
-            background-image: url('https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif');
-            height: 500px;
-            background-position: center;
-            background-repeat: no-repeat;
-            /* Ensure image scales correctly on mobile */
-            background-size: contain; 
-            margin-bottom: 30px;
-        }
-
-        /* Typography Styling */
-        .four_zero_four_bg h1 {
-            font-size: 100px;
-            font-weight: 800;
-            color: #2d3436;
-            margin: 0;
-            /* Text shadow for depth */
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1); 
-        }
-
-        .contant_box_404 {
-            margin-top: -30px;
-            text-align: center;
-        }
-
-        .contant_box_404 h3 {
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #2d3436;
-        }
-
-        .contant_box_404 p {
-            font-size: 18px;
-            color: #636e72;
-            margin-bottom: 30px;
-        }
-
-        /* Professional Button Styling */
-        .link_404 {
-            color: #fff !important;
-            padding: 12px 35px;
-            background: #39ac31;
-            background: linear-gradient(135deg, #39ac31 0%, #2d8a26 100%);
-            border-radius: 50px; /* Modern pill shape */
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px -10px rgba(57, 172, 49, 0.5);
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border: none;
-        }
-
-        .link_404:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 25px -10px rgba(57, 172, 49, 0.6);
-            color: #fff;
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .four_zero_four_bg {
-                height: 300px;
-            }
-            .four_zero_four_bg h1 {
-                font-size: 60px;
-            }
+        /* Dark mode adjustment for the white GIF to make it blend better */
+        .dark .gif-blend {
+            mix-blend-mode: luminosity; 
+            opacity: 0.8;
+            filter: invert(1) hue-rotate(180deg);
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-300">
 
-    <section class="page_404">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-10 col-lg-8 text-center">
-                    
-                    <!-- Background Image Area -->
-                    <div class="four_zero_four_bg">
-                        <h1>404</h1>
-                    </div>
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 z-0 opacity-40 dark:opacity-20 pointer-events-none bg-animate bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-200 dark:from-indigo-900 dark:via-purple-900 dark:to-slate-900"></div>
+    
+    <!-- Floating Blobs -->
+    <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
+    <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
 
-                    <!-- Text Content Area -->
-                    <div class="contant_box_404">
-                                <!-- Current URL Display -->
-<div id="currentUrlBox" class="mt-4 px-4 py-2 bg-light border rounded-pill text-dark small d-inline-block">
-    Loading page URL...
-</div>
-                        <h3>Looks like you're lost</h3>
-                        <p>The page you are looking for is not available!</p>
-                          
-                        
-                        <a href="https://sachethan.github.io/salian" class="link_404">Go to Home</a>
-                    </div>
+    <!-- Theme Toggle -->
+    <button id="themeToggle" class="absolute top-6 right-6 z-20 p-2 rounded-full bg-white/30 dark:bg-black/30 backdrop-blur-md border border-white/20 dark:border-white/10 text-gray-700 dark:text-gray-200 shadow-lg hover:scale-110 transition-transform">
+        <i id="sunIcon" data-lucide="sun" class="w-5 h-5 hidden"></i>
+        <i id="moonIcon" data-lucide="moon" class="w-5 h-5"></i>
+    </button>
 
+    <!-- Main Content Card -->
+    <div class="relative z-10 w-full max-w-2xl text-center">
+        <div class="bg-white/70 dark:bg-gray-800/60 backdrop-blur-xl border border-white/50 dark:border-gray-700 shadow-2xl rounded-3xl p-8 sm:p-12 animate-float">
+            
+            <!-- 404 Title Area -->
+            <div class="relative h-64 sm:h-80 mb-6 w-full mx-auto flex items-center justify-center overflow-hidden rounded-xl bg-transparent">
+                <!-- Using the classic Dribbble GIF, adapted for dark mode -->
+                <div class="absolute inset-0 bg-[url('https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif')] bg-center bg-no-repeat bg-contain gif-blend transition-all duration-300"></div>
+                
+                <!-- Overlay Text (Optional, if image fails or for style) -->
+                <h1 class="relative text-9xl font-black text-gray-900/10 dark:text-white/10 select-none mix-blend-overlay">404</h1>
+            </div>
+
+            <!-- Text Content -->
+            <div class="space-y-6 relative z-20 -mt-10">
+                <h3 class="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-400">
+                    Looks like you're lost
+                </h3>
+                
+                <p class="text-gray-600 dark:text-gray-300 text-lg">
+                    The page you are looking for is not available!
+                </p>
+
+                <!-- Current URL Display -->
+                <div class="inline-flex items-center gap-2 max-w-full px-4 py-2 bg-gray-100/80 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-full text-sm text-gray-500 dark:text-gray-400 font-mono shadow-inner group cursor-pointer" onclick="copyUrl()" title="Click to copy">
+                    <i data-lucide="link" class="w-3 h-3"></i>
+                    <span id="currentUrlBox" class="truncate max-w-[200px] sm:max-w-[300px]">Loading...</span>
+                    <i data-lucide="copy" class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </div>
-                          
+                
+                <!-- Action Button -->
+                <div class="pt-4">
+                    <a href="https://sachethan.github.io/salian" class="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold rounded-full shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-1 transition-all duration-300">
+                        <i data-lucide="home" class="w-5 h-5"></i>
+                        Go to Home
+                    </a>
+                </div>
             </div>
         </div>
+        
+        <!-- Footer -->
+        <p class="mt-8 text-gray-500 dark:text-gray-400 text-sm font-medium opacity-75">
+            Error Code: 404 | Page Not Found
+        </p>
+    </div>
 
-                
-    </section>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none text-sm font-medium z-50">
+        URL Copied to clipboard
+    </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Get current accessed URL
-    const currentURL = window.location.href;
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
 
-    // Show it inside the rounded div
-    document.getElementById("currentUrlBox").textContent = currentURL;
-</script>
+        // 1. Theme Logic
+        const themeToggle = document.getElementById("themeToggle");
+        const sunIcon = document.getElementById("sunIcon");
+        const moonIcon = document.getElementById("moonIcon");
 
-                          
-                          </body>
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            // Removed system preference check to ensure default is Light
+            
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+        initTheme();
+
+        // 2. URL Display Logic
+        const currentURL = window.location.href;
+        document.getElementById("currentUrlBox").textContent = currentURL;
+
+        // 3. Copy URL Feature
+        function copyUrl() {
+            navigator.clipboard.writeText(currentURL).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.remove('opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
 </html>
