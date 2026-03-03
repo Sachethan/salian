@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Schema Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-container {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+        pre { white-space: pre-wrap; word-break: break-all; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-slate-800">FAQ Schema Generator</h1>
+            <p class="text-slate-600 mt-2">Convert Question & Answer text into SEO-friendly JSON-LD Schema.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left Side: Input -->
+            <div class="flex flex-col gap-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border">
+                    <label class="block font-bold text-slate-700 mb-2">Paste Questions & Answers:</label>
+                    <textarea 
+                        id="faqInput" 
+                        class="w-full h-[500px] p-4 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm leading-relaxed"
+                        placeholder="What is your question?&#10;&#10;This is the answer to the question.&#10;&#10;Next question here?&#10;&#10;Next answer here..."
+                    ></textarea>
+                    
+                    <button 
+                        onclick="generateSchema()"
+                        class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all shadow-md"
+                    >
+                        Generate FAQ Schema
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Side: Output -->
+            <div class="flex flex-col gap-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border flex-grow">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="font-bold text-slate-700">JSON-LD Output:</label>
+                        <button 
+                            onclick="copyToClipboard()" 
+                            id="copyBtn"
+                            class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded border transition"
+                        >
+                            Copy Script
+                        </button>
+                    </div>
+                    
+                    <div class="code-container rounded-lg p-4 font-mono text-xs overflow-auto h-[500px]">
+                        <pre id="schemaOutput" class="text-blue-300">&lt;!-- Generated Schema will appear here --&gt;</pre>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <p class="text-xs text-blue-800">
+                        <strong>Tip:</strong> Ensure there is at least one blank line between your questions and answers for the best results. The tool will assume the first line is the Question and the following lines are the Answer.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateSchema() {
+            const input = document.getElementById('faqInput').value.trim();
+            if (!input) return;
+
+            // Split by double newlines to find pairs
+            const segments = input.split(/\n\s*\n/);
+            const mainEntity = [];
+
+            for (let i = 0; i < segments.length; i += 2) {
+                const question = segments[i]?.trim();
+                const answer = segments[i + 1]?.trim();
+
+                if (question && answer) {
+                    mainEntity.push({
+                        "@type": "Question",
+                        "name": question,
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": answer.replace(/\n/g, ' ')
+                        }
+                    });
+                }
+            }
+
+            const schemaObj = {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": mainEntity
+            };
+
+            const jsonString = JSON.stringify(schemaObj, null, 2);
+            const finalOutput = `<script type="application/ld+json" id="faq-data">\n${jsonString}\n<\/script>`;
+
+            const outputEl = document.getElementById('schemaOutput');
+            outputEl.textContent = finalOutput;
+            
+            // Highlight color for JSON keys
+            outputEl.innerHTML = outputEl.innerHTML
+                .replace(/("(.*?)":)/g, '<span class="text-pink-400">$1</span>')
+                .replace(/("(.*?)")/g, (match, p1) => {
+                    if (match.includes('span')) return match;
+                    return `<span class="text-green-300">${match}</span>`;
+                });
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('schemaOutput').textContent;
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = "Copied!";
+            btn.classList.replace('bg-slate-100', 'bg-green-500');
+            btn.classList.replace('text-slate-700', 'text-white');
+            
+            setTimeout(() => {
+                btn.innerText = "Copy Script";
+                btn.classList.replace('bg-green-500', 'bg-slate-100');
+                btn.classList.replace('text-white', 'text-slate-700');
+            }, 2000);
+        }
+
+        // Load general example automatically
+        window.onload = () => {
+            document.getElementById('faqInput').value = `How long does the process take?\n\nThe standard processing time is between 24 and 48 hours depending on the current volume of requests.\n\nIs there a cost for this service?\n\nNo, our basic tools are completely free to use without any hidden fees or subscription requirements.`;
+            generateSchema();
+        };
+    </script>
+</body>
+</html>
