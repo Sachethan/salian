@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop HTML Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <style>
+        .preview-container {
+            border: 1px solid #e5e7eb;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            background: white;
+            min-height: 300px;
+        }
+        /* Target output styles for preview */
+        .content-section h2 { font-size: 1.5rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 1rem; color: #111827; }
+        .content-section p { margin-bottom: 1rem; line-height: 1.6; color: #374151; }
+        .content-section ul, .content-section ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .content-section ul { list-style-type: disc; }
+        .content-section ol { list-style-type: decimal; }
+        .content-section li { margin-bottom: 0.5rem; line-height: 1.5; }
+        .content-section strong { font-weight: 700; }
+
+        /* Sortable styles */
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: #ebf5ff !important;
+            border: 2px dashed #3b82f6 !important;
+        }
+        .drag-handle {
+            cursor: grab;
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="max-w-[1600px] mx-auto p-4 md:p-6">
+        <header class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-900 text-center">Drag & Drop HTML Content Builder</h1>
+            <p class="text-gray-600 text-center">Drag components to the workspace, reorder them, and enter your content.</p>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+            
+            <!-- Sidebar: Components -->
+            <div class="w-full lg:w-64 flex-shrink-0">
+                <div class="bg-white p-4 rounded-xl shadow-sm border sticky top-6">
+                    <h2 class="font-bold text-gray-700 mb-4 uppercase text-xs tracking-wider">Components</h2>
+                    <div class="space-y-3">
+                        <div onclick="addBlock('h2')" class="cursor-pointer p-3 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition text-blue-800 font-medium text-sm flex items-center">
+                            <span class="mr-2">➕</span> Heading (H2)
+                        </div>
+                        <div onclick="addBlock('p')" class="cursor-pointer p-3 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition text-green-800 font-medium text-sm flex items-center">
+                            <span class="mr-2">➕</span> Paragraph (P)
+                        </div>
+                        <div onclick="addBlock('ol')" class="cursor-pointer p-3 bg-orange-50 hover:bg-orange-100 border border-orange-200 rounded-lg transition text-orange-800 font-medium text-sm flex items-center">
+                            <span class="mr-2">➕</span> Ordered List (OL)
+                        </div>
+                        <div onclick="addBlock('ul')" class="cursor-pointer p-3 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg transition text-purple-800 font-medium text-sm flex items-center">
+                            <span class="mr-2">➕</span> Unordered List (UL)
+                        </div>
+                    </div>
+                    <hr class="my-6">
+                    <button onclick="resetBuilder()" class="w-full py-2 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-lg border border-red-200 transition">
+                        Reset All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Workspace -->
+            <div class="flex-grow space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border min-h-[500px]">
+                    <h2 class="font-bold text-gray-700 mb-4 uppercase text-xs tracking-wider">Workspace (Drag to reorder)</h2>
+                    <div id="workspace" class="space-y-4">
+                        <!-- Dynamic blocks will appear here -->
+                    </div>
+                    <div id="empty-state" class="flex flex-col items-center justify-center h-64 text-gray-400 border-2 border-dashed rounded-xl">
+                        <p>No components added yet.</p>
+                        <p class="text-xs">Click a component on the left to start building.</p>
+                    </div>
+                </div>
+
+                <!-- Code Output -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="font-bold text-gray-700 text-sm">HTML CODE</label>
+                            <button onclick="copyCode()" id="copyBtn" class="text-xs bg-gray-800 text-white px-3 py-1 rounded hover:bg-black">Copy Code</button>
+                        </div>
+                        <textarea id="htmlOutput" readonly class="w-full h-[300px] p-4 bg-gray-900 text-blue-300 font-mono text-xs rounded-lg border shadow-inner"></textarea>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="font-bold text-gray-700 text-sm">PREVIEW</label>
+                        <div id="preview" class="preview-container border overflow-auto h-[300px] shadow-sm">
+                            <div class="max-w-full mx-auto content-section" id="previewContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const workspace = document.getElementById('workspace');
+        const emptyState = document.getElementById('empty-state');
+        let blockCount = 0;
+
+        // Initialize Sortable
+        const sortable = new Sortable(workspace, {
+            animation: 150,
+            handle: '.drag-handle',
+            ghostClass: 'sortable-ghost',
+            onEnd: () => generateHtml()
+        });
+
+        function addBlock(type) {
+            blockCount++;
+            emptyState.style.display = 'none';
+            
+            const blockId = `block-${blockCount}`;
+            const block = document.createElement('div');
+            block.className = 'bg-gray-50 border rounded-lg p-4 relative group shadow-sm transition hover:shadow-md';
+            block.dataset.type = type;
+            block.id = blockId;
+
+            let typeLabel = '';
+            let borderColor = '';
+            let placeholder = '';
+
+            switch(type) {
+                case 'h2': typeLabel = 'Heading (H2)'; borderColor = 'border-l-blue-500'; placeholder = 'Enter title...'; break;
+                case 'p': typeLabel = 'Paragraph (P)'; borderColor = 'border-l-green-500'; placeholder = 'Enter text...'; break;
+                case 'ol': typeLabel = 'Ordered List (OL)'; borderColor = 'border-l-orange-500'; placeholder = 'Item 1: Detail\nItem 2: Detail'; break;
+                case 'ul': typeLabel = 'Unordered List (UL)'; borderColor = 'border-l-purple-500'; placeholder = 'Bullet point...'; break;
+            }
+
+            block.classList.add('border-l-4', borderColor);
+
+            block.innerHTML = `
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center">
+                        <span class="drag-handle mr-2 text-gray-400 hover:text-gray-600">⠿</span>
+                        <span class="text-xs font-bold uppercase tracking-tight text-gray-500">${typeLabel}</span>
+                    </div>
+                    <button onclick="removeBlock('${blockId}')" class="text-gray-400 hover:text-red-500 transition-colors">✕</button>
+                </div>
+                <textarea 
+                    oninput="generateHtml()" 
+                    class="w-full p-2 border rounded focus:ring-1 focus:ring-blue-400 focus:outline-none text-sm min-h-[80px]" 
+                    placeholder="${placeholder}"></textarea>
+            `;
+
+            workspace.appendChild(block);
+            generateHtml();
+        }
+
+        function removeBlock(id) {
+            document.getElementById(id).remove();
+            if (workspace.children.length === 0) {
+                emptyState.style.display = 'flex';
+            }
+            generateHtml();
+        }
+
+        function generateHtml() {
+            const blocks = Array.from(workspace.children);
+            let contentHtml = "";
+
+            blocks.forEach(block => {
+                const type = block.dataset.type;
+                const value = block.querySelector('textarea').value.trim();
+                if (!value) return;
+
+                if (type === 'h2') {
+                    contentHtml += `<h2>${value}</h2>\n\n`;
+                } else if (type === 'p') {
+                    const lines = value.split('\n').join('</br>\n');
+                    contentHtml += `<p>${lines}</p>\n\n`;
+                } else if (type === 'ul' || type === 'ol') {
+                    contentHtml += `<${type}>\n`;
+                    const items = value.split('\n').filter(i => i.trim());
+                    items.forEach(item => {
+                        if (item.includes(':')) {
+                            const [key, ...rest] = item.split(':');
+                            contentHtml += `<li><strong>${key.trim()}:</strong> ${rest.join(':').trim()}</li>\n`;
+                        } else {
+                            contentHtml += `<li>${item.trim()}</li>\n`;
+                        }
+                    });
+                    contentHtml += `</${type}>\n\n`;
+                }
+            });
+
+            const finalOutput = `<div class="max-w-full mx-auto content-section">\n${contentHtml}</div>`;
+            document.getElementById('htmlOutput').value = finalOutput;
+            document.getElementById('previewContent').innerHTML = contentHtml;
+        }
+
+        function resetBuilder() {
+            if (confirm('Clear entire workspace?')) {
+                workspace.innerHTML = '';
+                emptyState.style.display = 'flex';
+                generateHtml();
+            }
+        }
+
+        function copyCode() {
+            const el = document.getElementById('htmlOutput');
+            el.select();
+            document.execCommand('copy');
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = "Copy Code", 2000);
+        }
+    </script>
+</body>
+</html>
