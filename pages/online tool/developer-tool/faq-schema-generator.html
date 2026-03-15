@@ -107,7 +107,7 @@
             
             // Highlight color for JSON keys
             outputEl.innerHTML = outputEl.innerHTML
-                .replace(/("(.*?)":)/g, '<span class="text-pink-400">$1</span>')
+                .replace(/("(.*?)":)/g, '')
                 .replace(/("(.*?)")/g, (match, p1) => {
                     if (match.includes('span')) return match;
                     return `<span class="text-green-300">${match}</span>`;
