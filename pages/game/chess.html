@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1-Click P2P Chat</title>
+    <!-- Import the free PeerJS library to handle background signaling -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #e5ddd5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #075e54;
+            color: white;
+            padding: 16px 20px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-repeat: repeat;
+        }
+
+        .setup-screen {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h3 { color: #075e54; margin-bottom: 12px; font-size: 1.3rem; }
+        p { color: #555; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            outline: none;
+            text-align: center;
+            background: #f8f9fa;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #128C7E;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Chat Area */
+        .chat-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            position: relative;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            word-wrap: break-word;
+        }
+
+        .msg-self {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+
+        .msg-other {
+            background-color: #ffffff;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+        }
+
+        .msg-system {
+            background-color: #e2f0fe;
+            align-self: center;
+            font-size: 0.85rem;
+            color: #555;
+            border-radius: 16px;
+        }
+
+        .input-area {
+            display: flex;
+            padding: 10px;
+            background: #f0f0f0;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            border-radius: 24px;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            margin-bottom: 0;
+            outline: none;
+        }
+
+        .input-area button {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #128C7E;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.2s;
+        }
+        
+        .input-area button:hover { background-color: #075e54; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="header" id="header-title">Connecting...</div>
+
+    <div class="container">
+        
+        <!-- Screen 1: Loading & Setup -->
+        <div id="setup-screen" class="setup-screen">
+            <div class="card">
+                <div id="loading-indicator" class="loader"></div>
+                <h3 id="status-text">Connecting to Network...</h3>
+                
+                <div id="host-link-area" class="hidden">
+                    <p>Send this link to your friend. The chat will open automatically when they click it.</p>
+                    <input type="text" id="invite-link" readonly onclick="this.select()">
+                    <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">Waiting for user to join...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 2: Active Chat -->
+        <div id="chat-screen" class="chat-screen">
+            <div class="messages" id="messages-container"></div>
+            <div class="input-area">
+                <input type="text" id="msg-input" placeholder="Type a message" onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let peer = null;
+        let chatConnection = null;
+
+        // Initialize PeerJS to connect to their free public server
+        function init() {
+            peer = new Peer();
+
+            peer.on('open', (id) => {
+                const hash = window.location.hash;
+                
+                // If the URL has a hash, we are User B (the guest)
+                if (hash.startsWith('#room=')) {
+                    document.getElementById('status-text').textContent = "Joining Room...";
+                    const hostId = hash.replace('#room=', '');
+                    
+                    // Automatically connect to User A
+                    chatConnection = peer.connect(hostId);
+                    setupChatEvents(chatConnection);
+                } 
+                // If no hash, we are User A (the host)
+                else {
+                    document.getElementById('loading-indicator').classList.add('hidden');
+                    document.getElementById('status-text').textContent = "Room Created";
+                    
+                    // Generate the 1-click link
+                    const link = `${window.location.origin}${window.location.pathname}#room=${id}`;
+                    document.getElementById('invite-link').value = link;
+                    document.getElementById('host-link-area').classList.remove('hidden');
+                    document.getElementById('header-title').textContent = "Waiting for Friend";
+                }
+            });
+
+            // When User B successfully connects to User A
+            peer.on('connection', (connection) => {
+                chatConnection = connection;
+                setupChatEvents(chatConnection);
+            });
+
+            peer.on('error', (err) => {
+                alert("Connection error: " + err.type);
+            });
+        }
+
+        // Handle the active chat session
+        function setupChatEvents(conn) {
+            conn.on('open', () => {
+                // Instantly switch both users to the chat interface
+                document.getElementById('setup-screen').classList.add('hidden');
+                document.getElementById('chat-screen').style.display = 'flex';
+                document.getElementById('header-title').textContent = "Secure Chat";
+                appendMessage("Connection established. Messages are peer-to-peer.", "msg-system");
+            });
+
+            conn.on('data', (data) => {
+                appendMessage(data, 'msg-other');
+            });
+
+            conn.on('close', () => {
+                appendMessage("The other user disconnected.", "msg-system");
+            });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('msg-input');
+            const text = input.value.trim();
+            
+            if (text && chatConnection && chatConnection.open) {
+                chatConnection.send(text);
+                appendMessage(text, 'msg-self');
+                input.value = '';
+            }
+        }
+
+        function appendMessage(text, className) {
+            const container = document.getElementById('messages-container');
+            const el = document.createElement('div');
+            el.className = `message ${className}`;
+            el.textContent = text;
+            container.appendChild(el);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
