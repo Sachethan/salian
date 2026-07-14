@@ -2,291 +2,459 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1-Click P2P Chat</title>
-    <!-- Import the free PeerJS library to handle background signaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nexus Chat | Secure Peer-to-Peer</title>
+    <!-- Import Tailwind CSS for professional styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Import PeerJS for WebRTC communication -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #e5ddd5;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 - Dark mode background */
+            color: #f8fafc;
         }
 
-        .header {
-            background-color: #075e54;
-            color: white;
-            padding: 16px 20px;
-            font-size: 1.2rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            z-index: 10;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
         }
 
-        .container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            background-repeat: repeat;
+        /* Message Link Styling */
+        .msg-content a {
+            color: #60a5fa;
+            text-decoration: underline;
+            word-break: break-all;
+        }
+        .msg-content a:hover {
+            color: #93c5fd;
         }
 
-        .setup-screen {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        h3 { color: #075e54; margin-bottom: 12px; font-size: 1.3rem; }
-        p { color: #555; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            outline: none;
-            text-align: center;
-            background: #f8f9fa;
-        }
-
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #128C7E;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Chat Area */
-        .chat-screen {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .message {
-            max-width: 75%;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            position: relative;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-            word-wrap: break-word;
-        }
-
-        .msg-self {
-            background-color: #dcf8c6;
-            align-self: flex-end;
-            border-top-right-radius: 0;
-        }
-
-        .msg-other {
-            background-color: #ffffff;
-            align-self: flex-start;
-            border-top-left-radius: 0;
-        }
-
-        .msg-system {
-            background-color: #e2f0fe;
-            align-self: center;
-            font-size: 0.85rem;
-            color: #555;
-            border-radius: 16px;
-        }
-
-        .input-area {
-            display: flex;
-            padding: 10px;
-            background: #f0f0f0;
-            gap: 10px;
-        }
-
-        .input-area input {
-            flex: 1;
-            border-radius: 24px;
-            border: none;
-            padding: 12px 20px;
-            font-size: 1rem;
-            margin-bottom: 0;
-            outline: none;
-        }
-
-        .input-area button {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #128C7E;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: background 0.2s;
-        }
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .input-area button:hover { background-color: #075e54; }
+        .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .hidden { display: none !important; }
+        /* Loader */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #6366f1;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body class="h-screen flex flex-col overflow-hidden text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
 
-    <div class="header" id="header-title">Connecting...</div>
+    <!-- Modal 1: Username Prompt -->
+    <div id="username-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-md w-full shadow-2xl slide-up">
+            <div class="flex justify-center mb-6">
+                <div class="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center text-indigo-400">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </div>
+            </div>
+            <h2 class="text-2xl font-semibold text-center mb-2">Welcome to Nexus</h2>
+            <p class="text-slate-400 text-center mb-6 text-sm">Enter your display name to join the secure workspace.</p>
+            
+            <form id="username-form" class="space-y-4">
+                <div>
+                    <input type="text" id="username-input" required autofocus placeholder="e.g. Alex Chen" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-xl transition-colors shadow-lg shadow-indigo-600/20 flex justify-center items-center gap-2">
+                    <span>Continue</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </form>
+        </div>
+    </div>
 
-    <div class="container">
-        
-        <!-- Screen 1: Loading & Setup -->
-        <div id="setup-screen" class="setup-screen">
-            <div class="card">
-                <div id="loading-indicator" class="loader"></div>
-                <h3 id="status-text">Connecting to Network...</h3>
+    <!-- Screen 1: Host Share Link Screen -->
+    <div id="setup-screen" class="hidden flex-1 flex-col items-center justify-center p-4 bg-slate-900">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-md w-full shadow-2xl text-center">
+            <div id="loader-container" class="flex flex-col items-center justify-center py-4">
+                <div class="spinner mb-4"></div>
+                <p class="text-slate-400 animate-pulse">Initializing secure connection...</p>
+            </div>
+            
+            <div id="invite-container" class="hidden fade-in">
+                <div class="w-16 h-16 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-400 mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Invite your contact</h3>
+                <p class="text-slate-400 text-sm mb-6">Share this secure link. The chat will automatically start once they join.</p>
                 
-                <div id="host-link-area" class="hidden">
-                    <p>Send this link to your friend. The chat will open automatically when they click it.</p>
-                    <input type="text" id="invite-link" readonly onclick="this.select()">
-                    <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">Waiting for user to join...</p>
+                <div class="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700">
+                    <input type="text" id="invite-link" readonly class="bg-transparent w-full px-2 text-sm text-slate-300 outline-none truncate selection:bg-indigo-500/50">
+                    <button id="copy-btn" onclick="copyLink()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        <span id="copy-text">Copy</span>
+                    </button>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-slate-700/50">
+                    <div class="flex items-center justify-center gap-3">
+                        <span class="relative flex h-3 w-3">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                        </span>
+                        <p class="text-sm text-indigo-400 font-medium">Waiting for participant to connect...</p>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Screen 2: Active Chat -->
-        <div id="chat-screen" class="chat-screen">
-            <div class="messages" id="messages-container"></div>
-            <div class="input-area">
-                <input type="text" id="msg-input" placeholder="Type a message" onkeypress="if(event.key === 'Enter') sendMessage()">
-                <button onclick="sendMessage()">➤</button>
-            </div>
-        </div>
-
     </div>
 
+    <!-- Screen 2: Active Chat Interface -->
+    <div id="chat-screen" class="hidden flex-col h-full bg-slate-900 w-full max-w-4xl mx-auto border-x border-slate-800 shadow-2xl relative">
+        
+        <!-- Chat Header -->
+        <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 p-4 flex items-center justify-between sticky top-0 z-10">
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <div id="header-avatar" class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-lg font-bold text-white shadow-inner">
+                        ?
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-800"></div>
+                </div>
+                <div>
+                    <h1 id="header-name" class="font-semibold text-slate-100 leading-tight">Connecting...</h1>
+                    <p class="text-xs text-emerald-400 font-medium">Securely connected</p>
+                </div>
+            </div>
+            <div class="text-slate-400 hover:text-slate-200 cursor-pointer" onclick="showNotification('Encryption active. End-to-end peer connection.')">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+        </header>
+
+        <!-- Message Container -->
+        <main id="chat-container" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 bg-[#0f172a]">
+            <!-- System Message -->
+            <div class="flex justify-center my-4">
+                <span class="bg-slate-800 text-slate-400 text-xs px-3 py-1 rounded-full border border-slate-700">Messages are end-to-end encrypted peer-to-peer</span>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="bg-slate-800 border-t border-slate-700 p-4">
+            <form id="message-form" class="flex items-end gap-3">
+                <div class="flex-1 bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-all flex items-end relative min-h-[52px]">
+                    <textarea id="msg-input" rows="1" placeholder="Type a message..." class="w-full max-h-32 bg-transparent text-slate-100 placeholder-slate-500 p-3 outline-none resize-none overflow-y-auto" style="min-height: 52px;" onkeydown="handleEnter(event)"></textarea>
+                </div>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full w-12 h-12 flex items-center justify-center shrink-0 transition-transform hover:scale-105 shadow-lg shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </form>
+        </footer>
+        
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 text-slate-200 px-4 py-2 rounded-lg shadow-xl transition-all duration-300 opacity-0 pointer-events-none z-50 text-sm font-medium"></div>
+
     <script>
+        // --- State Variables ---
         let peer = null;
-        let chatConnection = null;
+        let connection = null;
+        let myUsername = "";
+        let theirUsername = "Participant";
+        const isGuest = window.location.hash.startsWith('#room=');
+        const generatedAvatarColor = getRandomColor();
 
-        // Initialize PeerJS to connect to their free public server
-        function init() {
-            peer = new Peer();
+        // --- DOM Elements ---
+        const uiModal = document.getElementById('username-modal');
+        const uiUsernameForm = document.getElementById('username-form');
+        const uiSetupScreen = document.getElementById('setup-screen');
+        const uiChatScreen = document.getElementById('chat-screen');
+        const uiChatContainer = document.getElementById('chat-container');
+        const uiMessageForm = document.getElementById('message-form');
+        const uiMsgInput = document.getElementById('msg-input');
+        const uiHeaderName = document.getElementById('header-name');
+        const uiHeaderAvatar = document.getElementById('header-avatar');
+        
+        // --- Utility Functions ---
+        
+        // Auto-resize textarea
+        uiMsgInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if(this.value === "") this.style.height = '52px';
+        });
 
-            peer.on('open', (id) => {
-                const hash = window.location.hash;
-                
-                // If the URL has a hash, we are User B (the guest)
-                if (hash.startsWith('#room=')) {
-                    document.getElementById('status-text').textContent = "Joining Room...";
-                    const hostId = hash.replace('#room=', '');
-                    
-                    // Automatically connect to User A
-                    chatConnection = peer.connect(hostId);
-                    setupChatEvents(chatConnection);
-                } 
-                // If no hash, we are User A (the host)
-                else {
-                    document.getElementById('loading-indicator').classList.add('hidden');
-                    document.getElementById('status-text').textContent = "Room Created";
-                    
-                    // Generate the 1-click link
-                    const link = `${window.location.origin}${window.location.pathname}#room=${id}`;
-                    document.getElementById('invite-link').value = link;
-                    document.getElementById('host-link-area').classList.remove('hidden');
-                    document.getElementById('header-title').textContent = "Waiting for Friend";
-                }
-            });
-
-            // When User B successfully connects to User A
-            peer.on('connection', (connection) => {
-                chatConnection = connection;
-                setupChatEvents(chatConnection);
-            });
-
-            peer.on('error', (err) => {
-                alert("Connection error: " + err.type);
-            });
-        }
-
-        // Handle the active chat session
-        function setupChatEvents(conn) {
-            conn.on('open', () => {
-                // Instantly switch both users to the chat interface
-                document.getElementById('setup-screen').classList.add('hidden');
-                document.getElementById('chat-screen').style.display = 'flex';
-                document.getElementById('header-title').textContent = "Secure Chat";
-                appendMessage("Connection established. Messages are peer-to-peer.", "msg-system");
-            });
-
-            conn.on('data', (data) => {
-                appendMessage(data, 'msg-other');
-            });
-
-            conn.on('close', () => {
-                appendMessage("The other user disconnected.", "msg-system");
-            });
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('msg-input');
-            const text = input.value.trim();
-            
-            if (text && chatConnection && chatConnection.open) {
-                chatConnection.send(text);
-                appendMessage(text, 'msg-self');
-                input.value = '';
+        // Send on Enter (Shift+Enter for new line)
+        function handleEnter(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                uiMessageForm.dispatchEvent(new Event('submit'));
             }
         }
 
-        function appendMessage(text, className) {
-            const container = document.getElementById('messages-container');
-            const el = document.createElement('div');
-            el.className = `message ${className}`;
-            el.textContent = text;
-            container.appendChild(el);
-            container.scrollTop = container.scrollHeight;
+        // Show toast notification instead of alert()
+        function showNotification(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('opacity-0', '-translate-y-4');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-4');
+            }, 3000);
         }
 
-        // Start the application
-        init();
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getRandomColor() {
+            const colors = ['bg-red-500', 'bg-orange-500', 'bg-amber-500', 'bg-green-500', 'bg-emerald-500', 'bg-teal-500', 'bg-cyan-500', 'bg-blue-500', 'bg-indigo-500', 'bg-violet-500', 'bg-purple-500', 'bg-fuchsia-500', 'bg-pink-500', 'bg-rose-500'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHTML(str) {
+            const p = document.createElement('p');
+            p.appendChild(document.createTextNode(str));
+            return p.innerHTML;
+        }
+
+        // Detect hyperlinks and wrap in anchor tags
+        function linkify(text) {
+            const safeText = escapeHTML(text);
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return safeText.replace(urlRegex, function(url) {
+                return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+            });
+        }
+
+        // --- STREAMING_CHUNK:WebRTC & PeerJS Logic Setup... ---
+        
+        // Step 1: Handle Username submission
+        uiUsernameForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('username-input').value.trim();
+            if (input) {
+                myUsername = input;
+                uiModal.classList.add('hidden');
+                uiSetupScreen.classList.remove('hidden');
+                uiSetupScreen.classList.add('flex');
+                initializePeer();
+            }
+        });
+
+        // Step 2: Initialize PeerJS
+        function initializePeer() {
+            // Using PeerJS default free cloud server
+            peer = new Peer({ debug: 2 });
+
+            peer.on('open', (id) => {
+                if (isGuest) {
+                    // Guest: connect to Host
+                    const hostId = window.location.hash.replace('#room=', '');
+                    showNotification('Connecting to host...');
+                    connection = peer.connect(hostId);
+                    setupConnectionEvents(connection);
+                } else {
+                    // Host: Create link
+                    document.getElementById('loader-container').classList.add('hidden');
+                    const inviteUrl = `${window.location.origin}${window.location.pathname}#room=${id}`;
+                    document.getElementById('invite-link').value = inviteUrl;
+                    document.getElementById('invite-container').classList.remove('hidden');
+                }
+            });
+
+            // Host receives connection from Guest
+            peer.on('connection', (conn) => {
+                connection = conn;
+                setupConnectionEvents(connection);
+            });
+
+            peer.on('error', (err) => {
+                console.error(err);
+                if (err.type === 'peer-unavailable') {
+                    showNotification("Error: The host is no longer available or link is invalid.");
+                } else {
+                    showNotification("Network error occurred.");
+                }
+            });
+        }
+
+        // Step 3: Setup connection listeners
+        function setupConnectionEvents(conn) {
+            conn.on('open', () => {
+                // Switch to Chat Screen
+                uiSetupScreen.classList.add('hidden');
+                uiSetupScreen.classList.remove('flex');
+                uiChatScreen.classList.remove('hidden');
+                uiChatScreen.classList.add('flex');
+                
+                // Exchange Usernames
+                conn.send({ type: 'handshake', username: myUsername });
+            });
+
+            conn.on('data', (data) => {
+                if (data.type === 'handshake') {
+                    theirUsername = data.username;
+                    updateHeaderInfo();
+                } 
+                else if (data.type === 'message') {
+                    renderMessage(data, false);
+                    // Send double-tick read receipt back
+                    conn.send({ type: 'ack', id: data.id });
+                }
+                else if (data.type === 'ack') {
+                    // Update tick to double blue tick
+                    updateMessageToRead(data.id);
+                }
+            });
+
+            conn.on('close', () => {
+                showSystemMessage(`${theirUsername} has left the chat.`);
+                uiMsgInput.disabled = true;
+                uiMsgInput.placeholder = "User disconnected.";
+            });
+        }
+
+        // --- STREAMING_CHUNK:Chat UI & Interaction Logic... ---
+
+        // Copy link functionality
+        function copyLink() {
+            const input = document.getElementById('invite-link');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            
+            const btnText = document.getElementById('copy-text');
+            btnText.textContent = 'Copied!';
+            document.getElementById('copy-btn').classList.replace('bg-slate-700', 'bg-emerald-600');
+            setTimeout(() => {
+                btnText.textContent = 'Copy';
+                document.getElementById('copy-btn').classList.replace('bg-emerald-600', 'bg-slate-700');
+            }, 2000);
+        }
+
+        function updateHeaderInfo() {
+            uiHeaderName.textContent = theirUsername;
+            uiHeaderAvatar.textContent = theirUsername.charAt(0).toUpperCase();
+            // Assign a stable random color for them (could be tied to name hash, but random is fine per session)
+            const theirColor = getRandomColor();
+            uiHeaderAvatar.className = `w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold text-white shadow-inner ${theirColor}`;
+        }
+
+        function showSystemMessage(msg) {
+            const el = document.createElement('div');
+            el.className = "flex justify-center my-2";
+            el.innerHTML = `<span class="bg-slate-800 text-slate-400 text-xs px-3 py-1 rounded-full border border-slate-700">${msg}</span>`;
+            uiChatContainer.appendChild(el);
+            scrollToBottom();
+        }
+
+        // Handle sending messages
+        uiMessageForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = uiMsgInput.value.trim();
+            if (!text || !connection || !connection.open) return;
+
+            const msgData = {
+                type: 'message',
+                id: generateId(),
+                text: text,
+                time: new Date().toISOString()
+            };
+
+            // Send to peer
+            connection.send(msgData);
+            
+            // Render locally
+            renderMessage(msgData, true);
+            
+            // Reset input
+            uiMsgInput.value = '';
+            uiMsgInput.style.height = '52px';
+            uiMsgInput.focus();
+        });
+
+        function renderMessage(data, isSelf) {
+            const msgTime = formatTime(new Date(data.time));
+            const formattedText = linkify(data.text).replace(/\n/g, '<br>');
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex w-full fade-in ${isSelf ? 'justify-end' : 'justify-start'}`;
+
+            // Initial Avatar
+            let avatarHtml = '';
+            if (!isSelf) {
+                avatarHtml = `
+                    <div class="flex-shrink-0 mr-3 mt-auto mb-1">
+                        <div class="${uiHeaderAvatar.className.replace('w-10 h-10 text-lg', 'w-8 h-8 text-sm')}">${theirUsername.charAt(0).toUpperCase()}</div>
+                    </div>
+                `;
+            }
+
+            // Status Ticks (Single grey check for sent, waiting for double blue check)
+            const tickHtml = isSelf ? `
+                <span id="tick-${data.id}" class="inline-block ml-1 text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </span>
+            ` : '';
+
+            wrapper.innerHTML = `
+                ${avatarHtml}
+                <div class="max-w-[75%] sm:max-w-[70%] flex flex-col ${isSelf ? 'items-end' : 'items-start'}">
+                    <div class="px-4 py-2.5 rounded-2xl shadow-sm msg-content text-[15px] leading-relaxed 
+                        ${isSelf ? 'bg-indigo-600 text-white rounded-br-sm' : 'bg-slate-800 border border-slate-700 text-slate-100 rounded-bl-sm'}">
+                        ${formattedText}
+                    </div>
+                    <div class="flex items-center gap-1 mt-1 text-[11px] text-slate-500 font-medium px-1">
+                        <span>${msgTime}</span>
+                        ${tickHtml}
+                    </div>
+                </div>
+            `;
+
+            uiChatContainer.appendChild(wrapper);
+            scrollToBottom();
+        }
+
+        // Change single tick to double tick
+        function updateMessageToRead(id) {
+            const tickEl = document.getElementById(`tick-${id}`);
+            if (tickEl) {
+                tickEl.classList.remove('text-slate-400');
+                tickEl.classList.add('text-blue-400'); // Blue double check
+                // Double check SVG
+                tickEl.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7M5 19l4 4L19 13" transform="translate(0, -3)"></path>
+                    </svg>
+                `;
+            }
+        }
+
+        function scrollToBottom() {
+            uiChatContainer.scrollTo({
+                top: uiChatContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
     </script>
 </body>
 </html>
