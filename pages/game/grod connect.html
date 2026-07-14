@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trinity Connect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc;
+            touch-action: manipulation;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .board-container {
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+            border: 6px solid #1e293b;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0,0,0,0.5);
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 2px;
+            background-color: #334155; /* Grid line color */
+            padding: 2px;
+        }
+
+        .square {
+            background-color: #1e293b;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .square:hover {
+            background-color: #2dd4bf20;
+        }
+
+        .square:active {
+            transform: scale(0.95);
+        }
+
+        .symbol {
+            font-size: 2rem;
+            font-weight: bold;
+            user-select: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .symbol.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Player Colors */
+        .player-1 { color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.5); } /* Red X */
+        .player-2 { color: #3b82f6; text-shadow: 0 0 10px rgba(59, 130, 246, 0.5); } /* Blue O */
+        .player-3 { color: #10b981; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); } /* Green Triangle */
+
+        /* Dimming effect for symbols not involved in the winning line */
+        .board-container.game-over .symbol:not(.winning-piece) {
+            opacity: 0.3;
+            transform: scale(0.9);
+        }
+
+        .winning-piece {
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+
+        @media (min-width: 480px) {
+            .symbol { font-size: 2.5rem; }
+        }
+
+        /* Turn Signal Indicators */
+        .turn-signal {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            transition: all 0.3s ease;
+            opacity: 0.2;
+            box-shadow: 0 0 0 rgba(0,0,0,0);
+        }
+
+        .turn-signal.active-p1 {
+            opacity: 1;
+            background-color: #ef4444;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+        }
+
+        .turn-signal.active-p2 {
+            opacity: 1;
+            background-color: #3b82f6;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.8);
+        }
+
+        .turn-signal.active-p3 {
+            opacity: 1;
+            background-color: #10b981;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            font-weight: 500;
+            color: #cbd5e1;
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+        }
+
+        .player-info.active {
+            border-color: #64748b;
+            background: #273549;
+        }
+
+        .win-line {
+            position: absolute;
+            background-color: #facc15;
+            z-index: 10;
+            border-radius: 4px;
+            transform-origin: left center;
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-lg">
+        <!-- Header -->
+        <div class="mb-4 text-center">
+            <h1 class="text-4xl font-bold mb-1 text-teal-400 tracking-wider">Trinity Connect</h1>
+            <p class="text-slate-400 text-sm">Connect 4 to Win</p>
+            <div id="status-badge" class="h-8 mt-2 flex items-center justify-center text-sm font-bold tracking-wide">
+                <!-- Status messages -->
+            </div>
+        </div>
+
+        <!-- Mode Selection -->
+        <div class="flex justify-center gap-3 mb-4">
+            <button id="btn-2p" onclick="setPlayerCount(2)" class="px-5 py-1.5 rounded-full bg-slate-700 text-slate-300 hover:bg-slate-600 text-sm font-medium transition-all">2 Players</button>
+            <button id="btn-3p" onclick="setPlayerCount(3)" class="px-5 py-1.5 rounded-full bg-teal-600 text-white shadow-lg shadow-teal-900/50 text-sm font-medium transition-all">3 Players</button>
+        </div>
+
+        <!-- Players Info Row -->
+        <div class="flex justify-between gap-2 mb-4">
+            <div id="info-p1" class="player-info flex-1 justify-center active">
+                <div id="signal-p1" class="turn-signal active-p1"></div>
+                <span>Player 1 (X)</span>
+            </div>
+            <div id="info-p2" class="player-info flex-1 justify-center">
+                <div id="signal-p2" class="turn-signal"></div>
+                <span>Player 2 (O)</span>
+            </div>
+            <div id="info-p3" class="player-info flex-1 justify-center">
+                <div id="signal-p3" class="turn-signal"></div>
+                <span>Player 3 (△)</span>
+            </div>
+        </div>
+
+        <!-- The Game Board -->
+        <div class="relative">
+            <div id="board" class="board-container mb-6 relative">
+                <!-- Squares generated via JS -->
+            </div>
+            <!-- Canvas for drawing winning lines -->
+            <canvas id="win-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none z-20"></canvas>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex justify-center items-center bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-lg">
+            <div class="flex gap-4">
+                <button onclick="undoMove()" class="px-6 py-2 flex items-center gap-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors text-slate-200 font-medium" title="Undo Move">
+                    <i class="fas fa-undo"></i> Undo
+                </button>
+                <button onclick="resetGame()" class="px-6 py-2 flex items-center gap-2 rounded-lg bg-teal-600 hover:bg-teal-500 transition-colors text-white font-medium shadow-lg shadow-teal-900/50" title="New Game">
+                    <i class="fas fa-redo"></i> Restart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game Constants
+        const ROWS = 8;
+        const COLS = 8;
+        const WIN_CONDITION = 4; // Need 4 in a row to win
+        
+        const PLAYERS = {
+            1: { symbol: 'X', class: 'player-1' },
+            2: { symbol: 'O', class: 'player-2' },
+            3: { symbol: '△', class: 'player-3' }
+        };
+
+        // DOM Elements
+        const boardEl = document.getElementById('board');
+        const statusBadge = document.getElementById('status-badge');
+        const winCanvas = document.getElementById('win-canvas');
+        const ctx = winCanvas.getContext('2d');
+        
+        // State
+        let boardState = []; // 2D array storing player numbers (1, 2, 3, or null)
+        let currentPlayer = 1;
+        let totalPlayers = 3;
+        let isGameOver = false;
+        let moveHistory = []; // For undo functionality
+        let winningCells = [];
+
+        // Initialize Board
+        function initGame() {
+            boardEl.innerHTML = '';
+            boardState = Array(ROWS).fill().map(() => Array(COLS).fill(null));
+            currentPlayer = 1;
+            isGameOver = false;
+            moveHistory = [];
+            winningCells = [];
+            
+            // Adjust Player 3 UI visibility
+            document.getElementById('info-p3').style.display = totalPlayers === 2 ? 'none' : 'flex';
+
+            // Setup Canvas
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Generate HTML grid
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const square = document.createElement('div');
+                    square.className = 'square';
+                    square.dataset.row = r;
+                    square.dataset.col = c;
+                    
+                    const symbolWrapper = document.createElement('span');
+                    symbolWrapper.className = 'symbol';
+                    square.appendChild(symbolWrapper);
+
+                    square.addEventListener('click', () => handleSquareClick(r, c));
+                    boardEl.appendChild(square);
+                }
+            }
+            
+            boardEl.classList.remove('game-over');
+            updateSignals();
+            statusBadge.innerHTML = '';
+        }
+
+        function resizeCanvas() {
+            winCanvas.width = boardEl.clientWidth;
+            winCanvas.height = boardEl.clientHeight;
+            // Redraw line if game is over and canvas was resized
+            if (isGameOver && winningCells.length > 0) {
+                drawWinningLine();
+            }
+        }
+
+        function handleSquareClick(r, c) {
+            if (isGameOver || boardState[r][c] !== null) return;
+
+            // Execute Move
+            boardState[r][c] = currentPlayer;
+            moveHistory.push({ player: currentPlayer, r, c });
+            
+            // Update UI
+            updateSquareUI(r, c, currentPlayer);
+
+            // Check Win/Draw
+            if (checkWin(r, c, currentPlayer)) {
+                handleGameOver(currentPlayer);
+            } else if (moveHistory.length === ROWS * COLS) {
+                handleDraw();
+            } else {
+                // Next Turn
+                currentPlayer = (currentPlayer % totalPlayers) + 1;
+                updateSignals();
+            }
+        }
+
+        function updateSquareUI(r, c, playerNum) {
+            // Find the square
+            const index = r * COLS + c;
+            const square = boardEl.children[index];
+            const symbolSpan = square.querySelector('.symbol');
+            
+            if (playerNum === null) {
+                // Clear case (for undo)
+                symbolSpan.classList.remove('active', PLAYERS[1].class, PLAYERS[2].class, PLAYERS[3].class, 'winning-piece');
+                setTimeout(() => { symbolSpan.innerText = ''; }, 300); // Wait for transition
+            } else {
+                // Set case
+                symbolSpan.innerText = PLAYERS[playerNum].symbol;
+                symbolSpan.classList.add(PLAYERS[playerNum].class);
+                // Trigger animation reflow
+                void symbolSpan.offsetWidth;
+                symbolSpan.classList.add('active');
+            }
+        }
+
+        function undoMove() {
+            if (isGameOver && winningCells.length > 0) {
+                 // Cannot easily undo from a win state with visual lines, reset is better
+                 return; 
+            }
+            if (moveHistory.length === 0 || isGameOver) return;
+
+            const lastMove = moveHistory.pop();
+            boardState[lastMove.r][lastMove.c] = null;
+            updateSquareUI(lastMove.r, lastMove.c, null);
+
+            currentPlayer = lastMove.player;
+            updateSignals();
+            statusBadge.innerHTML = '';
+        }
+
+        function resetGame() {
+            ctx.clearRect(0, 0, winCanvas.width, winCanvas.height);
+            initGame();
+        }
+
+        function updateSignals() {
+            // Reset all
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`signal-p${i}`).className = 'turn-signal';
+                document.getElementById(`info-p${i}`).classList.remove('active');
+            }
+            
+            // Set active
+            if (!isGameOver) {
+                document.getElementById(`signal-p${currentPlayer}`).classList.add(`active-p${currentPlayer}`);
+                document.getElementById(`info-p${currentPlayer}`).classList.add('active');
+            }
+        }
+
+        function checkWin(row, col, player) {
+            const directions = [
+                [[0, 1], [0, -1]],  // Horizontal (Right, Left)
+                [[1, 0], [-1, 0]],  // Vertical (Down, Up)
+                [[1, 1], [-1, -1]], // Diagonal \ (Down-Right, Up-Left)
+                [[1, -1], [-1, 1]]  // Diagonal / (Down-Left, Up-Right)
+            ];
+
+            for (let dir of directions) {
+                let count = 1;
+                let currentWinningCells = [{r: row, c: col}];
+
+                // Check both opposite directions for a single axis
+                for (let d of dir) {
+                    let r = row + d[0];
+                    let c = col + d[1];
+                    
+                    while (r >= 0 && r < ROWS && c >= 0 && c < COLS && boardState[r][c] === player) {
+                        count++;
+                        currentWinningCells.push({r, c});
+                        r += d[0];
+                        c += d[1];
+                    }
+                }
+
+                if (count >= WIN_CONDITION) {
+                    winningCells = currentWinningCells;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function handleGameOver(winner) {
+            isGameOver = true;
+            boardEl.classList.add('game-over');
+            
+            // Highlight winning pieces
+            winningCells.forEach(cell => {
+                const index = cell.r * COLS + cell.c;
+                const square = boardEl.children[index];
+                square.querySelector('.symbol').classList.add('winning-piece');
+            });
+
+            // Draw line
+            drawWinningLine();
+
+            // Dim signals
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`signal-p${i}`).className = 'turn-signal';
+                document.getElementById(`info-p${i}`).classList.remove('active');
+            }
+
+            const colorClass = winner === 1 ? 'text-red-400' : (winner === 2 ? 'text-blue-400' : 'text-green-400');
+            statusBadge.innerHTML = `<span class="${colorClass} px-6 py-1 rounded-full bg-slate-800 border border-slate-600 shadow-lg"><i class="fas fa-crown mr-2"></i> Player ${winner} Wins!</span>`;
+        }
+
+        function handleDraw() {
+            isGameOver = true;
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`signal-p${i}`).className = 'turn-signal';
+            }
+            statusBadge.innerHTML = `<span class="text-yellow-400 px-6 py-1 rounded-full bg-slate-800 border border-yellow-600 shadow-lg">Game Drawn!</span>`;
+        }
+
+        function drawWinningLine() {
+            if (winningCells.length < 2) return;
+
+            // Sort cells to find start and end points for the line
+            winningCells.sort((a, b) => {
+                if (a.r !== b.r) return a.r - b.r;
+                return a.c - b.c;
+            });
+
+            const startCell = winningCells[0];
+            const endCell = winningCells[winningCells.length - 1];
+
+            const cellWidth = winCanvas.width / COLS;
+            const cellHeight = winCanvas.height / ROWS;
+
+            const startX = startCell.c * cellWidth + cellWidth / 2;
+            const startY = startCell.r * cellHeight + cellHeight / 2;
+            const endX = endCell.c * cellWidth + cellWidth / 2;
+            const endY = endCell.r * cellHeight + cellHeight / 2;
+
+            ctx.clearRect(0, 0, winCanvas.width, winCanvas.height);
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            
+            // Line Styling
+            ctx.strokeStyle = 'rgba(250, 204, 21, 0.8)'; // Yellow
+            ctx.lineWidth = 10;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+
+        function setPlayerCount(count) {
+            if (totalPlayers === count) return;
+            totalPlayers = count;
+            
+            // Update button styles
+            const btn2p = document.getElementById('btn-2p');
+            const btn3p = document.getElementById('btn-3p');
+            
+            const activeClass = "px-5 py-1.5 rounded-full bg-teal-600 text-white shadow-lg shadow-teal-900/50 text-sm font-medium transition-all";
+            const inactiveClass = "px-5 py-1.5 rounded-full bg-slate-700 text-slate-300 hover:bg-slate-600 text-sm font-medium transition-all";
+
+            if (count === 2) {
+                btn2p.className = activeClass;
+                btn3p.className = inactiveClass;
+            } else {
+                btn3p.className = activeClass;
+                btn2p.className = inactiveClass;
+            }
+            
+            resetGame();
+        }
+
+        // Start Game
+        initGame();
+
+    </script>
+</body>
+</html>
