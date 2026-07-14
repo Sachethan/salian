@@ -12,29 +12,60 @@
             background: radial-gradient(circle at top right, #1e293b, #0f172a);
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
-<body class="text-white min-h-screen flex flex-col items-center justify-center p-6">
+<body class="text-white min-h-screen flex items-center justify-center p-6 md:p-12">
 
-    <main class="w-full max-w-4xl">
-        <h2 class="text-2xl font-bold mb-8 text-slate-400">Game Zone</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <main class="w-full max-w-6xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
             <!-- Sudoku Card -->
             <div class="glass-card rounded-3xl p-6 transition-all hover:scale-105 duration-300">
                 <div class="w-full h-48 bg-slate-800 rounded-2xl mb-6 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" alt="Sudoku">
+                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800" class="w-full h-full object-cover opacity-90" alt="Sudoku">
                 </div>
                 <h2 class="text-2xl font-bold mb-2">Sudoku</h2>
                 <p class="text-slate-400 mb-6">Challenge your logic with the classic number puzzle.</p>
-                <a href="sudoku.html" class="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-blue-900/20 hover:shadow-blue-600/40 hover:scale-[1.02] active:scale-95">
+                <a href="sudoku.html" class="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-blue-900/20 hover:shadow-blue-600/40">
                     <span>Play Now</span>
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </a>
+            </div>
+
+            <!-- Chess Card -->
+            <div class="glass-card rounded-3xl p-6 transition-all hover:scale-105 duration-300">
+                <div class="w-full h-48 bg-slate-800 rounded-2xl mb-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&w=800" class="w-full h-full object-cover opacity-90" alt="Chess">
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Chess</h2>
+                <p class="text-slate-400 mb-6">Master the strategy and dominate the board.</p>
+                <a href="chess.html" class="flex items-center justify-center gap-2 w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-indigo-900/20 hover:shadow-indigo-600/40">
+                    <span>Play Now</span>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </a>
+            </div>
+
+            <!-- Trinity Connect Card -->
+            <div class="glass-card rounded-3xl p-6 transition-all hover:scale-105 duration-300">
+                <div class="w-full h-48 bg-slate-800 rounded-2xl mb-6 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800" class="w-full h-full object-cover opacity-90" alt="Trinity Connect">
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Trinity Connect</h2>
+                <p class="text-slate-400 mb-6">Strategize your path and connect the matching nodes.</p>
+                <a href="grid-connect.html" class="flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-emerald-900/20 hover:shadow-emerald-600/40">
+                    <span>Play Now</span>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </a>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>                </a>
             </div>
 
             <!-- Chess Card -->
