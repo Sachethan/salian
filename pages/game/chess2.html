@@ -2,299 +2,655 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P QR Chat</title>
-    <!-- Import PeerJS for background connection -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Multiplayer Classic Chess</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chess.js for robust game logic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <!-- PeerJS for WebRTC Multiplayer -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    <!-- Import QR Code generator library -->
+    <!-- QRCode.js for generating QR Codes -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        :root {
-            --primary: #4a90e2;
-            --bg-grad: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap');
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: var(--bg-grad);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #f8fafc;
+            touch-action: manipulation;
         }
 
-        .app-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.8);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
+        h1 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .board-container {
             width: 100%;
-            max-width: 900px;
-            height: 85vh;
-            display: flex;
-            flex-direction: column;
+            max-width: 480px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+            border: 8px solid #1e293b;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
             overflow: hidden;
+            transition: transform 0.5s ease;
         }
 
-        .header {
-            background: white;
-            padding: 16px 24px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Flipping the board for the Black player */
+        .board-flipped {
+            transform: rotate(180deg);
+        }
+        .board-flipped .chess-piece {
+            transform: rotate(180deg);
+        }
+        .board-flipped .coord {
+            transform: rotate(180deg);
         }
 
-        /* Setup & Share Screen */
-        .setup-screen {
-            flex: 1;
+        .square {
+            width: 100%;
+            height: 100%;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
-            text-align: center;
-        }
-
-        .share-panel {
-            background: white;
-            padding: 32px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            width: 100%;
-            max-width: 450px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .qr-container {
-            background: white;
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid #eee;
-            /* qrcode.js will render the canvas here */
-        }
-
-        .link-group {
-            width: 100%;
-            display: flex;
-            gap: 8px;
-        }
-
-        .link-group input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #f8f9fa;
-            font-family: monospace;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 600;
+            position: relative;
             cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
         }
 
-        button:hover { filter: brightness(1.1); }
-        button.success { background: #28a745; }
+        /* Classic Chess Board Colors */
+        .square.light { background-color: #f0d9b5; }
+        .square.dark { background-color: #b58863; }
 
-        /* Chat Interface */
-        .chat-screen {
-            display: none;
-            flex-direction: column;
-            height: 100%;
+        /* Highlights */
+        .square.selected::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: rgba(255, 255, 51, 0.5);
         }
 
-        .messages {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
+        .square.highlight-move::after {
+            content: '';
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        .square.highlight-capture::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 4px solid rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            background-color: transparent;
+        }
+
+        .square.in-check {
+            background-color: #ef4444 !important;
+        }
+
+        /* Piece Styling */
+        .chess-piece {
+            font-size: 2rem;
+            z-index: 10;
+            user-select: none;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        /* Combined active scaling and flipped board piece orientation */
+        .board-flipped .chess-piece:active { transform: scale(1.1) rotate(180deg); }
+        body:not(.board-flipped) .chess-piece:active { transform: scale(1.1); }
+
+        .piece-w {
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4), 0 0 1px #000;
+        }
+
+        .piece-b {
+            color: #111827;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.4);
+        }
+
+        .piece-inactive {
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        @media (min-width: 480px) {
+            .chess-piece { font-size: 2.5rem; }
+        }
+
+        /* Coordinates */
+        .coord {
+            position: absolute;
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 2px;
+            opacity: 0.7;
+        }
+        .coord-rank { top: 0; left: 2px; }
+        .coord-file { bottom: 0; right: 2px; }
+        
+        .light .coord { color: #b58863; }
+        .dark .coord { color: #f0d9b5; }
+
+        /* Turn Signal Indicators */
+        .turn-signal {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            transition: all 0.3s ease;
+            opacity: 0.2;
+            box-shadow: 0 0 0 rgba(0,0,0,0);
+        }
+
+        .turn-signal.active-w {
+            opacity: 1;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            border: 1px solid #94a3b8;
+        }
+
+        .turn-signal.active-b {
+            opacity: 1;
+            background-color: #000000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            border: 1px solid #334155;
+        }
+        
+        .player-info {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-weight: 500;
+            color: #cbd5e1;
         }
 
-        .message {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            line-height: 1.4;
-            word-wrap: break-word;
+        /* Multiplayer Network Panel */
+        #network-panel {
+            background-color: #1e293b;
+            border: 1px solid #334155;
         }
 
-        .msg-self { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg-other { background: white; color: #333; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #eee; }
-        .msg-system { background: rgba(0,0,0,0.05); color: #666; align-self: center; font-size: 0.85rem; border-radius: 20px; padding: 6px 12px; }
-
-        .input-area {
-            padding: 16px 24px;
-            background: white;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            display: flex;
-            gap: 12px;
+        /* Ensure QR code container has white background for scanning */
+        #qrcode img {
+            margin: 0 auto;
+            border: 4px solid white;
+            border-radius: 4px;
         }
-
-        .input-area input {
-            flex: 1;
-            padding: 14px 20px;
-            border: 1px solid #ddd;
-            border-radius: 24px;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .hidden { display: none !important; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div class="app-container">
-        <div class="header" id="header-title">Connecting...</div>
-
-        <!-- Setup / Share Screen -->
-        <div id="setup-screen" class="setup-screen">
-            <h2 id="status-text" style="margin-bottom: 20px;">Initializing Network...</h2>
+    <div class="w-full max-w-lg">
+        <!-- Header & Status -->
+        <div class="mb-2 text-center">
+            <h1 class="text-4xl font-bold mb-1 text-yellow-400">Grandmaster</h1>
             
-            <div id="share-panel" class="share-panel hidden">
-                <p>Have your friend scan this QR code or send them the link below to connect securely.</p>
-                
-                <div id="qrcode" class="qr-container"></div>
-                
-                <div class="link-group">
-                    <input type="text" id="invite-link" readonly>
-                    <button id="copy-btn" onclick="copyLink()">Copy Link</button>
+            <!-- Multiplayer Lobby UI -->
+            <div id="network-panel" class="rounded-lg p-3 mb-3 text-sm shadow-md">
+                <div id="lobby-state" class="flex flex-col items-center gap-3">
+                    <p class="text-slate-300 font-semibold">WebRTC Multiplayer</p>
+                    <div class="flex gap-2 w-full justify-center">
+                        <button onclick="hostGame()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-white font-medium transition-colors">Host Game</button>
+                        <span class="flex items-center text-slate-400">or</span>
+                        <input type="text" id="join-id" placeholder="Enter Host ID" class="px-3 py-2 bg-slate-900 border border-slate-600 rounded text-white w-32 focus:outline-none focus:border-blue-400 hidden">
+                        <button onclick="document.getElementById('join-id').classList.toggle('hidden')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-white font-medium transition-colors">Manual Join</button>
+                        <button onclick="joinGame()" class="px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white font-medium transition-colors hidden" id="manual-join-btn">Join</button>
+                    </div>
                 </div>
                 
-                <p style="font-size: 0.85rem; color: #888;">Waiting for them to join...</p>
+                <div id="connected-state" class="hidden flex flex-col items-center gap-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                        <span class="text-green-400 font-medium">Connected to opponent</span>
+                    </div>
+                    <div id="player-role" class="text-slate-300 text-xs uppercase tracking-widest font-bold"></div>
+                </div>
+            </div>
+
+            <div id="status-badge" class="h-8 flex items-center justify-center text-sm font-medium tracking-wide">
+                <span class="text-slate-400">Waiting for players to connect...</span>
             </div>
         </div>
 
-        <!-- Chat Screen -->
-        <div id="chat-screen" class="chat-screen">
-            <div class="messages" id="messages-container"></div>
-            <div class="input-area">
-                <input type="text" id="msg-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
-                <button onclick="sendMessage()">Send</button>
+        <!-- Black Player Info (Top) -->
+        <div class="player-info justify-between">
+            <div class="flex items-center gap-2">
+                <div id="signal-b" class="turn-signal"></div>
+                <span>Black</span>
+            </div>
+        </div>
+
+        <!-- The Chess Board -->
+        <div id="board" class="board-container my-2">
+            <!-- Squares generated via JS -->
+        </div>
+
+        <!-- White Player Info (Bottom) -->
+        <div class="player-info justify-between">
+            <div class="flex items-center gap-2">
+                <div id="signal-w" class="turn-signal active-w"></div>
+                <span>White</span>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex justify-center mt-6 items-center bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-lg">
+            <div class="flex gap-4">
+                <button onclick="requestUndo()" class="px-4 py-2 flex items-center gap-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors text-slate-200 font-medium" title="Undo Move">
+                    <i class="fas fa-undo"></i> Undo
+                </button>
+                <button onclick="requestReset()" class="px-4 py-2 flex items-center gap-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors text-slate-200 font-medium" title="New Game">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <!-- Promotion Modal -->
+        <div id="promotion-modal" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center z-50">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-600 text-center">
+                <h3 class="text-lg font-medium mb-4">Promote Pawn</h3>
+                <div class="flex gap-4 justify-center" id="promotion-options">
+                    <!-- Buttons added dynamically based on color -->
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // --- WebRTC Multiplayer Logic (PeerJS) ---
         let peer = null;
-        let chatConnection = null;
+        let connection = null;
+        let myColor = null; // 'w' or 'b'
+        let isConnected = false;
 
-        function init() {
-            peer = new Peer();
+        // Auto-join if a link was clicked
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const joinId = urlParams.get('join');
+            
+            // Show manual join button when typing
+            document.getElementById('join-id').addEventListener('input', (e) => {
+                document.getElementById('manual-join-btn').style.display = e.target.value ? 'block' : 'none';
+            });
 
+            if (joinId) {
+                document.getElementById('lobby-state').innerHTML = `<p class="text-slate-300 animate-pulse">Connecting to host...</p>`;
+                joinGame(joinId);
+            }
+        };
+
+        function hostGame() {
+            const btn = document.querySelector('button[onclick="hostGame()"]');
+            if(btn) {
+                btn.innerText = "Creating...";
+                btn.disabled = true;
+            }
+
+            peer = new Peer(); 
+            
             peer.on('open', (id) => {
-                const hash = window.location.hash;
-                
-                if (hash.startsWith('#room=')) {
-                    // We are User B (Guest joining via link/QR)
-                    document.getElementById('status-text').textContent = "Joining Room...";
-                    const hostId = hash.replace('#room=', '');
-                    chatConnection = peer.connect(hostId);
-                    setupChatEvents(chatConnection);
-                } else {
-                    // We are User A (Host creating the room)
-                    document.getElementById('status-text').textContent = "Room Ready to Share";
-                    const link = `${window.location.origin}${window.location.pathname}#room=${id}`;
-                    
-                    // 1. Populate the text input
-                    document.getElementById('invite-link').value = link;
-                    
-                    // 2. Generate the QR Code using the library
-                    new QRCode(document.getElementById("qrcode"), {
-                        text: link,
-                        width: 180,
-                        height: 180,
-                        colorDark : "#000000",
-                        colorLight : "#ffffff",
-                        correctLevel : QRCode.CorrectLevel.H
-                    });
+                // Create the sharable URL
+                const baseUrl = window.location.origin + window.location.pathname;
+                const joinUrl = `${baseUrl}?join=${id}`;
 
-                    document.getElementById('share-panel').classList.remove('hidden');
-                    document.getElementById('header-title').textContent = "Share Room";
+                document.getElementById('lobby-state').innerHTML = `
+                    <div class="flex flex-col items-center w-full">
+                        <p class="text-slate-300 font-medium mb-2">Scan to Play</p>
+                        
+                        <!-- QR Code Container -->
+                        <div id="qrcode" class="p-2 bg-white rounded-lg shadow-lg mb-4"></div>
+                        
+                        <p class="text-slate-400 text-xs mb-1">Or share this link:</p>
+                        
+                        <!-- Copy Link Area -->
+                        <div class="flex items-center gap-2 w-full max-w-sm">
+                            <input type="text" readonly value="${joinUrl}" class="flex-1 px-2 py-1.5 bg-slate-900 border border-slate-600 rounded text-xs text-slate-400 focus:outline-none">
+                            <button onclick="copyToClipboard('${joinUrl}')" id="copy-btn" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded text-white transition-colors" title="Copy Link">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <p class="text-xs text-yellow-500 mt-3 animate-pulse"><i class="fas fa-spinner fa-spin mr-1"></i> Waiting for opponent...</p>
+                    </div>
+                `;
+
+                // Generate the QR Code visually
+                new QRCode(document.getElementById("qrcode"), {
+                    text: joinUrl,
+                    width: 140,
+                    height: 140,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.L
+                });
+            });
+
+            peer.on('connection', (conn) => {
+                connection = conn;
+                myColor = 'w'; // Host plays white
+                setupConnectionHandlers();
+            });
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('copy-btn');
+                btn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
+                btn.classList.replace('bg-blue-600', 'bg-green-600');
+                setTimeout(() => {
+                    btn.innerHTML = `<i class="fas fa-copy"></i> Copy`;
+                    btn.classList.replace('bg-green-600', 'bg-blue-600');
+                }, 2000);
+            });
+        }
+
+        function joinGame(autoJoinId = null) {
+            const joinId = autoJoinId || document.getElementById('join-id').value.trim();
+            if (!joinId) return alert("Please enter a Host ID!");
+
+            if (!autoJoinId) {
+                document.getElementById('lobby-state').innerHTML = `<p class="text-slate-300 animate-pulse">Connecting to host...</p>`;
+            }
+
+            peer = new Peer();
+            peer.on('open', () => {
+                connection = peer.connect(joinId);
+                myColor = 'b'; // Joiner plays black
+                
+                connection.on('open', () => {
+                    // Remove '?join=' from URL for a cleaner look without refreshing the page
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+
+                setupConnectionHandlers();
+            });
+            
+            peer.on('error', (err) => {
+                alert("Could not connect to host. The link may have expired.");
+                window.location.search = ''; // Reset URL
+            });
+        }
+
+        function setupConnectionHandlers() {
+            connection.on('open', () => {
+                isConnected = true;
+                
+                // Update UI
+                document.getElementById('lobby-state').classList.add('hidden');
+                document.getElementById('connected-state').classList.remove('hidden');
+                document.getElementById('player-role').innerText = `You are playing as ${myColor === 'w' ? 'WHITE' : 'BLACK'}`;
+                
+                // Flip board if player is black
+                if (myColor === 'b') {
+                    document.getElementById('board').classList.add('board-flipped');
+                }
+
+                resetGame(true); // Ensure clean board
+                updateStatus();
+            });
+
+            connection.on('data', (data) => {
+                if (data.type === 'move') {
+                    makeMove(data.move, true);
+                } else if (data.type === 'reset') {
+                    resetGame(true);
+                } else if (data.type === 'undo') {
+                    undoMove(true);
                 }
             });
 
-            peer.on('connection', (connection) => {
-                chatConnection = connection;
-                setupChatEvents(chatConnection);
+            connection.on('close', () => {
+                alert("Opponent disconnected!");
+                window.location.search = ''; // Reset URL
+                location.reload(); 
             });
         }
 
-        // Copy to Clipboard feature
-        function copyLink() {
-            const linkInput = document.getElementById('invite-link');
-            linkInput.select();
-            document.execCommand("copy");
-            
-            const btn = document.getElementById('copy-btn');
-            btn.textContent = "Copied!";
-            btn.classList.add('success');
-            
-            setTimeout(() => {
-                btn.textContent = "Copy Link";
-                btn.classList.remove('success');
-            }, 2000);
+
+        // --- Initialize Game Logic (using chess.js) ---
+        const game = new Chess();
+        
+        const boardEl = document.getElementById('board');
+        const statusBadge = document.getElementById('status-badge');
+        const promotionModal = document.getElementById('promotion-modal');
+        const promotionOptions = document.getElementById('promotion-options');
+        
+        let selectedSquare = null;
+        let legalMoves = [];
+        let pendingMove = null;
+
+        const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+        const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+        
+        const iconMap = {
+            'p': 'fa-chess-pawn', 'n': 'fa-chess-knight', 'b': 'fa-chess-bishop',
+            'r': 'fa-chess-rook', 'q': 'fa-chess-queen', 'k': 'fa-chess-king'
+        };
+
+        function initBoard() {
+            boardEl.innerHTML = '';
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
+                    const squareObj = document.createElement('div');
+                    const file = files[j];
+                    const rank = ranks[i];
+                    const squareId = file + rank;
+                    
+                    squareObj.className = `square ${(i + j) % 2 === 0 ? 'light' : 'dark'}`;
+                    squareObj.id = squareId;
+                    squareObj.dataset.square = squareId;
+                    
+                    if (j === 0) {
+                        const rankLabel = document.createElement('span');
+                        rankLabel.className = 'coord coord-rank';
+                        rankLabel.innerText = rank;
+                        squareObj.appendChild(rankLabel);
+                    }
+                    if (i === 7) {
+                        const fileLabel = document.createElement('span');
+                        fileLabel.className = 'coord coord-file';
+                        fileLabel.innerText = file;
+                        squareObj.appendChild(fileLabel);
+                    }
+
+                    squareObj.addEventListener('click', () => handleSquareClick(squareId));
+                    boardEl.appendChild(squareObj);
+                }
+            }
+            updateBoardVisuals();
         }
 
-        // Handle the active chat session
-        function setupChatEvents(conn) {
-            conn.on('open', () => {
-                document.getElementById('setup-screen').classList.add('hidden');
-                document.getElementById('chat-screen').style.display = 'flex';
-                document.getElementById('header-title').textContent = "Secure P2P Chat";
-                appendMessage("Connection established. Traffic is peer-to-peer.", "msg-system");
+        function updateBoardVisuals() {
+            document.querySelectorAll('.square').forEach(sq => {
+                const pieces = sq.querySelectorAll('.chess-piece');
+                pieces.forEach(p => p.remove());
+                sq.classList.remove('selected', 'highlight-move', 'highlight-capture', 'in-check');
             });
 
-            conn.on('data', (data) => appendMessage(data, 'msg-other'));
-            conn.on('close', () => appendMessage("The other user disconnected.", "msg-system"));
+            const boardState = game.board();
+            const currentTurn = game.turn();
+
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 8; j++) {
+                    const piece = boardState[i][j];
+                    if (piece) {
+                        const squareId = files[j] + ranks[i];
+                        const squareEl = document.getElementById(squareId);
+                        
+                        const pieceEl = document.createElement('i');
+                        pieceEl.className = `fa-solid ${iconMap[piece.type]} chess-piece piece-${piece.color}`;
+                        
+                        if (piece.color !== currentTurn || (isConnected && piece.color !== myColor)) {
+                            pieceEl.classList.add('piece-inactive');
+                        }
+
+                        squareEl.appendChild(pieceEl);
+
+                        if (piece.type === 'k' && piece.color === currentTurn && game.in_check()) {
+                            squareEl.classList.add('in-check');
+                        }
+                    }
+                }
+            }
+
+            if (selectedSquare) {
+                document.getElementById(selectedSquare).classList.add('selected');
+                legalMoves.forEach(move => {
+                    const targetSquareEl = document.getElementById(move.to);
+                    if (move.flags.includes('c') || move.flags.includes('e')) {
+                        targetSquareEl.classList.add('highlight-capture');
+                    } else {
+                        targetSquareEl.classList.add('highlight-move');
+                    }
+                });
+            }
+
+            if (isConnected) updateStatus();
         }
 
-        function sendMessage() {
-            const input = document.getElementById('msg-input');
-            const text = input.value.trim();
+        function handleSquareClick(squareId) {
+            if (game.game_over() || !isConnected) return;
+            if (game.turn() !== myColor) return;
+
+            if (selectedSquare) {
+                const move = legalMoves.find(m => m.to === squareId);
+                
+                if (move) {
+                    if (move.flags.includes('p') || move.flags.includes('cp')) {
+                        pendingMove = { from: selectedSquare, to: squareId };
+                        showPromotionModal(game.turn());
+                        return;
+                    }
+                    makeMove({ from: selectedSquare, to: squareId });
+                    return;
+                }
+            }
+
+            const piece = game.get(squareId);
+            if (piece && piece.color === game.turn()) {
+                selectedSquare = squareId;
+                legalMoves = game.moves({ square: squareId, verbose: true });
+            } else {
+                selectedSquare = null;
+                legalMoves = [];
+            }
+            updateBoardVisuals();
+        }
+
+        function makeMove(moveObj, isRemote = false) {
+            game.move(moveObj);
+            selectedSquare = null;
+            legalMoves = [];
+            pendingMove = null;
             
-            if (text && chatConnection && chatConnection.open) {
-                chatConnection.send(text);
-                appendMessage(text, 'msg-self');
-                input.value = '';
+            updateBoardVisuals();
+
+            if (!isRemote && connection && connection.open) {
+                connection.send({ type: 'move', move: moveObj });
             }
         }
 
-        function appendMessage(text, className) {
-            const container = document.getElementById('messages-container');
-            const el = document.createElement('div');
-            el.className = `message ${className}`;
-            el.textContent = text;
-            container.appendChild(el);
-            container.scrollTop = container.scrollHeight;
+        function showPromotionModal(color) {
+            promotionOptions.innerHTML = '';
+            const pieces = ['q', 'r', 'b', 'n'];
+            
+            pieces.forEach(p => {
+                const btn = document.createElement('button');
+                btn.className = `p-4 bg-slate-700 hover:bg-slate-600 rounded-lg text-3xl transition-colors piece-${color}`;
+                if (myColor === 'b') btn.style.transform = 'rotate(180deg)';
+                
+                btn.innerHTML = `<i class="fa-solid ${iconMap[p]}"></i>`;
+                btn.onclick = () => {
+                    pendingMove.promotion = p;
+                    makeMove(pendingMove);
+                    promotionModal.classList.replace('flex', 'hidden');
+                };
+                promotionOptions.appendChild(btn);
+            });
+            promotionModal.classList.replace('hidden', 'flex');
         }
 
-        init();
+        function updateStatus() {
+            const statusBadge = document.getElementById('status-badge');
+            const signalW = document.getElementById('signal-w');
+            const signalB = document.getElementById('signal-b');
+            
+            let statusHTML = '';
+            
+            if (game.turn() === 'w') {
+                signalW.classList.add('active-w');
+                signalB.classList.remove('active-b');
+            } else {
+                signalB.classList.add('active-b');
+                signalW.classList.remove('active-w');
+            }
+
+            if (game.in_checkmate()) {
+                let isMe = (game.turn() === 'w' ? 'b' : 'w') === myColor;
+                statusHTML = `<span class="text-${isMe?'green':'red'}-400 font-bold px-4 py-1 rounded-full bg-slate-800 border border-${isMe?'green':'red'}-500"><i class="fas fa-trophy mr-1"></i> Checkmate! ${isMe ? 'You Win!' : 'Opponent Wins'}</span>`;
+                signalW.className = 'turn-signal';
+                signalB.className = 'turn-signal';
+            } else if (game.in_draw()) {
+                statusHTML = `<span class="text-yellow-400 font-bold px-4 py-1 rounded-full bg-slate-800 border border-yellow-500">Game Over - Draw!</span>`;
+                signalW.className = 'turn-signal';
+                signalB.className = 'turn-signal';
+            } else {
+                if (game.in_check()) {
+                    statusHTML = `<span class="text-red-400 font-bold px-4 py-1 rounded-full bg-slate-800 border border-red-500 animate-pulse"><i class="fas fa-exclamation-triangle mr-1"></i> Check</span>`;
+                } else {
+                    let isMyTurn = game.turn() === myColor;
+                    statusHTML = `<span class="text-slate-300 font-medium">${isMyTurn ? "Your turn" : "Opponent's turn..."}</span>`;
+                }
+            }
+
+            statusBadge.innerHTML = statusHTML;
+        }
+
+        function requestReset() {
+            if (!isConnected) return;
+            resetGame();
+            if (connection && connection.open) {
+                connection.send({ type: 'reset' });
+            }
+        }
+
+        function resetGame(isRemote = false) {
+            game.reset();
+            selectedSquare = null;
+            legalMoves = [];
+            updateBoardVisuals();
+        }
+
+        function requestUndo() {
+            if (!isConnected) return;
+            undoMove();
+            undoMove();
+            if (connection && connection.open) {
+                connection.send({ type: 'undo' });
+            }
+        }
+
+        function undoMove(isRemote = false) {
+            game.undo();
+            if (isRemote) game.undo(); 
+            selectedSquare = null;
+            legalMoves = [];
+            updateBoardVisuals();
+        }
+
+        initBoard();
     </script>
 </body>
 </html>
