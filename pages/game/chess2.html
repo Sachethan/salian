@@ -171,17 +171,6 @@
     <script>
         // --- WebRTC Multiplayer Logic ---
         
-        // ADDED: Google STUN servers to allow NAT traversal across different Wi-Fi/Mobile Networks
-        const peerConfig = {
-            config: {
-                iceServers: [
-                    { urls: 'stun:stun.l.google.com:19302' },
-                    { urls: 'stun:stun1.l.google.com:19302' },
-                    { urls: 'stun:stun2.l.google.com:19302' }
-                ]
-            }
-        };
-
         let peer = null;
         let connection = null;
         let myColor = null; 
@@ -209,16 +198,11 @@
                 btn.disabled = true;
             }
 
-            peer = new Peer(peerConfig); 
+            // Using the exact initialization from your working Nexus project
+            peer = new Peer({ debug: 2 }); 
             
             peer.on('open', (id) => {
                 let baseUrl = window.location.origin + window.location.pathname;
-                
-                // Fallback warning if testing on file:// or localhost
-                if(baseUrl.includes('file://') || baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1')) {
-                    alert("Warning: URL links and QR codes won't work on other devices if you aren't hosting this online or using your local network IP.");
-                }
-
                 const joinUrl = `${baseUrl}?join=${id}`;
 
                 document.getElementById('lobby-state').innerHTML = `
@@ -251,6 +235,11 @@
                 myColor = 'w'; 
                 setupConnectionHandlers();
             });
+            
+            peer.on('error', (err) => {
+                console.error(err);
+                alert("Network error occurred: " + err.type);
+            });
         }
 
         function copyToClipboard(text) {
@@ -273,13 +262,14 @@
                 document.getElementById('lobby-state').innerHTML = `<p class="text-slate-300 animate-pulse">Connecting to host...</p>`;
             }
 
-            peer = new Peer(peerConfig);
+            // Using the exact initialization from your working Nexus project
+            peer = new Peer({ debug: 2 });
             
             peer.on('open', () => {
-                connection = peer.connect(joinId, { reliable: true });
+                // Connected just like your Nexus project did
+                connection = peer.connect(joinId);
                 myColor = 'b'; 
                 
-                // ADDED: Timeout handling so it doesn't get stuck
                 connectionTimeout = setTimeout(() => {
                     if(!isConnected) {
                         document.getElementById('lobby-state').innerHTML = `
@@ -293,7 +283,12 @@
             });
             
             peer.on('error', (err) => {
-                alert("Network error: Could not connect to host. Make sure the host is still on the page.");
+                console.error(err);
+                if (err.type === 'peer-unavailable') {
+                    alert("Host is unreachable. They may have closed the page.");
+                } else {
+                    alert("Network error: Could not connect to host.");
+                }
                 window.location.search = ''; 
             });
         }
