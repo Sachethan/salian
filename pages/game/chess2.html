@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexus Chess | WebRTC</title>
+    <title>Master Chess Multiplayer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -16,7 +16,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #000000);
+            background: radial-gradient(circle at top right, #2e1065, #0f172a, #000000);
             color: #f8fafc;
             touch-action: manipulation;
             min-height: 100vh;
@@ -24,19 +24,26 @@
 
         /* Glassmorphism UI */
         .glass-panel {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(147, 51, 234, 0.3);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .board-container {
+        /* Board Wrapper ensures overlay fits perfectly */
+        .board-wrapper {
+            position: relative;
             width: 100%;
             max-width: 480px;
             aspect-ratio: 1 / 1;
             margin: 0 auto;
-            border: 4px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .board-container {
+            width: 100%;
+            height: 100%;
+            border: 4px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0,0,0,0.5);
             display: grid;
@@ -60,34 +67,33 @@
             cursor: pointer;
         }
 
-        /* Modern Board Colors */
-        .square.light { background-color: #cbd5e1; } /* Slate 300 */
-        .square.dark { background-color: #475569; }  /* Slate 600 */
+        /* Purple & White Board Colors */
+        .square.light { background-color: #f8fafc; } /* Off-White */
+        .square.dark { background-color: #9333ea; }  /* Vibrant Purple */
 
         .square.selected::after {
-            content: ''; position: absolute; inset: 0; background-color: rgba(99, 102, 241, 0.5); /* Indigo 500 */
+            content: ''; position: absolute; inset: 0; background-color: rgba(236, 72, 153, 0.6); /* Pink highlight */
         }
 
         .square.highlight-move::after {
-            content: ''; position: absolute; width: 25%; height: 25%; border-radius: 50%; background-color: rgba(0, 0, 0, 0.3);
+            content: ''; position: absolute; width: 25%; height: 25%; border-radius: 50%; background-color: rgba(0, 0, 0, 0.4);
         }
         
         .square.highlight-capture::after {
-            content: ''; position: absolute; inset: 0; border: 4px solid rgba(239, 68, 68, 0.6); border-radius: 50%; background-color: transparent;
+            content: ''; position: absolute; inset: 0; border: 4px solid rgba(239, 68, 68, 0.8); border-radius: 50%; background-color: transparent;
         }
 
-        .square.in-check { background-color: rgba(239, 68, 68, 0.8) !important; }
+        .square.in-check { background-color: rgba(239, 68, 68, 0.9) !important; }
 
         .chess-piece {
             font-size: 2.2rem; z-index: 10; user-select: none; transition: transform 0.15s ease-in-out;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
         }
 
         .board-flipped .chess-piece:active { transform: scale(1.15) rotate(180deg); }
         body:not(.board-flipped) .chess-piece:active { transform: scale(1.15); }
 
-        .piece-w { color: #ffffff; }
-        .piece-b { color: #0f172a; }
+        .piece-w { color: #ffffff; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+        .piece-b { color: #000000; filter: drop-shadow(0 2px 4px rgba(255,255,255,0.4)); }
         .piece-inactive { opacity: 0.6; transition: opacity 0.3s ease; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)); }
 
         @media (min-width: 480px) { .chess-piece { font-size: 2.8rem; } }
@@ -96,14 +102,14 @@
         .coord-rank { top: 0; left: 3px; }
         .coord-file { bottom: 0; right: 3px; }
         
-        .light .coord { color: #475569; }
-        .dark .coord { color: #cbd5e1; }
+        .light .coord { color: #7e22ce; }
+        .dark .coord { color: #f8fafc; }
 
         .turn-signal {
             width: 10px; height: 10px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; opacity: 0.3;
         }
         .turn-signal.active-w { opacity: 1; background-color: #ffffff; box-shadow: 0 0 12px rgba(255, 255, 255, 0.8); }
-        .turn-signal.active-b { opacity: 1; background-color: #000000; box-shadow: 0 0 12px rgba(0, 0, 0, 0.8); border: 1px solid #334155; }
+        .turn-signal.active-b { opacity: 1; background-color: #9333ea; box-shadow: 0 0 12px rgba(147, 51, 234, 0.8); border: 1px solid #d8b4fe; }
         
         .player-info { display: flex; align-items: center; gap: 10px; padding: 12px 4px; font-weight: 600; color: #e2e8f0; font-size: 0.95rem; }
 
@@ -114,34 +120,11 @@
 
     <div class="w-full max-w-lg relative z-10">
         <!-- Header -->
-        <div class="mb-4 text-center">
-            <h1 class="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mb-2">Nexus Chess</h1>
+        <div class="mb-2 text-center">
+            <h1 class="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-1 drop-shadow-sm">Master Chess Multiplayer</h1>
             
-            <!-- Modern Network Panel -->
-            <div id="network-panel" class="glass-panel rounded-2xl p-4 mb-4 text-sm">
-                <div id="lobby-state" class="flex flex-col items-center gap-4">
-                    <p class="text-slate-300 font-medium">Secure Peer-to-Peer Match</p>
-                    <div class="flex flex-wrap gap-3 w-full justify-center">
-                        <button onclick="hostGame()" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-xl text-white font-semibold transition-all shadow-lg shadow-indigo-500/30">Host Game</button>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="join-id" placeholder="Enter Host ID" class="px-4 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-white w-36 focus:outline-none focus:border-indigo-500 transition-colors hidden">
-                            <button onclick="document.getElementById('join-id').classList.toggle('hidden')" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-white font-semibold transition-all">Join</button>
-                            <button onclick="joinGame()" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-xl text-white font-semibold transition-all shadow-lg shadow-emerald-500/30 hidden" id="manual-join-btn">Connect</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="connected-state" class="hidden flex flex-col items-center gap-2">
-                    <div class="flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
-                        <span class="text-emerald-400 font-semibold text-xs tracking-wide">SECURELY CONNECTED</span>
-                    </div>
-                    <div id="player-role" class="text-slate-300 text-xs uppercase tracking-widest font-bold mt-1"></div>
-                </div>
-            </div>
-
             <div id="status-badge" class="h-8 flex items-center justify-center text-sm font-medium tracking-wide">
-                <span class="text-slate-400/80">Waiting for players...</span>
+                <span class="text-slate-400/80">Connecting network...</span>
             </div>
         </div>
 
@@ -152,8 +135,32 @@
             </div>
         </div>
 
-        <!-- The Chess Board -->
-        <div id="board" class="board-container my-1"></div>
+        <!-- The Chess Board & Overlay -->
+        <div class="board-wrapper my-1">
+            <!-- The Board -->
+            <div id="board" class="board-container"></div>
+            
+            <!-- Connection Setup Overlay -->
+            <div id="network-panel" class="absolute inset-0 z-20 glass-panel rounded-xl flex flex-col items-center justify-center p-6 transition-all duration-700 ease-in-out">
+                <div id="lobby-state" class="flex flex-col items-center gap-4 text-center w-full">
+                    <div class="w-16 h-16 rounded-full bg-purple-600/20 flex items-center justify-center mb-2">
+                        <i class="fas fa-network-wired text-2xl text-purple-400"></i>
+                    </div>
+                    <p class="text-slate-200 font-semibold text-lg">Start a Match</p>
+                    <div class="flex flex-col gap-3 w-full max-w-xs">
+                        <button onclick="hostGame()" class="w-full py-3 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 rounded-xl text-white font-bold transition-all shadow-[0_0_15px_rgba(147,51,234,0.4)]">Host Game</button>
+                        
+                        <div class="flex flex-col gap-2 mt-2">
+                            <button onclick="document.getElementById('join-id-container').classList.toggle('hidden')" class="w-full py-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-600 rounded-xl text-white font-medium transition-all text-sm">Join with Code</button>
+                            <div id="join-id-container" class="hidden flex gap-2 w-full">
+                                <input type="text" id="join-id" placeholder="Enter ID..." class="flex-1 px-3 py-2 bg-slate-900/80 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-purple-500 text-sm transition-colors">
+                                <button onclick="joinGame()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-white font-bold transition-all text-sm">Join</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="player-info justify-between">
             <div class="flex items-center gap-3">
@@ -163,19 +170,19 @@
         </div>
 
         <!-- Modern Controls -->
-        <div class="flex justify-center mt-6 glass-panel p-3 rounded-2xl gap-3">
-            <button onclick="requestUndo()" class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition-all text-slate-200 font-medium">
+        <div class="flex justify-center mt-4 glass-panel p-3 rounded-2xl gap-3 max-w-xs mx-auto">
+            <button onclick="requestUndo()" class="flex-1 py-2 flex justify-center items-center gap-2 rounded-xl bg-slate-800/60 hover:bg-slate-700 border border-slate-700 transition-all text-slate-200 font-medium text-sm">
                 <i class="fas fa-undo opacity-70"></i> Undo
             </button>
-            <button onclick="requestReset()" class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition-all text-slate-200 font-medium">
+            <button onclick="requestReset()" class="flex-1 py-2 flex justify-center items-center gap-2 rounded-xl bg-slate-800/60 hover:bg-slate-700 border border-slate-700 transition-all text-slate-200 font-medium text-sm">
                 <i class="fas fa-redo opacity-70"></i> Restart
             </button>
         </div>
 
         <!-- Promotion Modal -->
         <div id="promotion-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50">
-            <div class="glass-panel p-8 rounded-2xl text-center border border-slate-700 shadow-2xl">
-                <h3 class="text-xl font-semibold mb-6 text-slate-100">Promote Pawn</h3>
+            <div class="glass-panel p-8 rounded-2xl text-center border border-purple-500/50 shadow-2xl">
+                <h3 class="text-xl font-bold mb-6 text-slate-100">Promote Pawn</h3>
                 <div class="flex gap-4 justify-center" id="promotion-options"></div>
             </div>
         </div>
@@ -199,31 +206,29 @@
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const joinId = urlParams.get('join');
-            const hostRoomId = urlParams.get('room'); // Checks if host just reloaded
-            
-            document.getElementById('join-id').addEventListener('input', (e) => {
-                document.getElementById('manual-join-btn').style.display = e.target.value ? 'block' : 'none';
-            });
+            const hostRoomId = urlParams.get('room'); 
 
             if (joinId) {
                 showLoading("Negotiating secure connection...");
                 joinGame(joinId);
             } else if (hostRoomId) {
-                // Host recovered from a page refresh! Reclaim the same ID.
                 hostGame(hostRoomId);
+            } else {
+                // Update status badge when waiting in lobby
+                document.getElementById('status-badge').innerHTML = `<span class="text-slate-400">Waiting for players to connect...</span>`;
             }
         };
 
         function showLoading(text) {
             document.getElementById('lobby-state').innerHTML = `
                 <div class="flex flex-col items-center">
-                    <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4 shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
-                    <p class="text-slate-300 animate-pulse text-center font-medium">${text}</p>
+                    <div class="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4 shadow-[0_0_15px_rgba(147,51,234,0.5)]"></div>
+                    <p class="text-slate-200 font-semibold text-center">${text}</p>
+                    <p class="text-xs text-slate-400 mt-2 text-center">This can take up to 10 seconds.</p>
                 </div>
             `;
         }
 
-        // Added forceId parameter to allow host to recover their specific room after a refresh
         function hostGame(forceId = null) {
             const btn = document.querySelector('button[onclick="hostGame()"]');
             if(btn) {
@@ -236,30 +241,27 @@
             peer.on('open', (id) => {
                 let baseUrl = window.location.origin + window.location.pathname;
                 
-                // UPDATE URL: This keeps the host in a "Room" so if they refresh, they don't lose the ID
                 window.history.replaceState({}, document.title, `${baseUrl}?room=${id}`);
-                
                 const joinUrl = `${baseUrl}?join=${id}`;
 
                 document.getElementById('lobby-state').innerHTML = `
                     <div class="flex flex-col items-center w-full">
-                        <p class="text-slate-200 font-semibold mb-3">Scan to Play</p>
-                        <div id="qrcode" class="p-3 bg-white rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] mb-4"></div>
-                        <p class="text-slate-400 text-xs mb-2 uppercase tracking-wider font-semibold">Or share this link</p>
-                        <div class="flex items-center gap-2 w-full max-w-sm">
-                            <input type="text" readonly value="${joinUrl}" class="flex-1 px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-xs text-slate-300 focus:outline-none">
-                            <button onclick="copyToClipboard('${joinUrl}')" id="copy-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white font-medium transition-colors shadow-lg">
+                        <p class="text-slate-100 font-bold mb-3 text-lg">Scan to Join</p>
+                        <div id="qrcode" class="p-2 bg-white rounded-xl shadow-[0_0_20px_rgba(147,51,234,0.3)] mb-4"></div>
+                        <div class="flex items-center gap-2 w-full max-w-[240px]">
+                            <input type="text" readonly value="${joinUrl}" class="flex-1 px-3 py-2 bg-slate-900/60 border border-slate-700 rounded-lg text-xs text-slate-300 focus:outline-none">
+                            <button onclick="copyToClipboard('${joinUrl}')" id="copy-btn" class="px-3 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg text-white font-medium transition-colors shadow-lg text-sm">
                                 Copy
                             </button>
                         </div>
-                        <p class="text-xs text-indigo-400 mt-4 animate-pulse font-medium"><i class="fas fa-satellite-dish mr-1"></i> Waiting for opponent to join...</p>
+                        <p class="text-xs text-purple-300 mt-4 animate-pulse font-medium"><i class="fas fa-satellite-dish mr-1"></i> Waiting for opponent...</p>
                     </div>
                 `;
 
                 new QRCode(document.getElementById("qrcode"), {
                     text: joinUrl,
-                    width: 130,
-                    height: 130,
+                    width: 140,
+                    height: 140,
                     colorDark : "#0f172a",
                     colorLight : "#ffffff",
                     correctLevel : QRCode.CorrectLevel.L
@@ -273,9 +275,7 @@
             });
             
             peer.on('error', (err) => {
-                console.error(err);
                 if (err.type === 'unavailable-id') {
-                    // ID is taken (maybe a ghost session). Generate a new one.
                     window.history.replaceState({}, document.title, window.location.pathname);
                     hostGame(); 
                 } else {
@@ -288,12 +288,12 @@
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('copy-btn');
                 btn.innerHTML = `Copied!`;
-                btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
-                btn.classList.replace('hover:bg-indigo-500', 'hover:bg-emerald-500');
+                btn.classList.replace('bg-purple-600', 'bg-emerald-600');
+                btn.classList.replace('hover:bg-purple-500', 'hover:bg-emerald-500');
                 setTimeout(() => {
                     btn.innerHTML = `Copy`;
-                    btn.classList.replace('bg-emerald-600', 'bg-indigo-600');
-                    btn.classList.replace('hover:bg-emerald-500', 'hover:bg-indigo-500');
+                    btn.classList.replace('bg-emerald-600', 'bg-purple-600');
+                    btn.classList.replace('hover:bg-emerald-500', 'hover:bg-purple-500');
                 }, 2000);
             });
         }
@@ -313,7 +313,6 @@
             });
             
             peer.on('error', (err) => {
-                console.error(err);
                 if (err.type === 'peer-unavailable') {
                     alert("Host is unreachable. They may have closed the room.");
                 } else {
@@ -327,14 +326,13 @@
             connection.on('open', () => {
                 isConnected = true;
                 
-                // Optional: Clean URL for guest
                 if (myColor === 'b') {
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
 
-                document.getElementById('lobby-state').classList.add('hidden');
-                document.getElementById('connected-state').classList.remove('hidden');
-                document.getElementById('player-role').innerText = `You are playing as ${myColor === 'w' ? 'WHITE' : 'BLACK'}`;
+                // Super smooth disappear effect
+                const networkPanel = document.getElementById('network-panel');
+                networkPanel.classList.add('opacity-0', 'scale-110', 'pointer-events-none');
                 
                 if (myColor === 'b') {
                     document.getElementById('board').classList.add('board-flipped');
@@ -342,6 +340,14 @@
 
                 resetGame(true); 
                 updateStatus();
+                
+                // Show secure connection toast in header
+                document.getElementById('status-badge').innerHTML = `
+                    <div class="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                        <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
+                        <span class="text-emerald-400 font-bold text-xs tracking-wide">MATCH SECURED</span>
+                    </div>
+                `;
             });
 
             connection.on('data', (data) => {
@@ -528,8 +534,6 @@
             const signalW = document.getElementById('signal-w');
             const signalB = document.getElementById('signal-b');
             
-            let statusHTML = '';
-            
             if (game.turn() === 'w') {
                 signalW.classList.add('active-w');
                 signalB.classList.remove('active-b');
@@ -540,23 +544,24 @@
 
             if (game.in_checkmate()) {
                 let isMe = (game.turn() === 'w' ? 'b' : 'w') === myColor;
-                statusHTML = `<span class="text-white font-bold px-4 py-1.5 rounded-full ${isMe ? 'bg-emerald-600 border-emerald-500' : 'bg-red-600 border-red-500'} border shadow-lg"><i class="fas fa-trophy mr-2"></i> Checkmate! ${isMe ? 'You Won!' : 'Opponent Won'}</span>`;
+                document.getElementById('status-badge').innerHTML = `<span class="text-white font-bold px-4 py-1.5 rounded-full ${isMe ? 'bg-emerald-600 border-emerald-500' : 'bg-red-600 border-red-500'} border shadow-lg"><i class="fas fa-trophy mr-2"></i> Checkmate! ${isMe ? 'You Won!' : 'Opponent Won'}</span>`;
                 signalW.className = 'turn-signal';
                 signalB.className = 'turn-signal';
             } else if (game.in_draw()) {
-                statusHTML = `<span class="text-yellow-100 font-bold px-4 py-1.5 rounded-full bg-yellow-600 border border-yellow-500 shadow-lg">Game Over - Draw</span>`;
+                document.getElementById('status-badge').innerHTML = `<span class="text-yellow-100 font-bold px-4 py-1.5 rounded-full bg-yellow-600 border border-yellow-500 shadow-lg">Game Over - Draw</span>`;
                 signalW.className = 'turn-signal';
                 signalB.className = 'turn-signal';
+            } else if (game.in_check()) {
+                document.getElementById('status-badge').innerHTML = `<span class="text-white font-bold px-4 py-1.5 rounded-full bg-red-600 border border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.6)] animate-pulse"><i class="fas fa-exclamation-triangle mr-1"></i> King in Check!</span>`;
             } else {
-                if (game.in_check()) {
-                    statusHTML = `<span class="text-white font-bold px-4 py-1.5 rounded-full bg-red-600 border border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.6)] animate-pulse"><i class="fas fa-exclamation-triangle mr-1"></i> Check</span>`;
-                } else {
-                    let isMyTurn = game.turn() === myColor;
-                    statusHTML = `<span class="text-slate-300 font-medium px-4 py-1 rounded-full bg-slate-800 border border-slate-700">${isMyTurn ? "Your turn" : "Opponent is thinking..."}</span>`;
-                }
+                // Return to normal match secured badge
+                document.getElementById('status-badge').innerHTML = `
+                    <div class="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                        <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
+                        <span class="text-emerald-400 font-bold text-xs tracking-wide">MATCH SECURED</span>
+                    </div>
+                `;
             }
-
-            statusBadge.innerHTML = statusHTML;
         }
 
         function requestReset() {
