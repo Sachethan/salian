@@ -3,42 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Multiplayer Classic Chess</title>
+    <title>Nexus Chess | WebRTC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Chess.js for robust game logic -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-    <!-- PeerJS for WebRTC Multiplayer -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    <!-- QRCode.js for generating QR Codes -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0f172a; 
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #000000);
             color: #f8fafc;
             touch-action: manipulation;
+            min-height: 100vh;
         }
 
-        h1 { font-family: 'Playfair Display', serif; }
+        /* Glassmorphism UI */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
 
         .board-container {
             width: 100%;
             max-width: 480px;
             aspect-ratio: 1 / 1;
             margin: 0 auto;
-            border: 8px solid #1e293b;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 4px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0,0,0,0.5);
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             grid-template-rows: repeat(8, 1fr);
             overflow: hidden;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .board-flipped { transform: rotate(180deg); }
@@ -55,117 +60,122 @@
             cursor: pointer;
         }
 
-        .square.light { background-color: #f0d9b5; }
-        .square.dark { background-color: #b58863; }
+        /* Modern Board Colors */
+        .square.light { background-color: #cbd5e1; } /* Slate 300 */
+        .square.dark { background-color: #475569; }  /* Slate 600 */
 
         .square.selected::after {
-            content: ''; position: absolute; inset: 0; background-color: rgba(255, 255, 51, 0.5);
+            content: ''; position: absolute; inset: 0; background-color: rgba(99, 102, 241, 0.5); /* Indigo 500 */
         }
 
         .square.highlight-move::after {
-            content: ''; position: absolute; width: 30%; height: 30%; border-radius: 50%; background-color: rgba(0, 0, 0, 0.2);
+            content: ''; position: absolute; width: 25%; height: 25%; border-radius: 50%; background-color: rgba(0, 0, 0, 0.3);
         }
         
         .square.highlight-capture::after {
-            content: ''; position: absolute; inset: 0; border: 4px solid rgba(0, 0, 0, 0.2); border-radius: 50%; background-color: transparent;
+            content: ''; position: absolute; inset: 0; border: 4px solid rgba(239, 68, 68, 0.6); border-radius: 50%; background-color: transparent;
         }
 
-        .square.in-check { background-color: #ef4444 !important; }
+        .square.in-check { background-color: rgba(239, 68, 68, 0.8) !important; }
 
         .chess-piece {
-            font-size: 2rem; z-index: 10; user-select: none; transition: transform 0.1s ease-in-out;
+            font-size: 2.2rem; z-index: 10; user-select: none; transition: transform 0.15s ease-in-out;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
         }
 
-        .board-flipped .chess-piece:active { transform: scale(1.1) rotate(180deg); }
-        body:not(.board-flipped) .chess-piece:active { transform: scale(1.1); }
+        .board-flipped .chess-piece:active { transform: scale(1.15) rotate(180deg); }
+        body:not(.board-flipped) .chess-piece:active { transform: scale(1.15); }
 
-        .piece-w { color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.4), 0 0 1px #000; }
-        .piece-b { color: #111827; text-shadow: 0 1px 2px rgba(255,255,255,0.4); }
-        .piece-inactive { opacity: 0.5; transition: opacity 0.3s ease; }
+        .piece-w { color: #ffffff; }
+        .piece-b { color: #0f172a; }
+        .piece-inactive { opacity: 0.6; transition: opacity 0.3s ease; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)); }
 
-        @media (min-width: 480px) { .chess-piece { font-size: 2.5rem; } }
+        @media (min-width: 480px) { .chess-piece { font-size: 2.8rem; } }
 
-        .coord { position: absolute; font-size: 0.6rem; font-weight: 600; padding: 2px; opacity: 0.7; }
-        .coord-rank { top: 0; left: 2px; }
-        .coord-file { bottom: 0; right: 2px; }
+        .coord { position: absolute; font-size: 0.65rem; font-weight: 700; padding: 3px; opacity: 0.8; }
+        .coord-rank { top: 0; left: 3px; }
+        .coord-file { bottom: 0; right: 3px; }
         
-        .light .coord { color: #b58863; }
-        .dark .coord { color: #f0d9b5; }
+        .light .coord { color: #475569; }
+        .dark .coord { color: #cbd5e1; }
 
         .turn-signal {
-            width: 12px; height: 12px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; opacity: 0.2;
+            width: 10px; height: 10px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; opacity: 0.3;
         }
-        .turn-signal.active-w { opacity: 1; background-color: #ffffff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); border: 1px solid #94a3b8; }
-        .turn-signal.active-b { opacity: 1; background-color: #000000; box-shadow: 0 0 10px rgba(0, 0, 0, 0.8); border: 1px solid #334155; }
+        .turn-signal.active-w { opacity: 1; background-color: #ffffff; box-shadow: 0 0 12px rgba(255, 255, 255, 0.8); }
+        .turn-signal.active-b { opacity: 1; background-color: #000000; box-shadow: 0 0 12px rgba(0, 0, 0, 0.8); border: 1px solid #334155; }
         
-        .player-info { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-weight: 500; color: #cbd5e1; }
+        .player-info { display: flex; align-items: center; gap: 10px; padding: 12px 4px; font-weight: 600; color: #e2e8f0; font-size: 0.95rem; }
 
-        #network-panel { background-color: #1e293b; border: 1px solid #334155; }
-        #qrcode img { margin: 0 auto; border: 4px solid white; border-radius: 4px; }
+        #qrcode img { margin: 0 auto; border: 6px solid white; border-radius: 8px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
+<body class="flex flex-col items-center justify-center p-4">
 
-    <div class="w-full max-w-lg">
-        <div class="mb-2 text-center">
-            <h1 class="text-4xl font-bold mb-1 text-yellow-400">Grandmaster</h1>
+    <div class="w-full max-w-lg relative z-10">
+        <!-- Header -->
+        <div class="mb-4 text-center">
+            <h1 class="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mb-2">Nexus Chess</h1>
             
-            <div id="network-panel" class="rounded-lg p-3 mb-3 text-sm shadow-md">
-                <div id="lobby-state" class="flex flex-col items-center gap-3">
-                    <p class="text-slate-300 font-semibold">WebRTC Multiplayer</p>
-                    <div class="flex gap-2 w-full justify-center">
-                        <button onclick="hostGame()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-white font-medium transition-colors">Host Game</button>
-                        <span class="flex items-center text-slate-400">or</span>
-                        <input type="text" id="join-id" placeholder="Enter Host ID" class="px-3 py-2 bg-slate-900 border border-slate-600 rounded text-white w-32 focus:outline-none focus:border-blue-400 hidden">
-                        <button onclick="document.getElementById('join-id').classList.toggle('hidden')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-white font-medium transition-colors">Manual Join</button>
-                        <button onclick="joinGame()" class="px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white font-medium transition-colors hidden" id="manual-join-btn">Join</button>
+            <!-- Modern Network Panel -->
+            <div id="network-panel" class="glass-panel rounded-2xl p-4 mb-4 text-sm">
+                <div id="lobby-state" class="flex flex-col items-center gap-4">
+                    <p class="text-slate-300 font-medium">Secure Peer-to-Peer Match</p>
+                    <div class="flex flex-wrap gap-3 w-full justify-center">
+                        <button onclick="hostGame()" class="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-xl text-white font-semibold transition-all shadow-lg shadow-indigo-500/30">Host Game</button>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="join-id" placeholder="Enter Host ID" class="px-4 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-white w-36 focus:outline-none focus:border-indigo-500 transition-colors hidden">
+                            <button onclick="document.getElementById('join-id').classList.toggle('hidden')" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-white font-semibold transition-all">Join</button>
+                            <button onclick="joinGame()" class="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-xl text-white font-semibold transition-all shadow-lg shadow-emerald-500/30 hidden" id="manual-join-btn">Connect</button>
+                        </div>
                     </div>
                 </div>
                 
                 <div id="connected-state" class="hidden flex flex-col items-center gap-2">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                        <span class="text-green-400 font-medium">Connected to opponent</span>
+                    <div class="flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
+                        <span class="text-emerald-400 font-semibold text-xs tracking-wide">SECURELY CONNECTED</span>
                     </div>
-                    <div id="player-role" class="text-slate-300 text-xs uppercase tracking-widest font-bold"></div>
+                    <div id="player-role" class="text-slate-300 text-xs uppercase tracking-widest font-bold mt-1"></div>
                 </div>
             </div>
 
             <div id="status-badge" class="h-8 flex items-center justify-center text-sm font-medium tracking-wide">
-                <span class="text-slate-400">Waiting for players to connect...</span>
+                <span class="text-slate-400/80">Waiting for players...</span>
             </div>
         </div>
 
         <div class="player-info justify-between">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3">
                 <div id="signal-b" class="turn-signal"></div>
-                <span>Black</span>
+                <span>Opponent</span>
             </div>
         </div>
 
-        <div id="board" class="board-container my-2"></div>
+        <!-- The Chess Board -->
+        <div id="board" class="board-container my-1"></div>
 
         <div class="player-info justify-between">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3">
                 <div id="signal-w" class="turn-signal active-w"></div>
-                <span>White</span>
+                <span>You</span>
             </div>
         </div>
 
-        <div class="flex justify-center mt-6 items-center bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-lg">
-            <div class="flex gap-4">
-                <button onclick="requestUndo()" class="px-4 py-2 flex items-center gap-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors text-slate-200 font-medium">
-                    <i class="fas fa-undo"></i> Undo
-                </button>
-                <button onclick="requestReset()" class="px-4 py-2 flex items-center gap-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors text-slate-200 font-medium">
-                    <i class="fas fa-redo"></i> Reset
-                </button>
-            </div>
+        <!-- Modern Controls -->
+        <div class="flex justify-center mt-6 glass-panel p-3 rounded-2xl gap-3">
+            <button onclick="requestUndo()" class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition-all text-slate-200 font-medium">
+                <i class="fas fa-undo opacity-70"></i> Undo
+            </button>
+            <button onclick="requestReset()" class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition-all text-slate-200 font-medium">
+                <i class="fas fa-redo opacity-70"></i> Restart
+            </button>
         </div>
 
-        <div id="promotion-modal" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center z-50">
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-600 text-center">
-                <h3 class="text-lg font-medium mb-4">Promote Pawn</h3>
+        <!-- Promotion Modal -->
+        <div id="promotion-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50">
+            <div class="glass-panel p-8 rounded-2xl text-center border border-slate-700 shadow-2xl">
+                <h3 class="text-xl font-semibold mb-6 text-slate-100">Promote Pawn</h3>
                 <div class="flex gap-4 justify-center" id="promotion-options"></div>
             </div>
         </div>
@@ -178,59 +188,79 @@
         let myColor = null; 
         let isConnected = false;
 
+        // Warn user before accidental reload if game is active
+        window.addEventListener('beforeunload', function (e) {
+            if (isConnected) {
+                e.preventDefault();
+                e.returnValue = 'You are currently in a game. Reloading will disconnect you.';
+            }
+        });
+
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const joinId = urlParams.get('join');
+            const hostRoomId = urlParams.get('room'); // Checks if host just reloaded
             
             document.getElementById('join-id').addEventListener('input', (e) => {
                 document.getElementById('manual-join-btn').style.display = e.target.value ? 'block' : 'none';
             });
 
             if (joinId) {
-                document.getElementById('lobby-state').innerHTML = `
-                    <div class="flex flex-col items-center">
-                        <div class="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-                        <p class="text-slate-300 animate-pulse text-center">Negotiating secure connection with host...<br><span class="text-xs text-slate-500">This can take up to 15 seconds across different networks.</span></p>
-                    </div>
-                `;
+                showLoading("Negotiating secure connection...");
                 joinGame(joinId);
+            } else if (hostRoomId) {
+                // Host recovered from a page refresh! Reclaim the same ID.
+                hostGame(hostRoomId);
             }
         };
 
-        function hostGame() {
+        function showLoading(text) {
+            document.getElementById('lobby-state').innerHTML = `
+                <div class="flex flex-col items-center">
+                    <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4 shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
+                    <p class="text-slate-300 animate-pulse text-center font-medium">${text}</p>
+                </div>
+            `;
+        }
+
+        // Added forceId parameter to allow host to recover their specific room after a refresh
+        function hostGame(forceId = null) {
             const btn = document.querySelector('button[onclick="hostGame()"]');
             if(btn) {
                 btn.innerText = "Creating...";
                 btn.disabled = true;
             }
 
-            // Using the exact initialization from your working Nexus project
-            peer = new Peer({ debug: 2 }); 
+            peer = forceId ? new Peer(forceId, { debug: 2 }) : new Peer({ debug: 2 }); 
             
             peer.on('open', (id) => {
                 let baseUrl = window.location.origin + window.location.pathname;
+                
+                // UPDATE URL: This keeps the host in a "Room" so if they refresh, they don't lose the ID
+                window.history.replaceState({}, document.title, `${baseUrl}?room=${id}`);
+                
                 const joinUrl = `${baseUrl}?join=${id}`;
 
                 document.getElementById('lobby-state').innerHTML = `
                     <div class="flex flex-col items-center w-full">
-                        <p class="text-slate-300 font-medium mb-2">Scan to Play</p>
-                        <div id="qrcode" class="p-2 bg-white rounded-lg shadow-lg mb-4"></div>
-                        <p class="text-slate-400 text-xs mb-1">Or share this link:</p>
+                        <p class="text-slate-200 font-semibold mb-3">Scan to Play</p>
+                        <div id="qrcode" class="p-3 bg-white rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] mb-4"></div>
+                        <p class="text-slate-400 text-xs mb-2 uppercase tracking-wider font-semibold">Or share this link</p>
                         <div class="flex items-center gap-2 w-full max-w-sm">
-                            <input type="text" readonly value="${joinUrl}" class="flex-1 px-2 py-1.5 bg-slate-900 border border-slate-600 rounded text-xs text-slate-400 focus:outline-none">
-                            <button onclick="copyToClipboard('${joinUrl}')" id="copy-btn" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded text-white transition-colors">
-                                <i class="fas fa-copy"></i> Copy
+                            <input type="text" readonly value="${joinUrl}" class="flex-1 px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-xs text-slate-300 focus:outline-none">
+                            <button onclick="copyToClipboard('${joinUrl}')" id="copy-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-white font-medium transition-colors shadow-lg">
+                                Copy
                             </button>
                         </div>
-                        <p class="text-xs text-yellow-500 mt-3 animate-pulse"><i class="fas fa-spinner fa-spin mr-1"></i> Waiting for opponent...</p>
+                        <p class="text-xs text-indigo-400 mt-4 animate-pulse font-medium"><i class="fas fa-satellite-dish mr-1"></i> Waiting for opponent to join...</p>
                     </div>
                 `;
 
                 new QRCode(document.getElementById("qrcode"), {
                     text: joinUrl,
-                    width: 140,
-                    height: 140,
-                    colorDark : "#000000",
+                    width: 130,
+                    height: 130,
+                    colorDark : "#0f172a",
                     colorLight : "#ffffff",
                     correctLevel : QRCode.CorrectLevel.L
                 });
@@ -244,18 +274,26 @@
             
             peer.on('error', (err) => {
                 console.error(err);
-                alert("Network error occurred: " + err.type);
+                if (err.type === 'unavailable-id') {
+                    // ID is taken (maybe a ghost session). Generate a new one.
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    hostGame(); 
+                } else {
+                    alert("Network error occurred: " + err.type);
+                }
             });
         }
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('copy-btn');
-                btn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
-                btn.classList.replace('bg-blue-600', 'bg-green-600');
+                btn.innerHTML = `Copied!`;
+                btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+                btn.classList.replace('hover:bg-indigo-500', 'hover:bg-emerald-500');
                 setTimeout(() => {
-                    btn.innerHTML = `<i class="fas fa-copy"></i> Copy`;
-                    btn.classList.replace('bg-green-600', 'bg-blue-600');
+                    btn.innerHTML = `Copy`;
+                    btn.classList.replace('bg-emerald-600', 'bg-indigo-600');
+                    btn.classList.replace('hover:bg-emerald-500', 'hover:bg-indigo-500');
                 }, 2000);
             });
         }
@@ -264,20 +302,11 @@
             const joinId = autoJoinId || document.getElementById('join-id').value.trim();
             if (!joinId) return alert("Please enter a Host ID!");
 
-            if (!autoJoinId) {
-                document.getElementById('lobby-state').innerHTML = `
-                    <div class="flex flex-col items-center">
-                        <div class="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-                        <p class="text-slate-300 animate-pulse text-center">Negotiating secure connection with host...<br><span class="text-xs text-slate-500">This can take up to 15 seconds across different networks.</span></p>
-                    </div>
-                `;
-            }
+            if (!autoJoinId) showLoading("Connecting to host...");
 
-            // Using the exact initialization from your working Nexus project
             peer = new Peer({ debug: 2 });
             
             peer.on('open', () => {
-                // ADDED: reliable: true - ensures chess moves aren't dropped via UDP
                 connection = peer.connect(joinId, { reliable: true });
                 myColor = 'b'; 
                 setupConnectionHandlers();
@@ -286,7 +315,7 @@
             peer.on('error', (err) => {
                 console.error(err);
                 if (err.type === 'peer-unavailable') {
-                    alert("Host is unreachable. They may have closed the page.");
+                    alert("Host is unreachable. They may have closed the room.");
                 } else {
                     alert("Network error: Could not connect to host.");
                 }
@@ -298,6 +327,7 @@
             connection.on('open', () => {
                 isConnected = true;
                 
+                // Optional: Clean URL for guest
                 if (myColor === 'b') {
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
@@ -325,12 +355,12 @@
             });
 
             connection.on('close', () => {
+                isConnected = false;
                 alert("Opponent disconnected!");
                 window.location.search = ''; 
                 location.reload(); 
             });
         }
-
 
         // --- Initialize Game Logic (using chess.js) ---
         const game = new Chess();
@@ -480,7 +510,7 @@
             
             pieces.forEach(p => {
                 const btn = document.createElement('button');
-                btn.className = `p-4 bg-slate-700 hover:bg-slate-600 rounded-lg text-3xl transition-colors piece-${color}`;
+                btn.className = `p-5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl text-4xl transition-all shadow-lg piece-${color}`;
                 if (myColor === 'b') btn.style.transform = 'rotate(180deg)';
                 
                 btn.innerHTML = `<i class="fa-solid ${iconMap[p]}"></i>`;
@@ -495,7 +525,6 @@
         }
 
         function updateStatus() {
-            const statusBadge = document.getElementById('status-badge');
             const signalW = document.getElementById('signal-w');
             const signalB = document.getElementById('signal-b');
             
@@ -511,19 +540,19 @@
 
             if (game.in_checkmate()) {
                 let isMe = (game.turn() === 'w' ? 'b' : 'w') === myColor;
-                statusHTML = `<span class="text-${isMe?'green':'red'}-400 font-bold px-4 py-1 rounded-full bg-slate-800 border border-${isMe?'green':'red'}-500"><i class="fas fa-trophy mr-1"></i> Checkmate! ${isMe ? 'You Win!' : 'Opponent Wins'}</span>`;
+                statusHTML = `<span class="text-white font-bold px-4 py-1.5 rounded-full ${isMe ? 'bg-emerald-600 border-emerald-500' : 'bg-red-600 border-red-500'} border shadow-lg"><i class="fas fa-trophy mr-2"></i> Checkmate! ${isMe ? 'You Won!' : 'Opponent Won'}</span>`;
                 signalW.className = 'turn-signal';
                 signalB.className = 'turn-signal';
             } else if (game.in_draw()) {
-                statusHTML = `<span class="text-yellow-400 font-bold px-4 py-1 rounded-full bg-slate-800 border border-yellow-500">Game Over - Draw!</span>`;
+                statusHTML = `<span class="text-yellow-100 font-bold px-4 py-1.5 rounded-full bg-yellow-600 border border-yellow-500 shadow-lg">Game Over - Draw</span>`;
                 signalW.className = 'turn-signal';
                 signalB.className = 'turn-signal';
             } else {
                 if (game.in_check()) {
-                    statusHTML = `<span class="text-red-400 font-bold px-4 py-1 rounded-full bg-slate-800 border border-red-500 animate-pulse"><i class="fas fa-exclamation-triangle mr-1"></i> Check</span>`;
+                    statusHTML = `<span class="text-white font-bold px-4 py-1.5 rounded-full bg-red-600 border border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.6)] animate-pulse"><i class="fas fa-exclamation-triangle mr-1"></i> Check</span>`;
                 } else {
                     let isMyTurn = game.turn() === myColor;
-                    statusHTML = `<span class="text-slate-300 font-medium">${isMyTurn ? "Your turn" : "Opponent's turn..."}</span>`;
+                    statusHTML = `<span class="text-slate-300 font-medium px-4 py-1 rounded-full bg-slate-800 border border-slate-700">${isMyTurn ? "Your turn" : "Opponent is thinking..."}</span>`;
                 }
             }
 
