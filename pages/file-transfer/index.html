@@ -1,0 +1,586 @@
+
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirLink - Instant P2P File Share</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- PeerJS for WebRTC signaling -->
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <!-- QRious for client-side QR generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .glass-card {
+      background: rgba(23, 27, 38, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-animation {
+      animation: pulse-ring 2.5s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-150%] opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 shadow-2xl text-sm font-medium">
+    <span id="toast-icon" class="text-indigo-400">ℹ️</span>
+    <span id="toast-message">Message</span>
+  </div>
+
+  <!-- Header -->
+  <header class="w-full border-b border-slate-800/80 bg-slate-900/50 backdrop-blur-md px-6 py-4 sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="resetToHome()">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-sky-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+        </div>
+        <div>
+          <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">AirLink</span>
+          <span class="text-xs ml-2 px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-medium">P2P Direct</span>
+        </div>
+      </div>
+      <div id="connection-badge" class="hidden items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-slate-300">
+        <span id="connection-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+        <span id="connection-label">Initializing</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex items-center justify-center p-4 sm:p-6 w-full max-w-2xl mx-auto">
+
+    <!-- VIEW 1: SENDER - SELECT FILE (DEFAULT) -->
+    <div id="view-select" class="w-full glass-card rounded-2xl p-6 sm:p-8 shadow-2xl transition-all">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">Direct Peer-to-Peer File Transfer</h1>
+        <p class="text-slate-400 text-sm sm:text-base max-w-md mx-auto">
+          No cloud storage, no file size limits. Select a file to create a private peer-to-peer download link.
+        </p>
+      </div>
+
+      <!-- Dropzone -->
+      <div id="drop-zone" class="border-2 border-dashed border-slate-700 hover:border-indigo-500/80 hover:bg-indigo-500/5 rounded-2xl p-8 sm:p-12 text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-center group">
+        <input type="file" id="file-input" class="hidden" />
+        <div class="w-16 h-16 rounded-2xl bg-slate-800/80 group-hover:scale-110 group-hover:bg-indigo-600/20 border border-slate-700/80 group-hover:border-indigo-500/40 flex items-center justify-center mb-4 transition-all duration-300">
+          <svg class="w-8 h-8 text-indigo-400 group-hover:text-indigo-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </div>
+        <p class="text-base font-semibold text-slate-200 mb-1">Click to select or drag and drop</p>
+        <p class="text-xs text-slate-400">Any file type (Images, Videos, Archives, Documents)</p>
+      </div>
+
+      <!-- Security note -->
+      <div class="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
+        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+        <span>End-to-end encrypted via WebRTC. Traffic passes directly between browsers.</span>
+      </div>
+    </div>
+
+    <!-- VIEW 2: SENDER - SHARING LINK ACTIVE -->
+    <div id="view-sender-active" class="hidden w-full glass-card rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            📄
+          </div>
+          <div>
+            <h3 id="sender-filename" class="font-semibold text-white truncate max-w-[180px] sm:max-w-xs">filename.ext</h3>
+            <span id="sender-filesize" class="text-xs text-slate-400">0 KB</span>
+          </div>
+        </div>
+        <button onclick="resetToHome()" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors">
+          Change File
+        </button>
+      </div>
+
+      <!-- Link Generation Box -->
+      <div class="space-y-2">
+        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Share This Link With The Receiver</label>
+        <div class="flex items-center gap-2">
+          <input type="text" id="share-link-input" readonly class="flex-1 bg-slate-900 border border-slate-700/90 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 font-mono focus:outline-none focus:border-indigo-500 transition-colors" />
+          <button id="copy-btn" onclick="copyShareLink()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-lg shadow-indigo-600/30">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+            </svg>
+            <span id="copy-btn-text">Copy</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- QR Code Collapsible -->
+      <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 flex flex-col items-center justify-center gap-3">
+        <canvas id="qr-canvas" class="rounded-lg shadow-md border border-slate-700 bg-white p-2"></canvas>
+        <span class="text-xs text-slate-400">Scan with a phone camera to download instantly</span>
+      </div>
+
+      <!-- Status & Transfer Section -->
+      <div id="sender-transfer-section" class="pt-2">
+        <div class="flex items-center justify-between text-sm mb-2">
+          <span id="sender-status-text" class="text-slate-300 font-medium flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            Waiting for receiver to open link...
+          </span>
+          <span id="sender-percentage" class="text-slate-400 font-mono">0%</span>
+        </div>
+        <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+          <div id="sender-progress-bar" class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-2.5 rounded-full w-0 transition-all duration-150"></div>
+        </div>
+        <p class="text-xs text-amber-300/80 mt-3 flex items-center gap-1.5">
+          <span>⚠️</span> Keep this tab open while the file is transferring.
+        </p>
+      </div>
+    </div>
+
+    <!-- VIEW 3: RECEIVER VIEW (TRIGGERED VIA URL HASH) -->
+    <div id="view-receiver" class="hidden w-full glass-card rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+      <div class="text-center">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center justify-center mx-auto mb-3 text-2xl">
+          📥
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-1">Incoming File Transfer</h2>
+        <p id="receiver-subtitle" class="text-sm text-slate-400">Connecting to sender's device...</p>
+      </div>
+
+      <!-- File Details Card -->
+      <div id="receiver-file-box" class="bg-slate-900/80 rounded-xl p-4 border border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-lg">
+            📦
+          </div>
+          <div>
+            <div id="receiver-filename" class="font-semibold text-slate-200 truncate max-w-[180px] sm:max-w-xs">Waiting for info...</div>
+            <div id="receiver-filesize" class="text-xs text-slate-400">-</div>
+          </div>
+        </div>
+        <span id="receiver-badge" class="px-2.5 py-1 text-xs rounded-full bg-slate-800 text-slate-400 border border-slate-700">Connecting</span>
+      </div>
+
+      <!-- Progress Section -->
+      <div id="receiver-progress-section" class="space-y-2">
+        <div class="flex items-center justify-between text-sm">
+          <span id="receiver-status-text" class="text-slate-300 font-medium">Waiting to establish WebRTC link...</span>
+          <span id="receiver-percentage" class="text-slate-400 font-mono">0%</span>
+        </div>
+        <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+          <div id="receiver-progress-bar" class="bg-gradient-to-r from-sky-500 to-emerald-400 h-2.5 rounded-full w-0 transition-all duration-150"></div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="pt-2">
+        <button id="download-btn" disabled onclick="triggerDirectDownload()" class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-slate-600 disabled:cursor-not-allowed text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          <span id="download-btn-text">Connecting to sender...</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-4 text-center text-xs text-slate-500 border-t border-slate-900">
+    Pure Client-Side WebRTC File Sharing • Direct Browser-to-Browser Pipe
+  </footer>
+
+  <script>
+    // System Constants
+    const CHUNK_SIZE = 16384; // 16 KB standard WebRTC SCTP chunk
+
+    // App State
+    let selectedFile = null;
+    let peerInstance = null;
+    let activeConnection = null;
+    let receivedChunks = [];
+    let receivedBytes = 0;
+    let incomingMetadata = null;
+    let downloadedBlobUrl = null;
+
+    // Toast Manager (Replaces alert)
+    function showToast(message, icon = 'ℹ️') {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      const toastIcon = document.getElementById('toast-icon');
+
+      toastMessage.innerText = message;
+      toastIcon.innerText = icon;
+      toast.classList.remove('translate-y-[-150%]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-150%]', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3000);
+    }
+
+    // Format bytes utility
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Copy to clipboard helper
+    function copyShareLink() {
+      const input = document.getElementById('share-link-input');
+      const copyBtnText = document.getElementById('copy-btn-text');
+      
+      const tempTextarea = document.createElement('textarea');
+      tempTextarea.value = input.value;
+      document.body.appendChild(tempTextarea);
+      tempTextarea.select();
+
+      try {
+        document.execCommand('copy');
+        showToast('Download link copied to clipboard!', '✅');
+        copyBtnText.innerText = 'Copied!';
+        setTimeout(() => { copyBtnText.innerText = 'Copy'; }, 2000);
+      } catch (err) {
+        showToast('Please copy the link manually', '⚠️');
+      }
+      document.body.removeChild(tempTextarea);
+    }
+
+    // Reset application to root state
+    function resetToHome() {
+      if (downloadedBlobUrl) {
+        URL.revokeObjectURL(downloadedBlobUrl);
+        downloadedBlobUrl = null;
+      }
+      window.location.hash = '';
+      window.location.reload();
+    }
+
+    // Drag & Drop Setup
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-indigo-500', 'bg-indigo-500/10');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-indigo-500', 'bg-indigo-500/10');
+      });
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleFileChosen(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleFileChosen(e.target.files[0]);
+      }
+    });
+
+    function handleFileChosen(file) {
+      selectedFile = file;
+
+      // Update UI Views
+      document.getElementById('view-select').classList.add('hidden');
+      document.getElementById('view-sender-active').classList.remove('hidden');
+
+      document.getElementById('sender-filename').innerText = file.name;
+      document.getElementById('sender-filesize').innerText = formatBytes(file.size);
+
+      // Initialize Peer as Host/Sender
+      initSenderPeer();
+    }
+
+    function initSenderPeer() {
+      const connBadge = document.getElementById('connection-badge');
+      const connLabel = document.getElementById('connection-label');
+      connBadge.classList.remove('hidden');
+      connBadge.classList.add('flex');
+      connLabel.innerText = 'Creating room...';
+
+      peerInstance = new Peer();
+
+      peerInstance.on('open', (peerId) => {
+        connLabel.innerText = 'Waiting for recipient';
+        
+        // Build the unique link carrying the sender ID in hash
+        const shareableUrl = `${window.location.origin}${window.location.pathname}#room=${peerId}`;
+        document.getElementById('share-link-input').value = shareableUrl;
+
+        // Render QR Code
+        new QRious({
+          element: document.getElementById('qr-canvas'),
+          value: shareableUrl,
+          size: 140,
+          level: 'M'
+        });
+
+        showToast('Link generated! Share it to start transfer.', '🔗');
+      });
+
+      peerInstance.on('connection', (conn) => {
+        activeConnection = conn;
+        setupSenderConnection(conn);
+      });
+
+      peerInstance.on('error', (err) => {
+        console.error('Peer error:', err);
+        showToast('Peer connection error: ' + err.type, '⚠️');
+      });
+    }
+
+    function setupSenderConnection(conn) {
+      const connLabel = document.getElementById('connection-label');
+      const connDot = document.getElementById('connection-dot');
+      const statusText = document.getElementById('sender-status-text');
+
+      conn.on('open', () => {
+        connLabel.innerText = 'Recipient connected';
+        connDot.classList.remove('bg-amber-400');
+        connDot.classList.add('bg-emerald-400');
+
+        statusText.innerHTML = '<span class="text-emerald-400 font-semibold">Recipient joined. Sending file metadata...</span>';
+
+        // 1. Send file metadata to receiver
+        conn.send({
+          type: 'metadata',
+          name: selectedFile.name,
+          size: selectedFile.size,
+          mime: selectedFile.type
+        });
+      });
+
+      conn.on('data', (data) => {
+        // When recipient is ready to download, begin stream
+        if (data && data.type === 'ready_for_stream') {
+          streamFileToReceiver(conn);
+        }
+      });
+
+      conn.on('close', () => {
+        connLabel.innerText = 'Disconnected';
+        statusText.innerText = 'Recipient disconnected.';
+      });
+    }
+
+    function streamFileToReceiver(conn) {
+      const progressBar = document.getElementById('sender-progress-bar');
+      const percentageText = document.getElementById('sender-percentage');
+      const statusText = document.getElementById('sender-status-text');
+
+      statusText.innerText = 'Transferring file directly to recipient...';
+
+      let offset = 0;
+      const file = selectedFile;
+
+      function sendNextSlice() {
+        if (offset >= file.size) {
+          // Finished sending
+          conn.send({ type: 'transfer_complete' });
+          statusText.innerHTML = '🎉 <span class="text-emerald-400 font-semibold">Transfer finished successfully!</span>';
+          percentageText.innerText = '100%';
+          progressBar.style.width = '100%';
+          showToast('File sent successfully!', '✅');
+          return;
+        }
+
+        // WebRTC flow control & backpressure check
+        if (conn.dataChannel && conn.dataChannel.bufferedAmount > 1024 * 1024) {
+          setTimeout(sendNextSlice, 50);
+          return;
+        }
+
+        const slice = file.slice(offset, offset + CHUNK_SIZE);
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          try {
+            conn.send(e.target.result);
+            offset += e.target.result.byteLength;
+
+            const percent = Math.min(100, Math.round((offset / file.size) * 100));
+            progressBar.style.width = percent + '%';
+            percentageText.innerText = percent + '%';
+
+            sendNextSlice();
+          } catch (err) {
+            console.error('Send error:', err);
+          }
+        };
+
+        reader.readAsArrayBuffer(slice);
+      }
+
+      sendNextSlice();
+    }
+
+    function checkUrlForReceiverRoom() {
+      const hash = window.location.hash;
+      if (!hash.includes('#room=')) return;
+
+      const targetPeerId = hash.replace('#room=', '').trim();
+      if (!targetPeerId) return;
+
+      // Switch views to receiver mode
+      document.getElementById('view-select').classList.add('hidden');
+      document.getElementById('view-sender-active').classList.add('hidden');
+      document.getElementById('view-receiver').classList.remove('hidden');
+
+      initReceiverPeer(targetPeerId);
+    }
+
+    function initReceiverPeer(targetPeerId) {
+      const connBadge = document.getElementById('connection-badge');
+      const connLabel = document.getElementById('connection-label');
+      connBadge.classList.remove('hidden');
+      connBadge.classList.add('flex');
+      connLabel.innerText = 'Connecting...';
+
+      peerInstance = new Peer();
+
+      peerInstance.on('open', () => {
+        // Connect to the sender
+        const conn = peerInstance.connect(targetPeerId, { reliable: true });
+        setupReceiverConnection(conn);
+      });
+
+      peerInstance.on('error', (err) => {
+        console.error('Peer receiver error:', err);
+        document.getElementById('receiver-subtitle').innerText = 'Failed to connect. Sender might have closed their browser.';
+        showToast('Connection failed or expired', '❌');
+      });
+    }
+
+    function setupReceiverConnection(conn) {
+      const connLabel = document.getElementById('connection-label');
+      const connDot = document.getElementById('connection-dot');
+      const subtitle = document.getElementById('receiver-subtitle');
+      const badge = document.getElementById('receiver-badge');
+      const downloadBtn = document.getElementById('download-btn');
+      const downloadBtnText = document.getElementById('download-btn-text');
+
+      conn.on('open', () => {
+        connLabel.innerText = 'Connected to Sender';
+        connDot.classList.remove('bg-amber-400');
+        connDot.classList.add('bg-emerald-400');
+        badge.innerText = 'Ready';
+        badge.classList.replace('text-slate-400', 'text-emerald-400');
+        subtitle.innerText = 'Handshake established. Loading file info...';
+      });
+
+      conn.on('data', (data) => {
+        // 1. Metadata packet received
+        if (data && data.type === 'metadata') {
+          incomingMetadata = data;
+          document.getElementById('receiver-filename').innerText = data.name;
+          document.getElementById('receiver-filesize').innerText = formatBytes(data.size);
+          subtitle.innerText = 'Ready to transfer directly from sender.';
+          
+          downloadBtn.disabled = false;
+          downloadBtnText.innerText = `Download (${formatBytes(data.size)})`;
+          
+          // Automatically request stream or wait for button tap
+          requestDownloadStream(conn);
+          return;
+        }
+
+        // 2. Transfer completion signal
+        if (data && data.type === 'transfer_complete') {
+          finalizeReceivedFile();
+          return;
+        }
+
+        // 3. Binary ArrayBuffer chunk received
+        if (data instanceof ArrayBuffer) {
+          receivedChunks.push(data);
+          receivedBytes += data.byteLength;
+
+          if (incomingMetadata && incomingMetadata.size > 0) {
+            const percent = Math.min(100, Math.round((receivedBytes / incomingMetadata.size) * 100));
+            document.getElementById('receiver-progress-bar').style.width = percent + '%';
+            document.getElementById('receiver-percentage').innerText = percent + '%';
+            document.getElementById('receiver-status-text').innerText = `Receiving: ${formatBytes(receivedBytes)} / ${formatBytes(incomingMetadata.size)}`;
+          }
+        }
+      });
+
+      conn.on('close', () => {
+        connLabel.innerText = 'Closed';
+      });
+    }
+
+    function requestDownloadStream(conn) {
+      receivedChunks = [];
+      receivedBytes = 0;
+      document.getElementById('receiver-status-text').innerText = 'Streaming file data...';
+      conn.send({ type: 'ready_for_stream' });
+    }
+
+    function finalizeReceivedFile() {
+      const mimeType = incomingMetadata.mime || 'application/octet-stream';
+      const fileBlob = new Blob(receivedChunks, { type: mimeType });
+      downloadedBlobUrl = URL.createObjectURL(fileBlob);
+
+      document.getElementById('receiver-status-text').innerHTML = '🎉 <span class="text-emerald-400 font-semibold">File ready to save!</span>';
+      document.getElementById('receiver-progress-bar').style.width = '100%';
+      document.getElementById('receiver-percentage').innerText = '100%';
+
+      const downloadBtn = document.getElementById('download-btn');
+      const downloadBtnText = document.getElementById('download-btn-text');
+
+      downloadBtn.disabled = false;
+      downloadBtn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+      downloadBtn.classList.replace('hover:bg-indigo-500', 'hover:bg-emerald-500');
+      downloadBtnText.innerText = 'Save to Device';
+
+      showToast('File transfer finished! Click Save to Device.', '💾');
+
+      // Automatically trigger browser download
+      triggerDirectDownload();
+    }
+
+    function triggerDirectDownload() {
+      if (!downloadedBlobUrl || !incomingMetadata) return;
+
+      const a = document.createElement('a');
+      a.href = downloadedBlobUrl;
+      a.download = incomingMetadata.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Startup check
+    window.addEventListener('DOMContentLoaded', () => {
+      checkUrlForReceiverRoom();
+    });
+  </script>
+</body>
+</html>
