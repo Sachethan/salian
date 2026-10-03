@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ಪೇಜ್ ಚೇಂಜ್ ಆಗಿದೆ / Page Moved</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      max-width: 520px;
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background-color: #fee2e2;
+      color: #dc2626;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.03em;
+    }
+    h1 {
+      font-size: 1.45rem;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    h2 {
+      font-size: 1.15rem;
+      color: #475569;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+    .description {
+      font-size: 0.95rem;
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 600;
+      padding: 0.9rem 1.5rem;
+      border-radius: 10px;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      margin: 1.25rem 0;
+      width: 100%;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #1d4ed8;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .warning-box {
+      background-color: #fffbeb;
+      border: 1.5px solid #fef3c7;
+      border-radius: 12px;
+      padding: 1.15rem;
+      margin-top: 1rem;
+      text-align: left;
+    }
+    .warning-box p {
+      font-size: 0.9rem;
+      color: #92400e;
+      line-height: 1.55;
+    }
+    .divider {
+      height: 1px;
+      background-color: #fed7aa;
+      margin: 0.65rem 0;
+    }
+    .link-display {
+      margin-top: 0.85rem;
+      font-size: 0.9rem;
+      word-break: break-all;
+      background: #ffffff;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      border: 1px dashed #f59e0b;
+      color: #1d4ed8;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="card">
+    <span class="badge">⚠️ ಇಂಪಾರ್ಟೆಂಟ್ ನೋಟಿಸ್ / Important Notice</span>
+
+    <!-- Kannada (Easy transliterated terms) -->
+    <h1>ಈ ಪೇಜ್ ಈಗ ಕ್ಲೋಸ್ ಆಗಿದೆ</h1>
+    <p class="description">
+      ದಯವಿಟ್ಟು ನಮ್ಮ ಹೊಸ ಲಿಂಕ್ ಯೂಸ್ ಮಾಡಿ. ಹೊಸ ಪೇಜ್ ಓಪನ್ ಮಾಡಲು ಕೆಳಗಿನ ಬಟನ್ ಕ್ಲಿಕ್ ಮಾಡಿ.
+    </p>
+
+    <!-- English -->
+    <h2>This Page Is Now Closed</h2>
+    <p class="description">
+      Please use our new link to access the website. Click the button below to open the new page.
+    </p>
+
+    <!-- Deletion Warning & Save Reminder -->
+    <section class="warning-box">
+      <p>
+        <strong>⚠️ ಗಮನಿಸಿ:</strong> ಈ ಪೇಜ್ ಬೇಗನೆ <strong>ಡಿಲೀಟ್</strong> ಆಗಲಿದೆ. ದಯವಿಟ್ಟು ಈ ಕೆಳಗಿನ ಹೊಸ ಲಿಂಕ್ ಅನ್ನು ಸೇವ್ ಅಥವಾ ಬುಕ್‌ಮಾರ್ಕ್ ಮಾಡಿಕೊಳ್ಳಿ.
+      </p>
+      
+      <div class="divider"></div>
+
+      <p>
+        <strong>⚠️ Warning:</strong> This page is <strong>deleting soon</strong>. Please copy, save, or bookmark this new link now:
+      </p>
+
+      <div class="link-display">
+        https://bajane-webtool.blogspot.com
+      </div>
+    </section>
+    
+    <!-- Breakout Button: target="_top" forces it out of any iframe -->
+    <a 
+      href="https://bajane-webtool.blogspot.com" 
+      target="_top" 
+      rel="noopener noreferrer" 
+      class="btn"
+      onclick="window.top.location.href='https://bajane-webtool.blogspot.com'; return true;"
+    >
+      Open
+    </a>
+
+  </main>
+
+</body>
+</html>
