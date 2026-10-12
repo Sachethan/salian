@@ -1,10 +1,10 @@
 const CACHE_NAME = 'budget-v1';
 const ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
+  '/salian/budget/',
+  '/salian/budget/index.html',
+  '/salian/budget/manifest.json',
+  '/salian/budget/icon-192.png',
+  '/salian/budget/icon-512.png'
 ];
 
 self.addEventListener('install', (e) => {

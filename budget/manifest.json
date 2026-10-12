@@ -1,19 +1,19 @@
 {
   "name": "Budget Track",
   "short_name": "BudgetTrack",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/salian/budget/",
+  "scope": "/salian/budget/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1976d2",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/salian/budget/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "/salian/budget/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

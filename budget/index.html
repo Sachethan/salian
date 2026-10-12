@@ -25,7 +25,21 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  
+  <!-- Manifest Link -->
+<link rel="manifest" href="/salian/budget/manifest.json">
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('/salian/budget/sw.js', { scope: '/salian/budget/' })
+        .then((reg) => console.log('Budget SW registered:', reg.scope))
+        .catch((err) => console.error('Budget SW registration failed:', err));
+    });
+  }
+</script>
+
   <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   
