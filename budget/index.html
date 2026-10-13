@@ -669,18 +669,27 @@
     // Main Renderer
     function renderData(data) {
       rawDataCache = data;
+
+      // 1. Identify pending items and their combined sum
+      const pendingRows = getPendingExpenseRows();
+      const allExpenses = data.expenses || [];
+      const pendingExpenses = allExpenses.filter(e => pendingRows.includes(Number(e.row)));
+      const pendingCount = pendingExpenses.length;
+      const pendingTotalAmount = pendingExpenses.reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
+
+      // 2. Compute UI totals (Exclude pending from spent & available balance)
       const budget = Number(data.totals?.totalBudget || 0);
-      const expense = Number(data.totals?.totalExpenses || 0);
+      const rawTotalExpenses = Number(data.totals?.totalExpenses || 0);
+      const settledExpenses = Math.max(0, rawTotalExpenses - pendingTotalAmount);
+      const remaining = budget - settledExpenses;
 
-      // Available balance is NEVER deducted by pending markers (keeps total pure)
-      const remaining = Number(data.totals?.remaining || 0);
-
+      // 3. Render metrics to UI
       document.getElementById('totalBudget').textContent = fmtINR(budget);
-      document.getElementById('totalExpenses').textContent = fmtINR(expense);
+      document.getElementById('totalExpenses').textContent = fmtINR(settledExpenses);
       document.getElementById('remaining').textContent = fmtINR(remaining);
       document.getElementById('budgetLimitLabel').textContent = `Budget: ${fmtINR(budget)}`;
 
-      const percent = budget > 0 ? Math.min(Math.round((expense / budget) * 100), 100) : (expense > 0 ? 100 : 0);
+      const percent = budget > 0 ? Math.min(Math.round((settledExpenses / budget) * 100), 100) : (settledExpenses > 0 ? 100 : 0);
       document.getElementById('spentPercent').textContent = `${percent}%`;
       const progressBar = document.getElementById('budgetProgress');
       progressBar.style.width = `${percent}%`;
@@ -699,13 +708,6 @@
         pill.className = 'text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full';
         progressBar.className = 'h-full bg-emerald-400 rounded-full transition-all duration-500';
       }
-
-      // Filter and compute pending totals
-      const pendingRows = getPendingExpenseRows();
-      const allExpenses = data.expenses || [];
-      const pendingExpenses = allExpenses.filter(e => pendingRows.includes(Number(e.row)));
-      const pendingCount = pendingExpenses.length;
-      const pendingTotalAmount = pendingExpenses.reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
 
       // Top Header Balance Pill
       const pendingPill = document.getElementById('pendingBalancePill');
@@ -726,16 +728,20 @@
         overviewPendingCard.classList.add('hidden');
       }
 
-      // Dynamic Sub-Tab: If 0 pending, remove the tab entirely
+      // Dynamic Sub-Tab: Hide and fall back when 0 pending items remain
       const subTabPendingBtn = document.getElementById('subTabPendingBtn');
       const subTabPendingBadge = document.getElementById('subTabPendingBadge');
       if (pendingCount > 0) {
+        subTabPendingBtn.classList.remove('hidden');
         subTabPendingBadge.textContent = pendingCount;
       } else {
+        subTabPendingBtn.classList.add('hidden');
         if (currentSubTab === 'pending') {
-          switchSubTab('expenses'); // Smooth fallback
+          switchSubTab('expenses');
         }
       }
+
+      // ... rest of the list rendering stays as-is ...
 
       // Render Budgets Sub-Tab
       const bContainer = document.getElementById('budgetList');
