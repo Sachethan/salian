@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Padubidri Beach | Blue Flag Eco Beach Karnataka</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts for authentic vintage kraft typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600;700&family=Oswald:wght@500;600;700&family=Playfair+Display:ital,wght@1,600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --kraft-dark: #c9b493;
+      --kraft-mid: #dfd0b7;
+      --kraft-light: #efe6d5;
+      --kraft-paper: #f4ede1;
+      --kraft-card: #f9f5ed;
+      --ink-blue: #238ac2;
+      --ink-dark: #3b362f;
+      --ribbon-charcoal: #303338;
+      --ribbon-blue: #2788c6;
+    }
+
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      color: #4a453f;
+      background-color: #dfd0b7;
+      /* Textured kraft paper simulation using CSS layered gradients */
+      background-image: 
+        radial-gradient(#baa283 0.75px, transparent 0.75px),
+        radial-gradient(#cbb698 0.75px, #dfd0b7 0.75px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .heading-font {
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 1.5px;
+    }
+
+    .vintage-font {
+      font-family: 'Oswald', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .script-font {
+      font-family: 'Caveat', cursive;
+    }
+
+    /* Dashed stitched border line */
+    .stitched-border {
+      border: 1.5px dashed #b5a489;
+      box-shadow: 0 0 0 4px #fbf8f2;
+    }
+
+    .stitched-line-b {
+      border-bottom: 2px dashed #9c8a70;
+    }
+
+    /* Top Kraft Header Strip */
+    .kraft-header {
+      background-color: #baa383;
+      background-image: 
+        radial-gradient(#9d8667 0.8px, transparent 0.8px),
+        radial-gradient(#a89172 0.8px, #baa383 0.8px);
+      background-size: 16px 16px;
+      background-position: 0 0, 8px 8px;
+      box-shadow: inset 0 -3px 8px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.06);
+    }
+
+    /* Ribbon tails styling */
+    .ribbon-banner-dark {
+      position: relative;
+      background: #34373c;
+      color: #fff;
+    }
+    .ribbon-banner-dark::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 0;
+      bottom: 0;
+      border-width: 17px 12px 17px 0;
+      border-style: solid;
+      border-color: #34373c #34373c #34373c transparent;
+    }
+    .ribbon-banner-dark::after {
+      content: '';
+      position: absolute;
+      right: -12px;
+      top: 0;
+      bottom: 0;
+      border-width: 17px 0 17px 12px;
+      border-style: solid;
+      border-color: #34373c transparent #34373c #34373c;
+    }
+
+    /* Blue Banner with swallowtail notches */
+    .ribbon-banner-blue {
+      position: relative;
+      background: #2389c5;
+      color: #ffffff;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    }
+    .ribbon-banner-blue::before {
+      content: '';
+      position: absolute;
+      left: -14px;
+      top: 0;
+      bottom: 0;
+      border-width: 20px 14px 20px 0;
+      border-style: solid;
+      border-color: #2389c5 #2389c5 #2389c5 transparent;
+    }
+    .ribbon-banner-blue::after {
+      content: '';
+      position: absolute;
+      right: -14px;
+      top: 0;
+      bottom: 0;
+      border-width: 20px 0 20px 14px;
+      border-style: solid;
+      border-color: #2389c5 transparent #2389c5 #2389c5;
+    }
+
+    /* Slider Button Ribbons */
+    .slider-btn-prev {
+      position: absolute;
+      left: -12px;
+      bottom: 22px;
+      z-index: 30;
+      background: #32353a;
+      box-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+    }
+    .slider-btn-prev::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 0;
+      bottom: 0;
+      border-width: 16px 10px 16px 0;
+      border-style: solid;
+      border-color: #32353a #32353a #32353a transparent;
+    }
+
+    .slider-btn-next {
+      position: absolute;
+      right: -12px;
+      bottom: 22px;
+      z-index: 30;
+      background: #32353a;
+      box-shadow: -2px 3px 6px rgba(0,0,0,0.3);
+    }
+    .slider-btn-next::after {
+      content: '';
+      position: absolute;
+      right: -10px;
+      top: 0;
+      bottom: 0;
+      border-width: 16px 0 16px 10px;
+      border-style: solid;
+      border-color: #32353a transparent #32353a #32353a;
+    }
+
+    /* Embossed Pill Buttons */
+    .retro-btn-blue {
+      background: linear-gradient(to bottom, #39a0dd 0%, #1e75a8 100%);
+      border: 1px solid #1a628d;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .retro-btn-blue:hover {
+      background: linear-gradient(to bottom, #4cb0ee 0%, #2284bd 100%);
+    }
+
+    .retro-btn-dark {
+      background: linear-gradient(to bottom, #4a4d53 0%, #2f3237 100%);
+      border: 1px solid #232529;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .retro-btn-dark:hover {
+      background: linear-gradient(to bottom, #595d64 0%, #3a3d43 100%);
+    }
+
+    /* Polar photo frame effect */
+    .white-frame {
+      background: #ffffff;
+      padding: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.1);
+    }
+    @media (min-width: 768px) {
+      .white-frame {
+        padding: 14px;
+      }
+    }
+
+    /* Corner folded triangle decorations */
+    .corner-fold {
+      position: relative;
+    }
+    .corner-fold::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 0 14px 14px;
+      border-color: transparent transparent #2a2520 transparent;
+      box-shadow: -1px -1px 2px rgba(0,0,0,0.1);
+    }
+    .corner-fold::before {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: -1px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 14px 0 0 14px;
+      border-color: transparent transparent transparent #2a2520;
+    }
+
+    /* Dot indicators */
+    .dot-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #cfbeaa;
+      border: 1px solid #a3917a;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .dot-indicator.active {
+      background: #258ecb;
+      border-color: #176492;
+      box-shadow: 0 0 5px rgba(37, 142, 203, 0.7);
+    }
+
+    /* Smooth Slide Transition */
+    .slide-item {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.6s ease-in-out;
+    }
+    .slide-item.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Custom Notification Toast */
+    #customToast {
+      transform: translateY(120%);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    #customToast.show {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body class="flex flex-col min-h-screen text-stone-800">
+
+  <!-- TOP HEADER STRIP (Matching reference top paper bar) -->
+  <header class="kraft-header border-b border-amber-900/20 py-2.5 sm:py-4 px-3 sm:px-8">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 sm:gap-4">
+      
+      <!-- Top Row on Mobile: Brand Logo + Mobile Menu Toggle Button -->
+      <div class="flex items-center justify-between w-full md:w-auto gap-2 sm:gap-3">
+        <div class="flex items-center gap-2 sm:gap-3 text-left">
+          <!-- Blue Wooden Hut / Sea Icon SVG matching reference -->
+          <div class="relative bg-sky-600 text-white p-1.5 sm:p-2.5 rounded shadow-md border border-sky-700 flex items-center justify-center shrink-0">
+            <svg class="w-7 h-7 sm:w-9 sm:h-9" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3L2 12h3v8h14v-8h3L12 3zm1 15h-2v-4h2v4zm4 0h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"/>
+              <path d="M4 21h16v1H4z" opacity="0.6"/>
+            </svg>
+            <i class="fa-solid fa-water text-[10px] sm:text-xs absolute -bottom-1 text-white/90"></i>
+          </div>
+
+          <div>
+            <div class="flex items-center gap-1 sm:gap-2">
+              <span class="text-[9px] sm:text-xs tracking-widest text-stone-700 font-semibold uppercase border-b border-stone-600 pb-0.5">ESTD &bull; UDUPI &bull; KARNATAKA</span>
+            </div>
+            <div class="flex items-center gap-1 mt-0.5">
+              <i class="fa-solid fa-star text-[10px] sm:text-xs text-stone-700"></i>
+              <h1 class="heading-font text-2xl sm:text-4xl text-stone-900 tracking-wider uppercase leading-none">
+                PADUBIDRI BEACH
+              </h1>
+              <i class="fa-solid fa-star text-[10px] sm:text-xs text-stone-700"></i>
+            </div>
+            <div class="hidden sm:inline-block mt-1 bg-[#373a3f] text-[#efe7d8] text-[11px] font-bold px-3 py-0.5 tracking-wider rounded-sm shadow-sm">
+              INDIA'S PREMIER BLUE FLAG CERTIFIED ECO-BEACH!
+            </div>
+          </div>
+        </div>
+
+        <!-- Single Menu Toggle Button for Mobile Only -->
+        <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="md:hidden retro-btn-blue text-white text-xs font-bold uppercase px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow" aria-label="Toggle Navigation Menu">
+          <i class="fa-solid fa-bars text-xs" id="mobileMenuIcon"></i>
+          <span>MENU</span>
+        </button>
+      </div>
+
+      <!-- Social Icons & Search & Nav Buttons -->
+      <div class="flex flex-col items-center md:items-end gap-2 sm:gap-3 w-full md:w-auto">
+        <!-- Socials + Search (Visible on desktop; simplified on mobile) -->
+        <div class="hidden sm:flex items-center gap-3 w-full sm:w-auto justify-end">
+          <a href="#social" onclick="showNotice('Connecting to official Karnataka Tourism Facebook');" class="text-stone-700 hover:text-sky-700 text-lg p-1 transition" title="Facebook">
+            <i class="fa-brands fa-square-facebook"></i>
+          </a>
+          <a href="#social" onclick="showNotice('Connecting to official Karnataka Tourism Twitter/X');" class="text-stone-700 hover:text-sky-700 text-lg p-1 transition" title="Twitter / X">
+            <i class="fa-brands fa-square-x-twitter"></i>
+          </a>
+          <a href="#social" onclick="showNotice('Explore Instagram gallery tag #PadubidriBeach');" class="text-stone-700 hover:text-sky-700 text-lg p-1 transition" title="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          
+          <!-- Search input box in vintage engraved style -->
+          <div class="relative flex items-center">
+            <input type="text" id="searchInput" placeholder="Search beach info, timing..." 
+                   class="bg-[#d2c0a4] border border-[#a49176] rounded px-3 py-1 pr-7 text-xs text-stone-900 placeholder-stone-600 focus:outline-none focus:ring-1 focus:ring-sky-600 shadow-inner w-44 sm:w-48">
+            <button onclick="handleSearch()" class="absolute right-2 text-stone-600 hover:text-stone-900 text-xs">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Tabs (Hidden on mobile) -->
+        <nav class="hidden md:flex flex-wrap justify-center gap-2">
+          <a href="#home" class="retro-btn-blue text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
+            Home
+          </a>
+          <a href="#activities" class="retro-btn-dark text-stone-100 hover:text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
+            Activities
+          </a>
+          <a href="#blueflag" class="retro-btn-dark text-stone-100 hover:text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
+            Blue Flag
+          </a>
+          <a href="#visitor-guide" class="retro-btn-dark text-stone-100 hover:text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
+            Visitor Info
+          </a>
+          <a href="#contact" class="retro-btn-dark text-stone-100 hover:text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
+            Map & Reach
+          </a>
+        </nav>
+      </div>
+
+    </div>
+
+    <!-- Mobile Single Menu Dropdown Drawer -->
+    <div id="mobileDropdownMenu" class="hidden md:hidden mt-2 pt-2 border-t border-amber-900/20 bg-[#cca37d]/40 rounded p-2 transition-all">
+      <div class="grid grid-cols-2 gap-1.5 text-center">
+        <a href="#home" onclick="toggleMobileMenu()" class="retro-btn-blue text-white text-[11px] font-bold uppercase py-1.5 rounded shadow">
+          Home
+        </a>
+        <a href="#activities" onclick="toggleMobileMenu(); showModal('activitiesModal');" class="retro-btn-dark text-stone-100 text-[11px] font-bold uppercase py-1.5 rounded shadow">
+          Activities
+        </a>
+        <a href="#blueflag" onclick="toggleMobileMenu(); showModal('blueflagModal');" class="retro-btn-dark text-stone-100 text-[11px] font-bold uppercase py-1.5 rounded shadow">
+          Blue Flag
+        </a>
+        <a href="#visitor-guide" onclick="toggleMobileMenu();" class="retro-btn-dark text-stone-100 text-[11px] font-bold uppercase py-1.5 rounded shadow">
+          Visitor Info
+        </a>
+      </div>
+      <!-- Quick mobile search -->
+      <div class="relative mt-2 flex items-center">
+        <input type="text" id="mobileSearchInput" placeholder="Quick search info..." 
+               class="bg-[#dfd0b7] border border-[#a49176] rounded px-3 py-1 pr-7 text-xs text-stone-900 placeholder-stone-600 focus:outline-none w-full shadow-inner">
+        <button onclick="handleMobileSearch()" class="absolute right-2 text-stone-600 hover:text-stone-900 text-xs">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER WITH BORDERS & SHADOW -->
+  <main class="flex-grow max-w-6xl mx-auto w-full px-3 sm:px-6 py-6 md:py-8">
+
+    <!-- HERO SLIDER SECTION (Replicating the framed hero banner from image) -->
+    <section class="relative mb-6" id="home">
+      <!-- White Photo Frame wrapper -->
+      <div class="white-frame rounded-sm relative">
+        <div class="relative overflow-hidden w-full h-[280px] sm:h-[390px] md:h-[460px] bg-slate-900 rounded-sm">
+          
+          <!-- Slide 1: Main Beach Panorama & Signature Overlay Text -->
+          <div class="slide-item active w-full h-full relative" data-index="0">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80" 
+                 alt="Padubidri Blue Sea and Sky" 
+                 class="w-full h-full object-cover brightness-95"
+                 onerror="this.src='https://placehold.co/1200x500/2288cc/ffffff?text=Padubidri+Blue+Flag+Beach'">
+            
+            <!-- Reference Inspired Calligraphic Handwritten Chalk Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 flex flex-col justify-center items-start px-6 sm:px-14">
+              <div class="flex items-center gap-3">
+                <!-- Mascot / doodle icon -->
+                <svg class="w-12 h-12 sm:w-20 sm:h-20 text-white/90 drop-shadow-lg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M30 40 C30 25, 45 15, 60 20 C75 25, 80 40, 75 55 C70 70, 50 85, 30 75 C20 70, 20 50, 30 40 Z" />
+                  <circle cx="45" cy="35" r="3" fill="white" />
+                  <circle cx="60" cy="38" r="3" fill="white" />
+                  <path d="M42 55 Q55 65 68 53" />
+                  <path d="M25 65 Q15 80 25 90" />
+                </svg>
+                <h2 class="script-font text-4xl sm:text-7xl md:text-8xl text-white font-bold drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] transform -rotate-3 select-none">
+                  Get on it!
+                </h2>
+              </div>
+              <p class="text-white/95 text-xs sm:text-base md:text-lg font-semibold bg-black/40 backdrop-blur-sm px-3 sm:px-4 py-1.5 rounded mt-3 max-w-lg shadow border-l-4 border-amber-400">
+                Pristine golden sands, crystal Arabian Sea water & zero-waste eco tranquility.
+              </p>
+            </div>
+
+            <!-- Authentic local badge corner -->
+            <div class="absolute top-4 right-4 bg-white/90 border border-stone-300 p-2 text-center rounded shadow hidden sm:block">
+              <span class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest">Certified</span>
+              <span class="text-sm font-extrabold text-blue-700">BLUE FLAG BEACH</span>
+              <span class="block text-[9px] text-stone-500">Foundation for Env. Education</span>
+            </div>
+          </div>
+
+          <!-- Slide 2: Sunset Splendor -->
+          <div class="slide-item w-full h-full relative" data-index="1">
+            <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1600&q=80" 
+                 alt="Padubidri Sunset over Arabian Sea" 
+                 class="w-full h-full object-cover brightness-90"
+                 onerror="this.src='https://placehold.co/1200x500/d97706/ffffff?text=Glorious+Sunset+at+Padubidri'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-end p-6 sm:p-12">
+              <span class="text-amber-300 font-bold tracking-widest text-xs uppercase mb-1">Twilight Magic on Coastal Karnataka</span>
+              <h2 class="vintage-font text-3xl sm:text-5xl text-white font-bold drop-shadow-md">
+                Breathtaking Arabian Sunsets
+              </h2>
+              <p class="text-stone-200 text-xs sm:text-base max-w-xl mt-1">
+                Walk along the illuminated palm tree promenades and enjoy the soothing evening sea breeze with secure family seating.
+              </p>
+            </div>
+          </div>
+
+          <!-- Slide 3: Adventure & Watersports -->
+          <div class="slide-item w-full h-full relative" data-index="2">
+            <img src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1600&q=80" 
+                 alt="Watersports and Beach activities" 
+                 class="w-full h-full object-cover brightness-90"
+                 onerror="this.src='https://placehold.co/1200x500/0284c7/ffffff?text=Watersports+and+Boating'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-end p-6 sm:p-12">
+              <span class="text-sky-300 font-bold tracking-widest text-xs uppercase mb-1">Action & Water Sports</span>
+              <h2 class="vintage-font text-3xl sm:text-5xl text-white font-bold drop-shadow-md">
+                Speed Boats, Banana Rides & Kayaking
+              </h2>
+              <p class="text-stone-200 text-xs sm:text-base max-w-xl mt-1">
+                Supervised water activities led by certified lifeguards with life jackets and first-aid response facilities.
+              </p>
+            </div>
+          </div>
+
+          <!-- Slide 4: Eco Park & Kids Playing Area -->
+          <div class="slide-item w-full h-full relative" data-index="3">
+            <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1600&q=80" 
+                 alt="Padubidri Beach Park" 
+                 class="w-full h-full object-cover brightness-90"
+                 onerror="this.src='https://placehold.co/1200x500/15803d/ffffff?text=Eco+Park+And+Recreation'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-end p-6 sm:p-12">
+              <span class="text-emerald-300 font-bold tracking-widest text-xs uppercase mb-1">Eco Friendly Tourism</span>
+              <h2 class="vintage-font text-3xl sm:text-5xl text-white font-bold drop-shadow-md">
+                Safe Children's Play Park & Green Gardens
+              </h2>
+              <p class="text-stone-200 text-xs sm:text-base max-w-xl mt-1">
+                Complete with drinking water stations, solar-powered lighting, accessible walkways, and clean showers.
+              </p>
+            </div>
+          </div>
+
+          <!-- Slide 5: Beach Promenade & Shaded Canopies -->
+          <div class="slide-item w-full h-full relative" data-index="4">
+            <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1600&q=80" 
+                 alt="Padubidri Coastline Walk" 
+                 class="w-full h-full object-cover brightness-90"
+                 onerror="this.src='https://placehold.co/1200x500/0369a1/ffffff?text=Pristine+Clean+Coastline'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-end p-6 sm:p-12">
+              <span class="text-amber-200 font-bold tracking-widest text-xs uppercase mb-1">Rest & Relaxation</span>
+              <h2 class="vintage-font text-3xl sm:text-5xl text-white font-bold drop-shadow-md">
+                Eco Bamboo Huts & Beach Hammocks
+              </h2>
+              <p class="text-stone-200 text-xs sm:text-base max-w-xl mt-1">
+                Relax in eco-huts built from natural coastal materials and recharge in serenity.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Slider Control Buttons matching ribbon styling in prompt -->
+        <button id="prevSlideBtn" class="slider-btn-prev text-stone-100 hover:text-white font-bold text-xs uppercase tracking-wider py-1.5 px-3 flex items-center gap-1 transition" aria-label="Previous Slide">
+          <i class="fa-solid fa-chevron-left text-[10px]"></i> PREV.
+        </button>
+
+        <button id="nextSlideBtn" class="slider-btn-next text-stone-100 hover:text-white font-bold text-xs uppercase tracking-wider py-1.5 px-3 flex items-center gap-1 transition" aria-label="Next Slide">
+          NEXT <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        </button>
+
+        <!-- Slider Pause / Resume pill for user friendliness -->
+        <div class="absolute top-3 left-4 z-20">
+          <button id="pauseToggleBtn" class="bg-black/40 hover:bg-black/60 text-white/90 text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded backdrop-blur-sm border border-white/20 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-pause text-[9px]" id="pauseIcon"></i>
+            <span id="pauseText">Auto-sliding</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Stitch Dashed Divider & Indicator Dots (Directly matching image) -->
+      <div class="mt-4 pt-2 border-b-2 border-dashed border-[#b8a68b] flex justify-center pb-3">
+        <div class="flex items-center gap-2.5" id="sliderDotsContainer">
+          <button class="dot-indicator active" onclick="goToSlide(0)" aria-label="Slide 1"></button>
+          <button class="dot-indicator" onclick="goToSlide(1)" aria-label="Slide 2"></button>
+          <button class="dot-indicator" onclick="goToSlide(2)" aria-label="Slide 3"></button>
+          <button class="dot-indicator" onclick="goToSlide(3)" aria-label="Slide 4"></button>
+          <button class="dot-indicator" onclick="goToSlide(4)" aria-label="Slide 5"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3-COLUMN RETRO CARD SECTION (Exactly matching image structure) -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6 items-stretch">
+      
+      <!-- CARD 1: BLUE FLAG ACCREDITATION (Matches left card: RASV AWARD) -->
+      <div class="bg-[#f7f3ea] border border-[#d3c2a6] rounded-sm p-4 sm:p-5 flex flex-col justify-between shadow-md corner-fold relative">
+        <div>
+          <!-- Dark Ribbon Header -->
+          <div class="ribbon-banner-dark -mx-5 -mt-2 py-1.5 px-4 mb-4 text-center">
+            <h3 class="heading-font text-lg tracking-wider text-amber-50 uppercase">
+              BLUE FLAG ACCREDITED
+            </h3>
+          </div>
+
+          <div class="stitched-border bg-white p-3 mb-3 rounded-sm">
+            <h4 class="font-serif italic font-semibold text-stone-700 text-sm border-b border-stone-200 pb-1">
+              Foundation for Environmental Education (Denmark)
+            </h4>
+            <p class="text-xs text-stone-600 mt-2 leading-relaxed">
+              Padubidri Beach was officially awarded the internationally recognized <strong>Blue Flag certification</strong>, reflecting stringent compliance with 33 rigorous criteria across water quality, environmental management, safety, and eco-education.
+            </p>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed italic border-l-2 border-amber-600/40 pl-2 mb-3">
+            <em>Cleanest bathing waters along the Arabian coastline. Safe, calm waters guarded constantly by trained lifeguards and monitored surveillance.</em>
+          </p>
+
+          <ul class="text-xs text-stone-700 space-y-1.5 mb-4 pl-1">
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-check text-sky-600 text-xs"></i> 100% Solid & Plastic Waste Management
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-check text-sky-600 text-xs"></i> Purified Reverse Osmosis Drinking Water
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fa-solid fa-check text-sky-600 text-xs"></i> Universal Disabled-Friendly Beach Ramp
+            </li>
+          </ul>
+        </div>
+
+        <div class="pt-3 border-t border-dashed border-stone-300 flex justify-end">
+          <button onclick="showModal('blueflagModal')" class="retro-btn-blue text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded tracking-wider shadow">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      <!-- CARD 2: FEATURE HIGHLIGHT (Matches center card: INTRODUCING STEAM 202!) -->
+      <div class="bg-[#f7f3ea] border border-[#d3c2a6] rounded-sm p-4 sm:p-5 flex flex-col justify-between shadow-md corner-fold relative">
+        <div>
+          <!-- Blue Ribbon Header (Center focus) -->
+          <div class="ribbon-banner-blue -mx-5 -mt-2 py-1.5 px-4 mb-4 text-center">
+            <h3 class="heading-font text-lg tracking-wider text-white uppercase">
+              BEACH ATTRACTIONS & SPORTS!
+            </h3>
+          </div>
+
+          <h4 class="font-serif italic font-semibold text-stone-700 text-sm text-center mb-2">
+            Sun, surf, and family entertainment on Udupi's coast.
+          </h4>
+
+          <p class="text-xs text-stone-600 text-center leading-relaxed mb-3">
+            Padubidri offers thrilling jet skiing, speed-boat excursions into the deep sea, water scooters, and volleyball courts under swaying coconut groves.
+          </p>
+
+          <p class="text-xs text-stone-600 leading-relaxed italic text-center mb-3">
+            <em>Featuring well-maintained changing rooms, high-pressure showers, and illuminated walking pathways for evening beach strolls.</em>
+          </p>
+
+          <!-- Dual photo thumbnails matching reference card center images -->
+          <div class="grid grid-cols-2 gap-2 my-2">
+            <div class="bg-white p-1 border border-stone-300 shadow-sm rounded-sm text-center">
+              <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=400&q=80" 
+                   alt="Beach side umbrellas and watersports" 
+                   class="w-full h-16 object-cover rounded-xs"
+                   onerror="this.src='https://placehold.co/180x120/38bdf8/ffffff?text=Water+Sports'">
+              <span class="text-[10px] font-semibold text-stone-700 block mt-1">Water Sports</span>
+            </div>
+            <div class="bg-white p-1 border border-stone-300 shadow-sm rounded-sm text-center">
+              <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=400&q=80" 
+                   alt="Sunset promenade view" 
+                   class="w-full h-16 object-cover rounded-xs"
+                   onerror="this.src='https://placehold.co/180x120/f59e0b/ffffff?text=Sunset+View'">
+              <span class="text-[10px] font-semibold text-stone-700 block mt-1">Sunset Park</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-dashed border-stone-300 flex justify-end">
+          <button onclick="showModal('activitiesModal')" class="retro-btn-blue text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded tracking-wider shadow">
+            Explore
+          </button>
+        </div>
+      </div>
+
+      <!-- CARD 3: VISITOR GUIDE & AMENITIES (Matches right card: GET ON IT!) -->
+      <div class="bg-[#f7f3ea] border border-[#d3c2a6] rounded-sm p-4 sm:p-5 flex flex-col justify-between shadow-md corner-fold relative">
+        <div>
+          <!-- Dark Ribbon Header -->
+          <div class="ribbon-banner-dark -mx-5 -mt-2 py-1.5 px-4 mb-4 text-center">
+            <h3 class="heading-font text-lg tracking-wider text-amber-50 uppercase">
+              VISIT PADUBIDRI!
+            </h3>
+          </div>
+
+          <h4 class="font-serif italic font-semibold text-stone-700 text-sm text-left mb-2">
+            Timings, location, and travel guide.
+          </h4>
+
+          <div class="stitched-border bg-white p-3 mb-3 rounded-sm space-y-1.5 text-xs text-stone-700">
+            <div class="flex justify-between border-b border-stone-200 pb-1">
+              <span class="font-bold text-stone-800"><i class="fa-regular fa-clock mr-1 text-sky-600"></i> Open Hours:</span>
+              <span>8:00 AM – 7:00 PM</span>
+            </div>
+            <div class="flex justify-between border-b border-stone-200 pb-1">
+              <span class="font-bold text-stone-800"><i class="fa-solid fa-ticket mr-1 text-sky-600"></i> Entry Nominal Fee:</span>
+              <span>₹10 – ₹20 / person</span>
+            </div>
+            <div class="flex justify-between border-b border-stone-200 pb-1">
+              <span class="font-bold text-stone-800"><i class="fa-solid fa-car mr-1 text-sky-600"></i> Parking:</span>
+              <span>Spacious slots for cars & buses</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-bold text-stone-800"><i class="fa-solid fa-location-dot mr-1 text-sky-600"></i> Location:</span>
+              <span>NH 66, Padubidri, Udupi</span>
+            </div>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed italic border-l-2 border-stone-400 pl-2 mb-3">
+            <em>Conveniently positioned halfway between Mangaluru (30 km) and Udupi Temple City (25 km), making it an ideal day trip stop.</em>
+          </p>
+        </div>
+
+        <div class="pt-3 border-t border-dashed border-stone-300 flex justify-end">
+          <button onclick="showModal('guideModal')" class="retro-btn-blue text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded tracking-wider shadow">
+            Travel Guide
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- DETAILED CONTENT SECTION: PADUBIDRI BEACH COMPREHENSIVE GUIDE -->
+    <section class="my-10 bg-[#fbf8f2] border border-[#d7c8b0] rounded p-5 sm:p-8 shadow-sm" id="visitor-guide">
+      <div class="border-b-2 border-dashed border-[#c2b299] pb-4 mb-6 text-center">
+        <span class="text-xs font-bold tracking-widest uppercase text-stone-600">Discover coastal serenity on padubidribeach.com</span>
+        <h2 class="heading-font text-3xl sm:text-4xl text-stone-800 tracking-wide mt-1">
+          Everything You Need to Know About Padubidri Beach
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        
+        <!-- Left: Cultural & Natural Splendor -->
+        <div class="space-y-4">
+          <div>
+            <h3 class="vintage-font text-xl text-stone-900 border-b border-amber-900/20 pb-1 flex items-center gap-2">
+              <i class="fa-solid fa-compass text-sky-700"></i> Where River Meets Sea & Sunset Glows
+            </h3>
+            <p class="text-sm text-stone-700 mt-2 leading-relaxed">
+              Padubidri Beach in Udupi district, Karnataka, is renowned for its tranquil golden shorelines and the dramatic natural confluence where the Kamini river embraces the Arabian Sea at the southern Padubidri End Point. Unlike commercialized beaches, it maintains quiet dignity and pristine cleanliness.
+            </p>
+          </div>
+
+          <div class="bg-[#efe5d3] p-4 rounded border border-[#d4c3a9]">
+            <h4 class="font-bold text-stone-800 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-umbrella-beach text-sky-700"></i> Why Padubidri Beach is Unique:
+            </h4>
+            <ul class="text-xs sm:text-sm text-stone-700 space-y-2 mt-2">
+              <li class="flex items-start gap-2">
+                <span class="text-sky-700 font-bold">&#10003;</span>
+                <span><strong>International Eco-Standard:</strong> One of very few beaches in India holding the prized Blue Flag certification for eco-sustainability and cleanliness.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-sky-700 font-bold">&#10003;</span>
+                <span><strong>Family & Child Safety:</strong> Complete enclosure, round-the-clock trained lifeguards, watch towers, and dedicated shallow swimming zones.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-sky-700 font-bold">&#10003;</span>
+                <span><strong>Padubidri End Point:</strong> Stroll just 1.5 km to where the gentle backwaters blend into the open ocean, an iconic photography spot.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right: Activities, Nearby Delicacies & Logistics -->
+        <div class="space-y-4">
+          <div>
+            <h3 class="vintage-font text-xl text-stone-900 border-b border-amber-900/20 pb-1 flex items-center gap-2">
+              <i class="fa-solid fa-utensils text-sky-700"></i> Coastal Delicacies & Local Flavors
+            </h3>
+            <p class="text-sm text-stone-700 mt-2 leading-relaxed">
+              Right outside the eco-boundary, enjoy genuine Tulunadu seafood and vegetarian culinary wonders: Neer Dosa, freshly caught Anjal (King Fish) tawa fry, Kori Rotti, Tender Coconuts, and authentic Mangalore buns.
+            </p>
+          </div>
+
+          <div class="bg-white p-4 rounded border border-stone-200 shadow-inner">
+            <h4 class="font-bold text-stone-800 text-sm mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-map-location-dot text-sky-700"></i> How to Reach Padubidri
+            </h4>
+            <div class="text-xs text-stone-600 space-y-2 leading-relaxed">
+              <p><strong>By Road:</strong> Located adjacent to National Highway 66 (NH 66). Frequent buses operate between Mangaluru and Udupi, dropping passengers right at Padubidri bus station (auto rickshaws are available 2 km directly to the beach).</p>
+              <p><strong>By Rail:</strong> The nearest Konkan Railway stations are <strong>Padubidri Railway Station</strong> (3 km) and <strong>Mulki Railway Station</strong> (11 km).</p>
+              <p><strong>By Air:</strong> Mangaluru International Airport (IXE) is just 35 km away with taxi services directly to Padubidri Beach.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action CTA -->
+      <div class="mt-8 pt-6 border-t border-dashed border-[#b8a68b] flex flex-wrap justify-between items-center gap-4 bg-[#f0e6d5] p-4 rounded">
+        <div>
+          <h4 class="heading-font text-xl text-stone-800">Planning a trip to padubidribeach.com?</h4>
+          <p class="text-xs text-stone-600">Save the official location coordinates and emergency helpline numbers.</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="copyDomain()" class="retro-btn-dark text-white text-xs font-bold uppercase px-4 py-2 rounded shadow">
+            <i class="fa-regular fa-copy mr-1"></i> Copy Domain URL
+          </button>
+          <a href="https://maps.google.com/?q=Padubidri+Blue+Flag+Beach+Karnataka" target="_blank" rel="noopener noreferrer" class="retro-btn-blue text-white text-xs font-bold uppercase px-4 py-2 rounded shadow inline-flex items-center gap-1">
+            <i class="fa-solid fa-location-arrow mr-1"></i> Open in Maps
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- VINTAGE FOOTER -->
+  <footer class="kraft-header border-t border-amber-900/30 py-8 px-4 text-center text-stone-800">
+    <div class="max-w-4xl mx-auto space-y-3">
+      <div class="flex justify-center items-center gap-2">
+        <i class="fa-solid fa-star text-xs text-stone-600"></i>
+        <span class="heading-font text-2xl tracking-widest uppercase text-stone-900">PADUBIDRI BEACH</span>
+        <i class="fa-solid fa-star text-xs text-stone-600"></i>
+      </div>
+
+      <p class="text-xs text-stone-700 max-w-xl mx-auto">
+        Dedicated to promoting responsible, plastic-free coastal tourism in Karnataka. Blue Flag certified eco-beach maintaining the highest coastal conservation standards.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 text-xs font-semibold text-stone-700 pt-2">
+        <a href="#home" class="hover:text-sky-800 underline">Top of Page</a>
+        <span>&bull;</span>
+        <a href="#activities" onclick="showModal('activitiesModal')" class="hover:text-sky-800 underline">Water Sports</a>
+        <span>&bull;</span>
+        <a href="#blueflag" onclick="showModal('blueflagModal')" class="hover:text-sky-800 underline">Blue Flag Criteria</a>
+        <span>&bull;</span>
+        <a href="#visitor-guide" onclick="showModal('guideModal')" class="hover:text-sky-800 underline">Visitor Guidelines</a>
+      </div>
+
+      <div class="pt-4 border-t border-stone-400/40 text-[11px] text-stone-600">
+        &copy; <span id="currentYear"></span> padubidribeach.com &bull; Handcrafted Retro Theme inspired design &bull; Coastal Karnataka Tourism
+      </div>
+    </div>
+  </footer>
+
+  <!-- INTERACTIVE MODAL POPUP (Replaces alert/confirm) -->
+  <div id="infoModal" class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center p-4">
+    <div class="bg-[#fcf9f2] border-2 border-[#bfae95] rounded-sm max-w-md w-full p-6 relative shadow-2xl corner-fold">
+      <button onclick="closeModal()" class="absolute top-3 right-3 text-stone-600 hover:text-stone-900 text-lg p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div id="modalContent">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="mt-5 pt-3 border-t border-dashed border-stone-300 flex justify-end">
+        <button onclick="closeModal()" class="retro-btn-blue text-white text-xs font-bold uppercase px-4 py-1.5 rounded">
+          Got It
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING FEEDBACK TOAST -->
+  <div id="customToast" class="fixed bottom-5 right-5 z-50 bg-[#32363b] text-amber-50 text-xs px-4 py-2.5 rounded shadow-xl border border-amber-200/20 flex items-center gap-2">
+    <i class="fa-solid fa-circle-check text-sky-400"></i>
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <!-- JAVASCRIPT FOR SLIDER AND INTERACTIVITY -->
+  <script>
+    // Set Current Year dynamically
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Mobile Single Menu Toggle Functionality
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileDropdownMenu');
+      const icon = document.getElementById('mobileMenuIcon');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        icon.className = "fa-solid fa-xmark text-xs";
+      } else {
+        menu.classList.add('hidden');
+        icon.className = "fa-solid fa-bars text-xs";
+      }
+    }
+
+    function handleMobileSearch() {
+      const input = document.getElementById('mobileSearchInput');
+      const val = input ? input.value.trim().toLowerCase() : '';
+      if (!val) {
+        showNotice("Enter a search term");
+        return;
+      }
+      toggleMobileMenu();
+      if (val.includes("sport") || val.includes("boat") || val.includes("activity")) {
+        showModal('activitiesModal');
+      } else if (val.includes("flag") || val.includes("clean") || val.includes("certif")) {
+        showModal('blueflagModal');
+      } else {
+        showModal('guideModal');
+      }
+    }
+
+    if (document.getElementById('mobileSearchInput')) {
+      document.getElementById('mobileSearchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') handleMobileSearch();
+      });
+    }
+
+    // SLIDER ENGINE
+    const slides = document.querySelectorAll('.slide-item');
+    const dots = document.querySelectorAll('.dot-indicator');
+    const prevBtn = document.getElementById('prevSlideBtn');
+    const nextBtn = document.getElementById('nextSlideBtn');
+    const pauseToggleBtn = document.getElementById('pauseToggleBtn');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const pauseText = document.getElementById('pauseText');
+
+    let currentSlide = 0;
+    let autoSlideInterval = null;
+    let isPlaying = true;
+    const SLIDE_DURATION = 4500; // 4.5 seconds
+
+    function showSlide(index) {
+      if (index >= slides.length) currentSlide = 0;
+      else if (index < 0) currentSlide = slides.length - 1;
+      else currentSlide = index;
+
+      slides.forEach((slide, idx) => {
+        if (idx === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlide) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    function goToSlide(index) {
+      showSlide(index);
+      resetAutoSlide();
+    }
+
+    function startAutoSlide() {
+      if (autoSlideInterval) clearInterval(autoSlideInterval);
+      autoSlideInterval = setInterval(nextSlide, SLIDE_DURATION);
+      isPlaying = true;
+      pauseIcon.className = "fa-solid fa-pause text-[9px]";
+      pauseText.textContent = "Auto-sliding";
+    }
+
+    function stopAutoSlide() {
+      if (autoSlideInterval) clearInterval(autoSlideInterval);
+      isPlaying = false;
+      pauseIcon.className = "fa-solid fa-play text-[9px]";
+      pauseText.textContent = "Slide Paused";
+    }
+
+    function resetAutoSlide() {
+      if (isPlaying) {
+        startAutoSlide();
+      }
+    }
+
+    // Slider Event Listeners
+    nextBtn.addEventListener('click', () => {
+      nextSlide();
+      resetAutoSlide();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      prevSlide();
+      resetAutoSlide();
+    });
+
+    pauseToggleBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        stopAutoSlide();
+        showNotice('Slider paused');
+      } else {
+        startAutoSlide();
+        showNotice('Slider resumed');
+      }
+    });
+
+    // Touch swipe support for mobile
+    const heroSlider = document.getElementById('home');
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    heroSlider.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    heroSlider.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+    }, { passive: true });
+
+    function handleGesture() {
+      if (touchEndX < touchStartX - 40) {
+        // Swipe Left -> Next
+        nextSlide();
+        resetAutoSlide();
+      }
+      if (touchEndX > touchStartX + 40) {
+        // Swipe Right -> Prev
+        prevSlide();
+        resetAutoSlide();
+      }
+    }
+
+    // Modal Handling (Replaces alert())
+    const modal = document.getElementById('infoModal');
+    const modalContent = document.getElementById('modalContent');
+
+    const modalData = {
+      blueflagModal: `
+        <div class="ribbon-banner-blue -mx-6 -mt-6 py-2 px-4 mb-4 text-center">
+          <h3 class="heading-font text-lg text-white">Padubidri Blue Flag Certification</h3>
+        </div>
+        <p class="text-xs text-stone-600 mb-3 leading-relaxed">
+          The <strong>Blue Flag</strong> is one of the world's most recognized voluntary eco-labels awarded to beaches, marinas, and sustainable tourism boats. Padubidri was rigorously audited and certified under Denmark's FEE.
+        </p>
+        <div class="bg-amber-100/60 p-3 rounded text-xs space-y-1.5 text-stone-700 border border-amber-300">
+          <p><strong>1. Bathing Water Quality:</strong> Strictly tested every fortnight.</p>
+          <p><strong>2. Environmental Management:</strong> Zero plastic zone, clean toilets, gray-water recycling.</p>
+          <p><strong>3. Safety & Services:</strong> First-aid facilities, professional beach rescuers, life buoys.</p>
+          <p><strong>4. Universal Access:</strong> Wheelchair ramps directly approaching the shoreline.</p>
+        </div>
+      `,
+      activitiesModal: `
+        <div class="ribbon-banner-dark -mx-6 -mt-6 py-2 px-4 mb-4 text-center">
+          <h3 class="heading-font text-lg text-amber-50">Watersports & Activities</h3>
+        </div>
+        <p class="text-xs text-stone-600 mb-3 leading-relaxed">
+          From adrenaline rushes to quiet contemplation, here is what you can experience at Padubidri:
+        </p>
+        <ul class="text-xs text-stone-700 space-y-2 border-l-2 border-sky-600 pl-3">
+          <li><strong>Jet Ski & Water Scooter:</strong> Supervised rides along designated deep water corridors.</li>
+          <li><strong>Banana & Bumper Rides:</strong> Perfect for groups and families.</li>
+          <li><strong>Padubidri River Estuary Boating:</strong> Peaceful boat rides where the Kamini river meets the sea.</li>
+          <li><strong>Beach Volleyball & Play Yard:</strong> Standard courts and dedicated swing sets for children.</li>
+        </ul>
+      `,
+      guideModal: `
+        <div class="ribbon-banner-blue -mx-6 -mt-6 py-2 px-4 mb-4 text-center">
+          <h3 class="heading-font text-lg text-white">Visitor Guide & Regulations</h3>
+        </div>
+        <div class="text-xs text-stone-700 space-y-2">
+          <p><strong>Timings:</strong> 8:00 AM to 7:00 PM every day.</p>
+          <p><strong>Entry Ticket:</strong> ₹10 for adults, ₹5 for children (funds maintenance & eco conservation).</p>
+          <p><strong>Guidelines:</strong></p>
+          <ul class="list-disc pl-5 space-y-1 text-stone-600">
+            <li>Single-use plastic bottles and polythene bags are strictly forbidden.</li>
+            <li>No alcohol consumption or littering on the beach grounds.</li>
+            <li>Follow lifeguard flag warnings (Red flag indicates rough sea).</li>
+          </ul>
+        </div>
+      `
+    };
+
+    function showModal(type) {
+      if (modalData[type]) {
+        modalContent.innerHTML = modalData[type];
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Toast message function
+    function showNotice(text) {
+      const toast = document.getElementById('customToast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Copy Domain button helper (uses execCommand fallback for iFrame compatibility)
+    function copyDomain() {
+      const dummy = document.createElement("input");
+      document.body.appendChild(dummy);
+      dummy.value = "https://padubidribeach.com";
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      showNotice("Copied padubidribeach.com to clipboard!");
+    }
+
+    // Search Box Functionality
+    function handleSearch() {
+      const val = document.getElementById('searchInput').value.trim().toLowerCase();
+      if (!val) {
+        showNotice("Please enter a term (e.g., 'water sports', 'timing', 'parking')");
+        return;
+      }
+      if (val.includes("sport") || val.includes("boat") || val.includes("activity")) {
+        showModal('activitiesModal');
+      } else if (val.includes("flag") || val.includes("clean") || val.includes("certif")) {
+        showModal('blueflagModal');
+      } else {
+        showModal('guideModal');
+      }
+    }
+
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        handleSearch();
+      }
+    });
+
+    // Close modal on escape key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Close modal on outside click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Initialize Auto Slider on window load
+    window.onload = function() {
+      startAutoSlide();
+    };
+  </script>
+</body>
+  </html>
