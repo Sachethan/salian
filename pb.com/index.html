@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Padubidri Beach | Blue Flag Eco Beach Karnataka</title>
+  <title>Padubidri Beach - Blue Flag Certified Beach Guide & Travel Info</title>
+  <meta name="description" content="Official Visitor Guide for Padubidri Blue Flag Beach, Karnataka. Timings, entry fee, water sports prices, wooden boardwalk, amenities, homestays, and driving route via NH 66.">
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <!-- Google Fonts for authentic vintage kraft typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600;700&family=Oswald:wght@500;600;700&family=Playfair+Display:ital,wght@1,600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -30,7 +34,6 @@
       font-family: 'Source Sans 3', sans-serif;
       color: #4a453f;
       background-color: #dfd0b7;
-      /* Textured kraft paper simulation using CSS layered gradients */
       background-image: 
         radial-gradient(#baa283 0.75px, transparent 0.75px),
         radial-gradient(#cbb698 0.75px, #dfd0b7 0.75px);
@@ -54,17 +57,11 @@
       font-family: 'Caveat', cursive;
     }
 
-    /* Dashed stitched border line */
     .stitched-border {
       border: 1.5px dashed #b5a489;
       box-shadow: 0 0 0 4px #fbf8f2;
     }
 
-    .stitched-line-b {
-      border-bottom: 2px dashed #9c8a70;
-    }
-
-    /* Top Kraft Header Strip */
     .kraft-header {
       background-color: #baa383;
       background-image: 
@@ -75,7 +72,6 @@
       box-shadow: inset 0 -3px 8px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.06);
     }
 
-    /* Ribbon tails styling */
     .ribbon-banner-dark {
       position: relative;
       background: #34373c;
@@ -102,7 +98,6 @@
       border-color: #34373c transparent #34373c #34373c;
     }
 
-    /* Blue Banner with swallowtail notches */
     .ribbon-banner-blue {
       position: relative;
       background: #2389c5;
@@ -130,7 +125,6 @@
       border-color: #2389c5 transparent #2389c5 #2389c5;
     }
 
-    /* Slider Button Ribbons */
     .slider-btn-prev {
       position: absolute;
       left: -12px;
@@ -169,7 +163,6 @@
       border-color: #32353a transparent #32353a #32353a;
     }
 
-    /* Embossed Pill Buttons */
     .retro-btn-blue {
       background: linear-gradient(to bottom, #39a0dd 0%, #1e75a8 100%);
       border: 1px solid #1a628d;
@@ -188,7 +181,6 @@
       background: linear-gradient(to bottom, #595d64 0%, #3a3d43 100%);
     }
 
-    /* Polar photo frame effect */
     .white-frame {
       background: #ffffff;
       padding: 10px;
@@ -200,7 +192,6 @@
       }
     }
 
-    /* Corner folded triangle decorations */
     .corner-fold {
       position: relative;
     }
@@ -216,19 +207,7 @@
       border-color: transparent transparent #2a2520 transparent;
       box-shadow: -1px -1px 2px rgba(0,0,0,0.1);
     }
-    .corner-fold::before {
-      content: "";
-      position: absolute;
-      bottom: -1px;
-      left: -1px;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 14px 0 0 14px;
-      border-color: transparent transparent transparent #2a2520;
-    }
 
-    /* Dot indicators */
     .dot-indicator {
       width: 10px;
       height: 10px;
@@ -245,7 +224,6 @@
       box-shadow: 0 0 5px rgba(37, 142, 203, 0.7);
     }
 
-    /* Smooth Slide Transition */
     .slide-item {
       display: none;
       opacity: 0;
@@ -256,7 +234,6 @@
       opacity: 1;
     }
 
-    /* Custom Notification Toast */
     #customToast {
       transform: translateY(120%);
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -269,14 +246,13 @@
 
 <body class="flex flex-col min-h-screen text-stone-800">
 
-  <!-- TOP HEADER STRIP (Matching reference top paper bar) -->
-  <header class="kraft-header border-b border-amber-900/20 py-2.5 sm:py-4 px-3 sm:px-8">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 sm:gap-4">
+  <!-- TOP HEADER STRIP -->
+  <header class="kraft-header border-b border-amber-900/20 py-2.5 sm:py-4 px-3 sm:px-8 sticky top-0 z-40">
+    <div class="max-w-full mx-auto flex flex-col md:flex-row justify-between items-center gap-2 sm:gap-4">
       
-      <!-- Top Row on Mobile: Brand Logo + Mobile Menu Toggle Button -->
+      <!-- Brand Logo + Mobile Menu Toggle Button -->
       <div class="flex items-center justify-between w-full md:w-auto gap-2 sm:gap-3">
-        <div class="flex items-center gap-2 sm:gap-3 text-left">
-          <!-- Blue Wooden Hut / Sea Icon SVG matching reference -->
+        <a href="#home" class="flex items-center gap-2 sm:gap-3 text-left">
           <div class="relative bg-sky-600 text-white p-1.5 sm:p-2.5 rounded shadow-md border border-sky-700 flex items-center justify-center shrink-0">
             <svg class="w-7 h-7 sm:w-9 sm:h-9" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 3L2 12h3v8h14v-8h3L12 3zm1 15h-2v-4h2v4zm4 0h-2v-6H9v6H7v-7.81l5-4.5 5 4.5V18z"/>
@@ -287,7 +263,7 @@
 
           <div>
             <div class="flex items-center gap-1 sm:gap-2">
-              <span class="text-[9px] sm:text-xs tracking-widest text-stone-700 font-semibold uppercase border-b border-stone-600 pb-0.5">ESTD &bull; UDUPI &bull; KARNATAKA</span>
+              <span class="text-[9px] sm:text-xs tracking-widest text-stone-700 font-semibold uppercase border-b border-stone-600 pb-0.5">BLUE FLAG CERTIFIED • UDUPI COAST, KARNATAKA</span>
             </div>
             <div class="flex items-center gap-1 mt-0.5">
               <i class="fa-solid fa-star text-[10px] sm:text-xs text-stone-700"></i>
@@ -296,460 +272,745 @@
               </h1>
               <i class="fa-solid fa-star text-[10px] sm:text-xs text-stone-700"></i>
             </div>
-            <div class="hidden sm:inline-block mt-1 bg-[#373a3f] text-[#efe7d8] text-[11px] font-bold px-3 py-0.5 tracking-wider rounded-sm shadow-sm">
-              INDIA'S PREMIER BLUE FLAG CERTIFIED ECO-BEACH!
-            </div>
           </div>
-        </div>
+        </a>
 
-        <!-- Single Menu Toggle Button for Mobile Only -->
-        <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="md:hidden retro-btn-blue text-white text-xs font-bold uppercase px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow" aria-label="Toggle Navigation Menu">
+        <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="md:hidden retro-btn-blue text-white text-xs font-bold uppercase px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow" aria-label="Toggle Menu">
           <i class="fa-solid fa-bars text-xs" id="mobileMenuIcon"></i>
           <span>MENU</span>
         </button>
       </div>
 
-      <!-- Social Icons & Search & Nav Buttons -->
+      <!-- Search & Navigation -->
       <div class="flex flex-col items-center md:items-end gap-2 sm:gap-3 w-full md:w-auto">
-        <!-- Socials + Search (Visible on desktop; simplified on mobile) -->
-        <div class="hidden sm:flex items-center gap-3 w-full sm:w-auto justify-end">
-          <a href="#social" onclick="showNotice('Connecting to official Karnataka Tourism Facebook');" class="text-stone-700 hover:text-sky-700 text-lg p-1 transition" title="Facebook">
-            <i class="fa-brands fa-square-facebook"></i>
-          </a>
-          <a href="#social" onclick="showNotice('Connecting to official Karnataka Tourism Twitter/X');" class="text-stone-700 hover:text-sky-700 text-lg p-1 transition" title="Twitter / X">
-            <i class="fa-brands fa-square-x-twitter"></i>
-          </a>
-          <a href="#social" onclick="showNotice('Explore Instagram gallery tag #PadubidriBeach');" class="text-stone-700 hover:text-sky-700 text-lg p-1 transition" title="Instagram">
-            <i class="fa-brands fa-instagram"></i>
-          </a>
-          
-          <!-- Search input box in vintage engraved style -->
-          <div class="relative flex items-center">
-            <input type="text" id="searchInput" placeholder="Search beach info, timing..." 
-                   class="bg-[#d2c0a4] border border-[#a49176] rounded px-3 py-1 pr-7 text-xs text-stone-900 placeholder-stone-600 focus:outline-none focus:ring-1 focus:ring-sky-600 shadow-inner w-44 sm:w-48">
-            <button onclick="handleSearch()" class="absolute right-2 text-stone-600 hover:text-stone-900 text-xs">
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Desktop Navigation Tabs (Hidden on mobile) -->
-        <nav class="hidden md:flex flex-wrap justify-center gap-2">
-          <a href="#home" class="retro-btn-blue text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
-            Home
-          </a>
-          <a href="#activities" class="retro-btn-dark text-stone-100 hover:text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
-            Activities
-          </a>
-          <a href="#blueflag" class="retro-btn-dark text-stone-100 hover:text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
-            Blue Flag
-          </a>
-          <a href="#visitor-guide" class="retro-btn-dark text-stone-100 hover:text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
-            Visitor Info
-          </a>
-          <a href="#contact" class="retro-btn-dark text-stone-100 hover:text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded-full tracking-wider transition">
-            Map & Reach
-          </a>
+        <nav class="hidden md:flex flex-wrap justify-center gap-1.5 text-xs font-bold uppercase">
+          <a href="#live-status" class="retro-btn-dark text-stone-100 hover:text-white px-3 py-1.5 rounded-full transition">Live Status</a>
+          <a href="#transit" class="retro-btn-dark text-stone-100 hover:text-white px-3 py-1.5 rounded-full transition">Transit & Fare</a>
+          <a href="#comparison" class="retro-btn-dark text-stone-100 hover:text-white px-3 py-1.5 rounded-full transition">Beach vs Estuary</a>
+          <a href="#watersports" class="retro-btn-dark text-stone-100 hover:text-white px-3 py-1.5 rounded-full transition">Water Sports</a>
+          <a href="#rules" class="retro-btn-dark text-stone-100 hover:text-white px-3 py-1.5 rounded-full transition">Rules & Fees</a>
+          <a href="#food" class="retro-btn-dark text-stone-100 hover:text-white px-3 py-1.5 rounded-full transition">Food Guide</a>
+          <a href="#itinerary" class="retro-btn-dark text-stone-100 hover:text-white px-3 py-1.5 rounded-full transition">1-Day Itinerary</a>
+          <a href="#stays" class="retro-btn-dark text-stone-100 hover:text-white px-3 py-1.5 rounded-full transition">Stays</a>
+          <a href="#inquiry" class="retro-btn-blue text-white px-3.5 py-1.5 rounded-full transition">Inquiry</a>
         </nav>
       </div>
-
     </div>
 
-    <!-- Mobile Single Menu Dropdown Drawer -->
-    <div id="mobileDropdownMenu" class="hidden md:hidden mt-2 pt-2 border-t border-amber-900/20 bg-[#cca37d]/40 rounded p-2 transition-all">
-      <div class="grid grid-cols-2 gap-1.5 text-center">
-        <a href="#home" onclick="toggleMobileMenu()" class="retro-btn-blue text-white text-[11px] font-bold uppercase py-1.5 rounded shadow">
-          Home
-        </a>
-        <a href="#activities" onclick="toggleMobileMenu(); showModal('activitiesModal');" class="retro-btn-dark text-stone-100 text-[11px] font-bold uppercase py-1.5 rounded shadow">
-          Activities
-        </a>
-        <a href="#blueflag" onclick="toggleMobileMenu(); showModal('blueflagModal');" class="retro-btn-dark text-stone-100 text-[11px] font-bold uppercase py-1.5 rounded shadow">
-          Blue Flag
-        </a>
-        <a href="#visitor-guide" onclick="toggleMobileMenu();" class="retro-btn-dark text-stone-100 text-[11px] font-bold uppercase py-1.5 rounded shadow">
-          Visitor Info
-        </a>
-      </div>
-      <!-- Quick mobile search -->
-      <div class="relative mt-2 flex items-center">
-        <input type="text" id="mobileSearchInput" placeholder="Quick search info..." 
-               class="bg-[#dfd0b7] border border-[#a49176] rounded px-3 py-1 pr-7 text-xs text-stone-900 placeholder-stone-600 focus:outline-none w-full shadow-inner">
-        <button onclick="handleMobileSearch()" class="absolute right-2 text-stone-600 hover:text-stone-900 text-xs">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileDropdownMenu" class="hidden md:hidden mt-2 pt-2 border-t border-amber-900/20 bg-[#cca37d]/40 rounded p-2">
+      <div class="grid grid-cols-2 gap-1.5 text-center text-xs font-bold uppercase">
+        <a href="#live-status" onclick="toggleMobileMenu()" class="retro-btn-dark text-white py-1.5 rounded shadow">Live Status</a>
+        <a href="#transit" onclick="toggleMobileMenu()" class="retro-btn-dark text-white py-1.5 rounded shadow">Transit Guide</a>
+        <a href="#comparison" onclick="toggleMobileMenu()" class="retro-btn-dark text-white py-1.5 rounded shadow">Beach vs Estuary</a>
+        <a href="#watersports" onclick="toggleMobileMenu()" class="retro-btn-dark text-white py-1.5 rounded shadow">Water Sports</a>
+        <a href="#rules" onclick="toggleMobileMenu()" class="retro-btn-dark text-white py-1.5 rounded shadow">Rules & Fees</a>
+        <a href="#food" onclick="toggleMobileMenu()" class="retro-btn-dark text-white py-1.5 rounded shadow">Food Trail</a>
+        <a href="#itinerary" onclick="toggleMobileMenu()" class="retro-btn-dark text-white py-1.5 rounded shadow">1-Day Loop</a>
+        <a href="#stays" onclick="toggleMobileMenu()" class="retro-btn-dark text-white py-1.5 rounded shadow">Stays</a>
+        <a href="#inquiry" onclick="toggleMobileMenu()" class="retro-btn-blue text-white py-1.5 rounded shadow col-span-2">Book / Inquiry</a>
       </div>
     </div>
   </header>
 
-  <!-- MAIN WRAPPER WITH BORDERS & SHADOW -->
-  <main class="flex-grow max-w-6xl mx-auto w-full px-3 sm:px-6 py-6 md:py-8">
+  <!-- MAIN WRAPPER -->
+  <main class="flex-grow max-w-full mx-auto w-full px-3 sm:px-6 py-6 md:py-8 space-y-10">
 
-    <!-- HERO SLIDER SECTION (Replicating the framed hero banner from image) -->
-    <section class="relative mb-6" id="home">
-      <!-- White Photo Frame wrapper -->
+    <!-- HERO SLIDER & QUICK STATS -->
+    <section class="relative" id="home">
       <div class="white-frame rounded-sm relative">
-        <div class="relative overflow-hidden w-full h-[280px] sm:h-[390px] md:h-[460px] bg-slate-900 rounded-sm">
+        <div class="relative overflow-hidden w-full h-[300px] sm:h-[400px] md:h-[660px] bg-slate-900 rounded-sm">
           
-          <!-- Slide 1: Main Beach Panorama & Signature Overlay Text -->
+          <!-- Slide 1 -->
           <div class="slide-item active w-full h-full relative" data-index="0">
-            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80" 
-                 alt="Padubidri Blue Sea and Sky" 
-                 class="w-full h-full object-cover brightness-95"
-                 onerror="this.src='https://placehold.co/1200x500/2288cc/ffffff?text=Padubidri+Blue+Flag+Beach'">
-            
-            <!-- Reference Inspired Calligraphic Handwritten Chalk Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 flex flex-col justify-center items-start px-6 sm:px-14">
-              <div class="flex items-center gap-3">
-                <!-- Mascot / doodle icon -->
-                <svg class="w-12 h-12 sm:w-20 sm:h-20 text-white/90 drop-shadow-lg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M30 40 C30 25, 45 15, 60 20 C75 25, 80 40, 75 55 C70 70, 50 85, 30 75 C20 70, 20 50, 30 40 Z" />
-                  <circle cx="45" cy="35" r="3" fill="white" />
-                  <circle cx="60" cy="38" r="3" fill="white" />
-                  <path d="M42 55 Q55 65 68 53" />
-                  <path d="M25 65 Q15 80 25 90" />
-                </svg>
-                <h2 class="script-font text-4xl sm:text-7xl md:text-8xl text-white font-bold drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] transform -rotate-3 select-none">
-                  Get on it!
-                </h2>
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80" alt="Padubidri Blue Flag Beach" class="w-full h-full object-cover brightness-95">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6 sm:p-12">
+              <span class="text-amber-300 font-bold tracking-widest text-xs uppercase mb-1">Certified Blue Flag 🏖️ • Water Sports Active • Udupi District</span>
+              <h2 class="heading-font text-4xl sm:text-6xl text-white tracking-wide">Padubidri Blue Flag Beach</h2>
+              <p class="script-font text-2xl sm:text-4xl text-amber-200 mt-1">Karnataka's Pristine Eco-Certified Coastline</p>
+              <p class="text-stone-200 text-xs sm:text-sm max-w-2xl mt-2">Golden sands, Arabian Sea adventures, high-speed jet skiing, illuminated wooden boardwalk, and internationally certified clean waters along NH 66.</p>
+              <div class="flex flex-wrap gap-2 mt-4">
+                <a href="#live-status" class="retro-btn-blue text-white text-xs font-bold uppercase px-4 py-2 rounded shadow">Check Live Gate & Flags</a>
+                <a href="#transit" class="retro-btn-dark text-white text-xs font-bold uppercase px-4 py-2 rounded shadow">Tourist Transit Guide</a>
+                <a href="#watersports" class="retro-btn-dark text-white text-xs font-bold uppercase px-4 py-2 rounded shadow">Water Sports Rates</a>
               </div>
-              <p class="text-white/95 text-xs sm:text-base md:text-lg font-semibold bg-black/40 backdrop-blur-sm px-3 sm:px-4 py-1.5 rounded mt-3 max-w-lg shadow border-l-4 border-amber-400">
-                Pristine golden sands, crystal Arabian Sea water & zero-waste eco tranquility.
-              </p>
-            </div>
-
-            <!-- Authentic local badge corner -->
-            <div class="absolute top-4 right-4 bg-white/90 border border-stone-300 p-2 text-center rounded shadow hidden sm:block">
-              <span class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest">Certified</span>
-              <span class="text-sm font-extrabold text-blue-700">BLUE FLAG BEACH</span>
-              <span class="block text-[9px] text-stone-500">Foundation for Env. Education</span>
             </div>
           </div>
 
-          <!-- Slide 2: Sunset Splendor -->
+          <!-- Slide 2 -->
           <div class="slide-item w-full h-full relative" data-index="1">
-            <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1600&q=80" 
-                 alt="Padubidri Sunset over Arabian Sea" 
-                 class="w-full h-full object-cover brightness-90"
-                 onerror="this.src='https://placehold.co/1200x500/d97706/ffffff?text=Glorious+Sunset+at+Padubidri'">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-end p-6 sm:p-12">
-              <span class="text-amber-300 font-bold tracking-widest text-xs uppercase mb-1">Twilight Magic on Coastal Karnataka</span>
-              <h2 class="vintage-font text-3xl sm:text-5xl text-white font-bold drop-shadow-md">
-                Breathtaking Arabian Sunsets
-              </h2>
-              <p class="text-stone-200 text-xs sm:text-base max-w-xl mt-1">
-                Walk along the illuminated palm tree promenades and enjoy the soothing evening sea breeze with secure family seating.
-              </p>
-            </div>
-          </div>
-
-          <!-- Slide 3: Adventure & Watersports -->
-          <div class="slide-item w-full h-full relative" data-index="2">
-            <img src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&w=1600&q=80" 
-                 alt="Watersports and Beach activities" 
-                 class="w-full h-full object-cover brightness-90"
-                 onerror="this.src='https://placehold.co/1200x500/0284c7/ffffff?text=Watersports+and+Boating'">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-end p-6 sm:p-12">
-              <span class="text-sky-300 font-bold tracking-widest text-xs uppercase mb-1">Action & Water Sports</span>
-              <h2 class="vintage-font text-3xl sm:text-5xl text-white font-bold drop-shadow-md">
-                Speed Boats, Banana Rides & Kayaking
-              </h2>
-              <p class="text-stone-200 text-xs sm:text-base max-w-xl mt-1">
-                Supervised water activities led by certified lifeguards with life jackets and first-aid response facilities.
-              </p>
-            </div>
-          </div>
-
-          <!-- Slide 4: Eco Park & Kids Playing Area -->
-          <div class="slide-item w-full h-full relative" data-index="3">
-            <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1600&q=80" 
-                 alt="Padubidri Beach Park" 
-                 class="w-full h-full object-cover brightness-90"
-                 onerror="this.src='https://placehold.co/1200x500/15803d/ffffff?text=Eco+Park+And+Recreation'">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-end p-6 sm:p-12">
-              <span class="text-emerald-300 font-bold tracking-widest text-xs uppercase mb-1">Eco Friendly Tourism</span>
-              <h2 class="vintage-font text-3xl sm:text-5xl text-white font-bold drop-shadow-md">
-                Safe Children's Play Park & Green Gardens
-              </h2>
-              <p class="text-stone-200 text-xs sm:text-base max-w-xl mt-1">
-                Complete with drinking water stations, solar-powered lighting, accessible walkways, and clean showers.
-              </p>
-            </div>
-          </div>
-
-          <!-- Slide 5: Beach Promenade & Shaded Canopies -->
-          <div class="slide-item w-full h-full relative" data-index="4">
-            <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1600&q=80" 
-                 alt="Padubidri Coastline Walk" 
-                 class="w-full h-full object-cover brightness-90"
-                 onerror="this.src='https://placehold.co/1200x500/0369a1/ffffff?text=Pristine+Clean+Coastline'">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 flex flex-col justify-end p-6 sm:p-12">
-              <span class="text-amber-200 font-bold tracking-widest text-xs uppercase mb-1">Rest & Relaxation</span>
-              <h2 class="vintage-font text-3xl sm:text-5xl text-white font-bold drop-shadow-md">
-                Eco Bamboo Huts & Beach Hammocks
-              </h2>
-              <p class="text-stone-200 text-xs sm:text-base max-w-xl mt-1">
-                Relax in eco-huts built from natural coastal materials and recharge in serenity.
-              </p>
+            <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1600&q=80" alt="Wooden Boardwalk" class="w-full h-full object-cover brightness-90">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 flex flex-col justify-end p-6 sm:p-12">
+              <span class="text-sky-300 font-bold tracking-widest text-xs uppercase">Eco Sanctuary & Facilities</span>
+              <h2 class="heading-font text-4xl sm:text-6xl text-white">Illuminated Wooden Boardwalk</h2>
+              <p class="text-stone-200 text-xs sm:text-sm max-w-xl mt-1">Wheelchair accessible ramps, purified RO water stations, safe lifeguard towers, and bio-treated shower facilities.</p>
             </div>
           </div>
 
         </div>
 
-        <!-- Slider Control Buttons matching ribbon styling in prompt -->
         <button id="prevSlideBtn" class="slider-btn-prev text-stone-100 hover:text-white font-bold text-xs uppercase tracking-wider py-1.5 px-3 flex items-center gap-1 transition" aria-label="Previous Slide">
           <i class="fa-solid fa-chevron-left text-[10px]"></i> PREV.
         </button>
-
         <button id="nextSlideBtn" class="slider-btn-next text-stone-100 hover:text-white font-bold text-xs uppercase tracking-wider py-1.5 px-3 flex items-center gap-1 transition" aria-label="Next Slide">
           NEXT <i class="fa-solid fa-chevron-right text-[10px]"></i>
         </button>
-
-        <!-- Slider Pause / Resume pill for user friendliness -->
-        <div class="absolute top-3 left-4 z-20">
-          <button id="pauseToggleBtn" class="bg-black/40 hover:bg-black/60 text-white/90 text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded backdrop-blur-sm border border-white/20 transition flex items-center gap-1.5">
-            <i class="fa-solid fa-pause text-[9px]" id="pauseIcon"></i>
-            <span id="pauseText">Auto-sliding</span>
-          </button>
-        </div>
-
       </div>
 
-      <!-- Stitch Dashed Divider & Indicator Dots (Directly matching image) -->
-      <div class="mt-4 pt-2 border-b-2 border-dashed border-[#b8a68b] flex justify-center pb-3">
-        <div class="flex items-center gap-2.5" id="sliderDotsContainer">
-          <button class="dot-indicator active" onclick="goToSlide(0)" aria-label="Slide 1"></button>
-          <button class="dot-indicator" onclick="goToSlide(1)" aria-label="Slide 2"></button>
-          <button class="dot-indicator" onclick="goToSlide(2)" aria-label="Slide 3"></button>
-          <button class="dot-indicator" onclick="goToSlide(3)" aria-label="Slide 4"></button>
-          <button class="dot-indicator" onclick="goToSlide(4)" aria-label="Slide 5"></button>
+      <!-- Quick Metrics Strip -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3 mt-4">
+        <div class="bg-[#f7f3ea] border border-[#d3c2a6] p-2.5 rounded text-center shadow-sm">
+          <span class="text-[10px] uppercase font-bold text-stone-500 block">Lifeguard Towers</span>
+          <span class="vintage-font text-base sm:text-lg text-sky-800 font-bold">Daily 7 AM – 6 PM</span>
+        </div>
+        <div class="bg-[#f7f3ea] border border-[#d3c2a6] p-2.5 rounded text-center shadow-sm">
+          <span class="text-[10px] uppercase font-bold text-stone-500 block">Accessibility</span>
+          <span class="vintage-font text-base sm:text-lg text-sky-800 font-bold">Wooden Ramp</span>
+        </div>
+        <div class="bg-[#f7f3ea] border border-[#d3c2a6] p-2.5 rounded text-center shadow-sm">
+          <span class="text-[10px] uppercase font-bold text-stone-500 block">RO Water & Showers</span>
+          <span class="vintage-font text-base sm:text-lg text-sky-800 font-bold">Free Purified Stations</span>
+        </div>
+        <div class="bg-[#f7f3ea] border border-[#d3c2a6] p-2.5 rounded text-center shadow-sm">
+          <span class="text-[10px] uppercase font-bold text-stone-500 block">NH 66 Access</span>
+          <span class="vintage-font text-base sm:text-lg text-sky-800 font-bold">2.5 km from Junction</span>
+        </div>
+        <div class="bg-[#f7f3ea] border border-[#d3c2a6] p-2.5 rounded text-center shadow-sm">
+          <span class="text-[10px] uppercase font-bold text-stone-500 block">Entry Fee</span>
+          <span class="vintage-font text-base sm:text-lg text-sky-800 font-bold">₹40 Adult / ₹20 Kid</span>
+        </div>
+        <div class="bg-[#f7f3ea] border border-[#d3c2a6] p-2.5 rounded text-center shadow-sm">
+          <span class="text-[10px] uppercase font-bold text-stone-500 block">Parking Bay</span>
+          <span class="vintage-font text-base sm:text-lg text-sky-800 font-bold">200+ CCTV Slots</span>
         </div>
       </div>
     </section>
 
-    <!-- 3-COLUMN RETRO CARD SECTION (Exactly matching image structure) -->
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6 items-stretch">
+    <!-- LIVE STATUS & GATE CUTOFF -->
+    <section class="bg-[#f9f5ed] border border-[#d3c2a6] rounded p-5 sm:p-6 shadow-md corner-fold" id="live-status">
+      <div class="ribbon-banner-dark -mx-5 -mt-5 sm:-mx-6 sm:-mt-6 py-2 px-4 mb-5 text-center">
+        <h3 class="heading-font text-xl text-amber-50">Live Status & Gate Cutoff • Padubidri Coast</h3>
+      </div>
       
-      <!-- CARD 1: BLUE FLAG ACCREDITATION (Matches left card: RASV AWARD) -->
-      <div class="bg-[#f7f3ea] border border-[#d3c2a6] rounded-sm p-4 sm:p-5 flex flex-col justify-between shadow-md corner-fold relative">
-        <div>
-          <!-- Dark Ribbon Header -->
-          <div class="ribbon-banner-dark -mx-5 -mt-2 py-1.5 px-4 mb-4 text-center">
-            <h3 class="heading-font text-lg tracking-wider text-amber-50 uppercase">
-              BLUE FLAG ACCREDITED
-            </h3>
-          </div>
+      <p class="text-xs text-stone-600 mb-4 text-center">Real-time advisory for tourists traveling from Mangalore, Udupi, or Bengaluru. Avoid reaching after gate lock-in.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-emerald-50 border border-emerald-300 p-4 rounded text-center">
+          <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-widest block mb-1">Swimming Safety</span>
+          <span class="inline-block bg-emerald-600 text-white font-bold text-xs px-2.5 py-0.5 rounded uppercase">GREEN FLAG</span>
+          <h4 class="font-bold text-stone-800 text-sm mt-2">Calm & Safe Waters</h4>
+          <p class="text-xs text-stone-600 mt-1">Safe for swimming inside demarcated buoy zone with lifeguard monitoring. Lifeguards active until 6:00 PM.</p>
+        </div>
 
-          <div class="stitched-border bg-white p-3 mb-3 rounded-sm">
-            <h4 class="font-serif italic font-semibold text-stone-700 text-sm border-b border-stone-200 pb-1">
-              Foundation for Environmental Education (Denmark)
-            </h4>
-            <p class="text-xs text-stone-600 mt-2 leading-relaxed">
-              Padubidri Beach was officially awarded the internationally recognized <strong>Blue Flag certification</strong>, reflecting stringent compliance with 33 rigorous criteria across water quality, environmental management, safety, and eco-education.
-            </p>
-          </div>
+        <div class="bg-amber-50 border border-amber-300 p-4 rounded text-center">
+          <span class="text-[10px] font-bold text-amber-800 uppercase tracking-widest block mb-1">Gate Cutoff Warning</span>
+          <span class="inline-block bg-amber-600 text-white font-bold text-xs px-2.5 py-0.5 rounded uppercase">STRICT 6:00 PM</span>
+          <div class="vintage-font text-xl font-bold text-amber-900 mt-2" id="timeRemaining">Counter Lock-in: 6:00 PM</div>
+          <p class="text-xs text-stone-600 mt-1">Ticket issuing counter closes strictly at 6:00 PM. Full park exit required by 6:30 PM.</p>
+        </div>
 
-          <p class="text-xs text-stone-600 leading-relaxed italic border-l-2 border-amber-600/40 pl-2 mb-3">
-            <em>Cleanest bathing waters along the Arabian coastline. Safe, calm waters guarded constantly by trained lifeguards and monitored surveillance.</em>
+        <div class="bg-sky-50 border border-sky-300 p-4 rounded text-center">
+          <span class="text-[10px] font-bold text-sky-800 uppercase tracking-widest block mb-1">Sunset Window</span>
+          <h4 class="font-bold text-stone-800 text-sm">Arabian Sea Sunset ~6:18 PM</h4>
+          <p class="text-xs text-stone-600 mt-2">Best golden hour photography: <strong>5:25 PM – 6:10 PM</strong> on illuminated boardwalk.<br><span class="text-[11px] text-stone-500">Tide: Low tide (walking accessible)</span></p>
+        </div>
+
+        <div class="bg-indigo-50 border border-indigo-300 p-4 rounded text-center">
+          <span class="text-[10px] font-bold text-indigo-800 uppercase tracking-widest block mb-1">Adventure Status</span>
+          <span class="inline-block bg-indigo-600 text-white font-bold text-xs px-2.5 py-0.5 rounded uppercase">ACTIVE NOW</span>
+          <h4 class="font-bold text-stone-800 text-sm mt-2">Oct – May Season</h4>
+          <p class="text-xs text-stone-600 mt-1">Jet Ski, Speed Boats & Estuary Kayaks operating under normal ocean breeze. (Monsoon ban applies Jun–Sep).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRANSIT & AUTO FARE ESTIMATOR -->
+    <section class="bg-[#fbf8f2] border border-[#d7c8b0] rounded p-5 sm:p-8 shadow-sm" id="transit">
+      <div class="border-b-2 border-dashed border-[#c2b299] pb-3 mb-6">
+        <span class="text-xs font-bold tracking-widest uppercase text-sky-700">Outsider Transit Intelligence</span>
+        <h2 class="heading-font text-3xl text-stone-900">How to Reach Without Getting Overcharged</h2>
+        <p class="text-xs text-stone-600">Most outsiders get stuck with return cab cancellations or inflated auto fares. Here is the verified local playbook for transit along the Mangalore–Udupi highway belt.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-[#efe5d3] p-4 rounded border border-[#d4c3a9]">
+          <h3 class="font-bold text-stone-800 text-sm flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-bus text-sky-700"></i> NH 66 Express Buses (Direct Drop-off)
+          </h3>
+          <p class="text-xs text-stone-700 leading-relaxed">
+            Take any Express or Service bus running between <strong>Mangalore (State Bank / KSRTC)</strong> and <strong>Udupi / Manipal</strong> (every 5–10 mins). Ask conductor for <em>"Padubidri Junction"</em>.<br>
+            <strong class="text-sky-800">Fare: ₹40–₹55</strong>
           </p>
+        </div>
 
-          <ul class="text-xs text-stone-700 space-y-1.5 mb-4 pl-1">
-            <li class="flex items-center gap-2">
-              <i class="fa-solid fa-check text-sky-600 text-xs"></i> 100% Solid & Plastic Waste Management
+        <div class="bg-[#efe5d3] p-4 rounded border border-[#d4c3a9]">
+          <h3 class="font-bold text-stone-800 text-sm flex items-center gap-2 mb-2 text-amber-900">
+            <i class="fa-solid fa-triangle-exclamation text-amber-700"></i> ⚠️ Tourist Cab Warning (Uber / Ola)
+          </h3>
+          <p class="text-xs text-stone-700 leading-relaxed">
+            Ola and Uber cabs drop off at Padubidri from Mangalore/Airport, <strong>but you cannot book return rides via app from the beach</strong>.<br>
+            <span class="block mt-1 font-semibold">Padubidri Taxi Stand: +91 8252 250000</span>
+            <span class="text-[11px] text-stone-600 italic">Tip: Hire for 2-way waiting or take auto back to NH 66.</span>
+          </p>
+        </div>
+
+        <div class="bg-[#efe5d3] p-4 rounded border border-[#d4c3a9]">
+          <h3 class="font-bold text-stone-800 text-sm flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-plane-departure text-sky-700"></i> From Airport & Railway Stations
+          </h3>
+          <p class="text-xs text-stone-700 leading-relaxed">
+            <strong>From Mangalore Airport (IXE):</strong> 32 km north via Bajpe / Surathkal bypass (~₹1,100 – ₹1,300 prepaid taxi).<br>
+            <strong>From Udupi Railway Station (UD):</strong> 26 km south along NH 66. Station Auto to City Bus, then NH 66.
+          </p>
+        </div>
+      </div>
+
+      <!-- Auto Fare Estimator Calculator -->
+      <div class="bg-white p-5 rounded border border-stone-300 shadow-inner">
+        <h3 class="vintage-font text-lg text-stone-800 mb-1 flex items-center gap-2">
+          <i class="fa-solid fa-calculator text-sky-600"></i> Auto Fare Estimator (Last Mile from NH 66)
+        </h3>
+        <p class="text-xs text-stone-600 mb-4">Distance from Padubidri NH 66 Junction / Bus Stand to Blue Flag Beach entrance is <strong>2.4 km</strong>.</p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Pick-up Point</label>
+            <select id="pickupPoint" onchange="calculateFare()" class="w-full text-xs p-2 bg-stone-50 border border-stone-300 rounded focus:ring-1 focus:ring-sky-600">
+              <option value="2.4">Padubidri Bus Stand / NH 66 Junction (2.4 km)</option>
+              <option value="5.8">Hejamadi Toll Gate / Bridge (5.8 km)</option>
+              <option value="12">Kaup (Kapu) Beach Junction (12 km)</option>
+              <option value="18">Surathkal NITK Junction (18 km)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">Passengers / Trip Type</label>
+            <select id="tripType" onchange="calculateFare()" class="w-full text-xs p-2 bg-stone-50 border border-stone-300 rounded focus:ring-1 focus:ring-sky-600">
+              <option value="1">One-way drop to Beach (1–3 passengers)</option>
+              <option value="2">Two-way (Drop + 2 Hours Sunset Wait + Return)</option>
+            </select>
+          </div>
+
+          <div class="bg-amber-50 p-3 rounded border border-amber-300 flex flex-col justify-center items-center">
+            <span class="text-[10px] font-bold text-amber-800 uppercase">Estimated Fair Fare</span>
+            <span class="heading-font text-3xl text-amber-900 leading-none my-1" id="calculatedFare">₹50 – ₹70</span>
+            <span class="text-[10px] text-stone-500 text-center">Direct auto stand outside Padubidri Post Office & Bus stop.</span>
+          </div>
+        </div>
+
+        <div class="mt-3 text-[11px] text-stone-500 bg-stone-100 p-2 rounded">
+          <strong>Tulu / Kannada local transit phrase:</strong> Say <em>"Padubidri Blue Flag Beach ge hogo-nu"</em> (Let's go to Padubidri Blue Flag Beach).
+        </div>
+      </div>
+    </section>
+
+    <!-- BLUE FLAG VS END POINT ESTUARY COMPARISON -->
+    <section class="bg-[#f9f5ed] border border-[#d3c2a6] rounded p-5 sm:p-6 shadow-md" id="comparison">
+      <div class="ribbon-banner-blue -mx-5 -mt-5 sm:-mx-6 sm:-mt-6 py-2 px-4 mb-6 text-center">
+        <h3 class="heading-font text-xl text-white">Know the Coast • Blue Flag Beach vs. Padubidri End Point</h3>
+      </div>
+      <p class="text-xs text-stone-600 mb-6 text-center">Padubidri features two distinct beach zones side-by-side. Understand which spot matches your travel vibe.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Blue Flag Beach Card -->
+        <div class="bg-white border-2 border-sky-600 p-5 rounded relative flex flex-col justify-between shadow">
+          <span class="absolute top-3 right-3 bg-sky-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Best for Families & Thrills</span>
+          <div>
+            <h4 class="heading-font text-2xl text-stone-900">Padubidri Blue Flag Beach</h4>
+            <p class="script-font text-lg text-sky-700">Eco-Certified Developed Beach Sanctuary</p>
+            <p class="text-xs text-stone-600 mt-2 mb-4">Meticulously maintained, gated coastal park equipped with clean showers, purified drinking water, certified lifeguards, and motorized water sports.</p>
+            
+            <ul class="text-xs text-stone-700 space-y-2 border-t border-stone-200 pt-3">
+              <li class="flex justify-between"><strong>Entry & Fees:</strong> <span>₹40 Adults / ₹20 Kids</span></li>
+              <li class="flex justify-between"><strong>Water Sports:</strong> <span>Jet Ski, Speed Boats, Bumper</span></li>
+              <li class="flex justify-between"><strong>Boardwalk:</strong> <span>Illuminated wooden deck & ramps</span></li>
+              <li class="flex justify-between"><strong>Swimming Safety:</strong> <span>Lifeguard guarded buoy line</span></li>
+              <li class="flex justify-between"><strong>Vibe:</strong> <span>Active, clean, secure, family-friendly</span></li>
+              <li class="flex justify-between"><strong>Timings:</strong> <span>6:00 AM – 6:30 PM</span></li>
+            </ul>
+          </div>
+          <div class="mt-4 pt-3 border-t border-dashed border-stone-300">
+            <a href="#watersports" class="retro-btn-blue text-white text-xs font-bold uppercase py-2 px-4 rounded text-center block">Explore Activities</a>
+          </div>
+        </div>
+
+        <!-- End Point Estuary Card -->
+        <div class="bg-white border-2 border-amber-700 p-5 rounded relative flex flex-col justify-between shadow">
+          <span class="absolute top-3 right-3 bg-amber-700 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Best for Solitude & Sunsets</span>
+          <div>
+            <h4 class="heading-font text-2xl text-stone-900">Padubidri End Point (Estuary)</h4>
+            <p class="script-font text-lg text-amber-800">Kamini River & Arabian Sea Confluence</p>
+            <p class="text-xs text-stone-600 mt-2 mb-4">Located 1.5 km south of the main gate where the river merges into the sea. Natural spit with stone sea breakwaters, fishing boats, and raw sunset views.</p>
+            
+            <ul class="text-xs text-stone-700 space-y-2 border-t border-stone-200 pt-3">
+              <li class="flex justify-between"><strong>Entry & Fees:</strong> <span class="text-emerald-700 font-bold">100% Free / Open Access</span></li>
+              <li class="flex justify-between"><strong>Activities:</strong> <span>River kayaking, bird watching, walks</span></li>
+              <li class="flex justify-between"><strong>Facilities:</strong> <span>Basic nature path (No formal showers)</span></li>
+              <li class="flex justify-between"><strong>Swimming Safety:</strong> <span class="text-amber-700">Caution (Undercurrents near delta)</span></li>
+              <li class="flex justify-between"><strong>Vibe:</strong> <span>Quiet, cinematic, scenic photography</span></li>
+              <li class="flex justify-between"><strong>Timings:</strong> <span>Accessible till late dusk</span></li>
+            </ul>
+          </div>
+          <div class="mt-4 pt-3 border-t border-dashed border-stone-300">
+            <a href="#inquiry" onclick="prefillInquiry('Estuary Kayak Booking')" class="retro-btn-dark text-white text-xs font-bold uppercase py-2 px-4 rounded text-center block">Book Estuary Kayak</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WATER SPORTS PRICING DIRECTORY -->
+    <section class="bg-[#fbf8f2] border border-[#d7c8b0] rounded p-5 sm:p-8 shadow-sm" id="watersports">
+      <div class="border-b-2 border-dashed border-[#c2b299] pb-3 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end">
+        <div>
+          <span class="text-xs font-bold tracking-widest uppercase text-sky-700">Adventure Zone Tariff</span>
+          <h2 class="heading-font text-3xl text-stone-900">Official Water Sports Pricing</h2>
+          <p class="text-xs text-stone-600">Standardized rates approved for Oct – May season. All activities include certified life jackets and instructor.</p>
+        </div>
+        <button onclick="prefillInquiry('Group Water Sports Booking')" class="mt-3 sm:mt-0 retro-btn-blue text-white text-xs font-bold uppercase px-4 py-2 rounded shadow shrink-0">Book Water Sports</button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <!-- Jet Ski -->
+        <div class="bg-white p-4 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <h4 class="font-bold text-stone-800 text-sm">Jet Ski Ride (Deep Sea Sprint)</h4>
+              <span class="vintage-font text-lg text-sky-800 font-bold">₹400 / person</span>
+            </div>
+            <p class="text-xs text-stone-600 mt-2">High-speed ocean ride driven by certified pilot or guided dual handle.</p>
+            <span class="inline-block mt-2 text-[10px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded">Duration: 1.5 km Loop</span>
+          </div>
+        </div>
+
+        <!-- Speed Boat -->
+        <div class="bg-white p-4 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <h4 class="font-bold text-stone-800 text-sm">Group Speed Boat Safari</h4>
+              <span class="vintage-font text-lg text-sky-800 font-bold">₹300 / person</span>
+            </div>
+            <p class="text-xs text-stone-600 mt-2">Thrilling multi-passenger boat ride into open ocean waves. Min 4 persons.</p>
+            <span class="inline-block mt-2 text-[10px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded">Duration: 10–12 Mins</span>
+          </div>
+        </div>
+
+        <!-- Banana Ride -->
+        <div class="bg-white p-4 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <h4 class="font-bold text-stone-800 text-sm">Banana Tube Ride</h4>
+              <span class="vintage-font text-lg text-sky-800 font-bold">₹350 / person</span>
+            </div>
+            <p class="text-xs text-stone-600 mt-2">Fun splash ride towed by speed boat. Ideal for family and friends groups.</p>
+            <span class="inline-block mt-2 text-[10px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded">Min 5 Persons</span>
+          </div>
+        </div>
+
+        <!-- Bumper Boat -->
+        <div class="bg-white p-4 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <h4 class="font-bold text-stone-800 text-sm">Inflatable Bumper Ride</h4>
+              <span class="vintage-font text-lg text-sky-800 font-bold">₹400 / person</span>
+            </div>
+            <p class="text-xs text-stone-600 mt-2">High excitement seating on doughnut tube skimming across sea waves.</p>
+            <span class="inline-block mt-2 text-[10px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded">Single / Couple</span>
+          </div>
+        </div>
+
+        <!-- Estuary Kayaking -->
+        <div class="bg-white p-4 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <h4 class="font-bold text-stone-800 text-sm">Kamini Estuary Kayaking</h4>
+              <span class="vintage-font text-lg text-sky-800 font-bold">₹250 / hour</span>
+            </div>
+            <p class="text-xs text-stone-600 mt-2">Self-paddle calm backwater kayaking near the mangrove estuary zone.</p>
+            <span class="inline-block mt-2 text-[10px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded">Single / Tandem Kayak</span>
+          </div>
+        </div>
+
+        <!-- Swimming Buoy Zone -->
+        <div class="bg-white p-4 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <h4 class="font-bold text-stone-800 text-sm">Buoy Protected Swimming Zone</h4>
+              <span class="vintage-font text-lg text-emerald-700 font-bold">FREE (With Entry)</span>
+            </div>
+            <p class="text-xs text-stone-600 mt-2">Guarded beach area designated for safe sea bathing. Lifeguards on tower.</p>
+            <span class="inline-block mt-2 text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">Included in Entry Ticket</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RULES & ENTRY FEE & COMPLIANCE -->
+    <section class="bg-[#f9f5ed] border border-[#d3c2a6] rounded p-5 sm:p-6 shadow-md" id="rules">
+      <div class="ribbon-banner-dark -mx-5 -mt-5 sm:-mx-6 sm:-mt-6 py-2 px-4 mb-6 text-center">
+        <h3 class="heading-font text-xl text-amber-50">Visitor Compliance Guidelines • Rules & Entry Fees</h3>
+      </div>
+      <p class="text-xs text-stone-600 mb-6 text-center">Unlike Malpe or Panambur, Padubidri is an international eco-reserve governed by strict FEE (Denmark) criteria. Know what is prohibited before arriving.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Prohibited Items -->
+        <div class="bg-rose-50 border border-rose-300 p-5 rounded">
+          <h4 class="font-bold text-rose-900 text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-ban text-rose-700"></i> Strictly Prohibited on Blue Flag Sand
+          </h4>
+          <ul class="text-xs text-stone-700 space-y-2.5">
+            <li class="flex items-start gap-2">
+              <span class="text-rose-700 font-bold">✕</span>
+              <span><strong>Zero Single-Use Plastic:</strong> Polythene bags, chips packets, and disposable plastic bottles are confiscated at the security scanner.</span>
             </li>
-            <li class="flex items-center gap-2">
-              <i class="fa-solid fa-check text-sky-600 text-xs"></i> Purified Reverse Osmosis Drinking Water
+            <li class="flex items-start gap-2">
+              <span class="text-rose-700 font-bold">✕</span>
+              <span><strong>No Alcohol or Smoking:</strong> Strictly zero-tolerance policy. Heavy fines and police deployment active across the park.</span>
             </li>
-            <li class="flex items-center gap-2">
-              <i class="fa-solid fa-check text-sky-600 text-xs"></i> Universal Disabled-Friendly Beach Ramp
+            <li class="flex items-start gap-2">
+              <span class="text-rose-700 font-bold">✕</span>
+              <span><strong>No Domestic Pets:</strong> Dogs and pets are banned on the certified sand perimeter to preserve microbiological water testing scores.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-rose-700 font-bold">✕</span>
+              <span><strong>No Night Camping or Bonfires:</strong> Park closes promptly after sunset; no unauthorized overnight stay permitted.</span>
             </li>
           </ul>
         </div>
 
-        <div class="pt-3 border-t border-dashed border-stone-300 flex justify-end">
-          <button onclick="showModal('blueflagModal')" class="retro-btn-blue text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded tracking-wider shadow">
-            Read More
-          </button>
-        </div>
-      </div>
-
-      <!-- CARD 2: FEATURE HIGHLIGHT (Matches center card: INTRODUCING STEAM 202!) -->
-      <div class="bg-[#f7f3ea] border border-[#d3c2a6] rounded-sm p-4 sm:p-5 flex flex-col justify-between shadow-md corner-fold relative">
-        <div>
-          <!-- Blue Ribbon Header (Center focus) -->
-          <div class="ribbon-banner-blue -mx-5 -mt-2 py-1.5 px-4 mb-4 text-center">
-            <h3 class="heading-font text-lg tracking-wider text-white uppercase">
-              BEACH ATTRACTIONS & SPORTS!
-            </h3>
-          </div>
-
-          <h4 class="font-serif italic font-semibold text-stone-700 text-sm text-center mb-2">
-            Sun, surf, and family entertainment on Udupi's coast.
+        <!-- Amenities Included -->
+        <div class="bg-emerald-50 border border-emerald-300 p-5 rounded">
+          <h4 class="font-bold text-emerald-900 text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-emerald-700"></i> Included with Your Entry Token (₹40)
           </h4>
-
-          <p class="text-xs text-stone-600 text-center leading-relaxed mb-3">
-            Padubidri offers thrilling jet skiing, speed-boat excursions into the deep sea, water scooters, and volleyball courts under swaying coconut groves.
-          </p>
-
-          <p class="text-xs text-stone-600 leading-relaxed italic text-center mb-3">
-            <em>Featuring well-maintained changing rooms, high-pressure showers, and illuminated walking pathways for evening beach strolls.</em>
-          </p>
-
-          <!-- Dual photo thumbnails matching reference card center images -->
-          <div class="grid grid-cols-2 gap-2 my-2">
-            <div class="bg-white p-1 border border-stone-300 shadow-sm rounded-sm text-center">
-              <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=400&q=80" 
-                   alt="Beach side umbrellas and watersports" 
-                   class="w-full h-16 object-cover rounded-xs"
-                   onerror="this.src='https://placehold.co/180x120/38bdf8/ffffff?text=Water+Sports'">
-              <span class="text-[10px] font-semibold text-stone-700 block mt-1">Water Sports</span>
-            </div>
-            <div class="bg-white p-1 border border-stone-300 shadow-sm rounded-sm text-center">
-              <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=400&q=80" 
-                   alt="Sunset promenade view" 
-                   class="w-full h-16 object-cover rounded-xs"
-                   onerror="this.src='https://placehold.co/180x120/f59e0b/ffffff?text=Sunset+View'">
-              <span class="text-[10px] font-semibold text-stone-700 block mt-1">Sunset Park</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="pt-3 border-t border-dashed border-stone-300 flex justify-end">
-          <button onclick="showModal('activitiesModal')" class="retro-btn-blue text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded tracking-wider shadow">
-            Explore
-          </button>
+          <ul class="text-xs text-stone-700 space-y-2.5">
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-700 font-bold">✓</span>
+              <span><strong>Sanitized Showers & Changing Rooms:</strong> Free access to modern, freshwater rinse stations and changing booths.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-700 font-bold">✓</span>
+              <span><strong>Purified Drinking Water Kiosks:</strong> Free chilled RO water refill stations (bring your reusable bottle!).</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-700 font-bold">✓</span>
+              <span><strong>Wheelchair & Stroller Accessibility:</strong> Continuous solid ramp network leading right up to the water’s edge.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-700 font-bold">✓</span>
+              <span><strong>Professional Lifeguard Protection:</strong> Dedicated surveillance tower with motorized rescue capability.</span>
+            </li>
+          </ul>
         </div>
       </div>
-
-      <!-- CARD 3: VISITOR GUIDE & AMENITIES (Matches right card: GET ON IT!) -->
-      <div class="bg-[#f7f3ea] border border-[#d3c2a6] rounded-sm p-4 sm:p-5 flex flex-col justify-between shadow-md corner-fold relative">
-        <div>
-          <!-- Dark Ribbon Header -->
-          <div class="ribbon-banner-dark -mx-5 -mt-2 py-1.5 px-4 mb-4 text-center">
-            <h3 class="heading-font text-lg tracking-wider text-amber-50 uppercase">
-              VISIT PADUBIDRI!
-            </h3>
-          </div>
-
-          <h4 class="font-serif italic font-semibold text-stone-700 text-sm text-left mb-2">
-            Timings, location, and travel guide.
-          </h4>
-
-          <div class="stitched-border bg-white p-3 mb-3 rounded-sm space-y-1.5 text-xs text-stone-700">
-            <div class="flex justify-between border-b border-stone-200 pb-1">
-              <span class="font-bold text-stone-800"><i class="fa-regular fa-clock mr-1 text-sky-600"></i> Open Hours:</span>
-              <span>8:00 AM – 7:00 PM</span>
-            </div>
-            <div class="flex justify-between border-b border-stone-200 pb-1">
-              <span class="font-bold text-stone-800"><i class="fa-solid fa-ticket mr-1 text-sky-600"></i> Entry Nominal Fee:</span>
-              <span>₹10 – ₹20 / person</span>
-            </div>
-            <div class="flex justify-between border-b border-stone-200 pb-1">
-              <span class="font-bold text-stone-800"><i class="fa-solid fa-car mr-1 text-sky-600"></i> Parking:</span>
-              <span>Spacious slots for cars & buses</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-stone-800"><i class="fa-solid fa-location-dot mr-1 text-sky-600"></i> Location:</span>
-              <span>NH 66, Padubidri, Udupi</span>
-            </div>
-          </div>
-
-          <p class="text-xs text-stone-600 leading-relaxed italic border-l-2 border-stone-400 pl-2 mb-3">
-            <em>Conveniently positioned halfway between Mangaluru (30 km) and Udupi Temple City (25 km), making it an ideal day trip stop.</em>
-          </p>
-        </div>
-
-        <div class="pt-3 border-t border-dashed border-stone-300 flex justify-end">
-          <button onclick="showModal('guideModal')" class="retro-btn-blue text-white text-xs font-bold uppercase px-3.5 py-1.5 rounded tracking-wider shadow">
-            Travel Guide
-          </button>
-        </div>
-      </div>
-
     </section>
 
-    <!-- DETAILED CONTENT SECTION: PADUBIDRI BEACH COMPREHENSIVE GUIDE -->
-    <section class="my-10 bg-[#fbf8f2] border border-[#d7c8b0] rounded p-5 sm:p-8 shadow-sm" id="visitor-guide">
-      <div class="border-b-2 border-dashed border-[#c2b299] pb-4 mb-6 text-center">
-        <span class="text-xs font-bold tracking-widest uppercase text-stone-600">Discover coastal serenity on padubidribeach.com</span>
-        <h2 class="heading-font text-3xl sm:text-4xl text-stone-800 tracking-wide mt-1">
-          Everything You Need to Know About Padubidri Beach
-        </h2>
+    <!-- FOOD GUIDE & AUTHENTIC DINING -->
+    <section class="bg-[#fbf8f2] border border-[#d7c8b0] rounded p-5 sm:p-8 shadow-sm" id="food">
+      <div class="border-b-2 border-dashed border-[#c2b299] pb-3 mb-6">
+        <span class="text-xs font-bold tracking-widest uppercase text-sky-700">Tulunadu Culinary Trail</span>
+        <h2 class="heading-font text-3xl text-stone-900">Authentic Coastal Dining Nearby</h2>
+        <p class="text-xs text-stone-600">Due to Blue Flag environmental regulations, there are zero commercial food fry stalls on the sand. Here are the top-rated culinary gems within a 5-minute drive.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-        
-        <!-- Left: Cultural & Natural Splendor -->
-        <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Seafood Corner -->
+        <div class="bg-white p-5 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
           <div>
-            <h3 class="vintage-font text-xl text-stone-900 border-b border-amber-900/20 pb-1 flex items-center gap-2">
-              <i class="fa-solid fa-compass text-sky-700"></i> Where River Meets Sea & Sunset Glows
-            </h3>
-            <p class="text-sm text-stone-700 mt-2 leading-relaxed">
-              Padubidri Beach in Udupi district, Karnataka, is renowned for its tranquil golden shorelines and the dramatic natural confluence where the Kamini river embraces the Arabian Sea at the southern Padubidri End Point. Unlike commercialized beaches, it maintains quiet dignity and pristine cleanliness.
-            </p>
-          </div>
-
-          <div class="bg-[#efe5d3] p-4 rounded border border-[#d4c3a9]">
-            <h4 class="font-bold text-stone-800 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-umbrella-beach text-sky-700"></i> Why Padubidri Beach is Unique:
-            </h4>
-            <ul class="text-xs sm:text-sm text-stone-700 space-y-2 mt-2">
-              <li class="flex items-start gap-2">
-                <span class="text-sky-700 font-bold">&#10003;</span>
-                <span><strong>International Eco-Standard:</strong> One of very few beaches in India holding the prized Blue Flag certification for eco-sustainability and cleanliness.</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <span class="text-sky-700 font-bold">&#10003;</span>
-                <span><strong>Family & Child Safety:</strong> Complete enclosure, round-the-clock trained lifeguards, watch towers, and dedicated shallow swimming zones.</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <span class="text-sky-700 font-bold">&#10003;</span>
-                <span><strong>Padubidri End Point:</strong> Stroll just 1.5 km to where the gentle backwaters blend into the open ocean, an iconic photography spot.</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Right: Activities, Nearby Delicacies & Logistics -->
-        <div class="space-y-4">
-          <div>
-            <h3 class="vintage-font text-xl text-stone-900 border-b border-amber-900/20 pb-1 flex items-center gap-2">
-              <i class="fa-solid fa-utensils text-sky-700"></i> Coastal Delicacies & Local Flavors
-            </h3>
-            <p class="text-sm text-stone-700 mt-2 leading-relaxed">
-              Right outside the eco-boundary, enjoy genuine Tulunadu seafood and vegetarian culinary wonders: Neer Dosa, freshly caught Anjal (King Fish) tawa fry, Kori Rotti, Tender Coconuts, and authentic Mangalore buns.
-            </p>
-          </div>
-
-          <div class="bg-white p-4 rounded border border-stone-200 shadow-inner">
-            <h4 class="font-bold text-stone-800 text-sm mb-2 flex items-center gap-2">
-              <i class="fa-solid fa-map-location-dot text-sky-700"></i> How to Reach Padubidri
-            </h4>
-            <div class="text-xs text-stone-600 space-y-2 leading-relaxed">
-              <p><strong>By Road:</strong> Located adjacent to National Highway 66 (NH 66). Frequent buses operate between Mangaluru and Udupi, dropping passengers right at Padubidri bus station (auto rickshaws are available 2 km directly to the beach).</p>
-              <p><strong>By Rail:</strong> The nearest Konkan Railway stations are <strong>Padubidri Railway Station</strong> (3 km) and <strong>Mulki Railway Station</strong> (11 km).</p>
-              <p><strong>By Air:</strong> Mangaluru International Airport (IXE) is just 35 km away with taxi services directly to Padubidri Beach.</p>
+            <span class="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Seafood Legend</span>
+            <h4 class="vintage-font text-xl text-stone-800 mt-2">Padubidri Coast Seafood Corner</h4>
+            <p class="text-xs text-stone-500">2.2 km away • NH 66 Junction</p>
+            <p class="text-xs text-stone-600 mt-3">Renowned for fresh catch Anjal (Kingfish) tawa fry, Kane (Ladyfish) rava fry, Neer Dosa, and authentic Kundapura chicken curry.</p>
+            <div class="mt-3 flex flex-wrap gap-1 text-[10px]">
+              <span class="bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">Anjal Tawa Fry</span>
+              <span class="bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">Neer Dosa</span>
+              <span class="bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">Prawn Ghee Roast</span>
             </div>
           </div>
+          <div class="mt-4 pt-3 border-t border-stone-200 flex justify-between items-center text-xs">
+            <span class="font-bold text-stone-700">Avg: ₹350 / person</span>
+            <span class="text-emerald-700 font-semibold">Open for Lunch & Dinner</span>
+          </div>
         </div>
 
+        <!-- Sannidhi Udupi Tiffin -->
+        <div class="bg-white p-5 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <span class="bg-emerald-100 text-emerald-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Pure Veg</span>
+            <h4 class="vintage-font text-xl text-stone-800 mt-2">Sannidhi Udupi Tiffin Grand</h4>
+            <p class="text-xs text-stone-500">1.8 km away • Near Bus Station</p>
+            <p class="text-xs text-stone-600 mt-3">Authentic Udupi vegetarian breakfast and thalis. Steaming Goli Baje in the evenings, filter coffee, crispy Tuppa Masala Dosa.</p>
+            <div class="mt-3 flex flex-wrap gap-1 text-[10px]">
+              <span class="bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">Goli Baje</span>
+              <span class="bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">Tuppa Dosa</span>
+              <span class="bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">Filter Kaapi</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-200 flex justify-between items-center text-xs">
+            <span class="font-bold text-stone-700">Avg: ₹120 / person</span>
+            <span class="text-emerald-700 font-semibold">Open from 6:30 AM</span>
+          </div>
+        </div>
+
+        <!-- Kamini Estuary Shack -->
+        <div class="bg-white p-5 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <span class="bg-sky-100 text-sky-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Estuary View</span>
+            <h4 class="vintage-font text-xl text-stone-800 mt-2">Kamini Backwater Sunset Shack</h4>
+            <p class="text-xs text-stone-500">1.5 km south • Near End Point</p>
+            <p class="text-xs text-stone-600 mt-3">Chilled tender coconut water, fresh lime sodas, fried snacks, and fresh fish fries right alongside the tranquil Kamini river mouth.</p>
+            <div class="mt-3 flex flex-wrap gap-1 text-[10px]">
+              <span class="bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">Tender Coconut</span>
+              <span class="bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">Squid Fry</span>
+              <span class="bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">Sunset Drinks</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-200 flex justify-between items-center text-xs">
+            <span class="font-bold text-stone-700">Avg: ₹200 / person</span>
+            <span class="text-sky-700 font-semibold">Sunset Seating</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1-DAY NH 66 ITINERARY LOOP -->
+    <section class="bg-[#f9f5ed] border border-[#d3c2a6] rounded p-5 sm:p-6 shadow-md" id="itinerary">
+      <div class="ribbon-banner-dark -mx-5 -mt-5 sm:-mx-6 sm:-mt-6 py-2 px-4 mb-6 text-center">
+        <h3 class="heading-font text-xl text-amber-50">Road-Tripper Blueprint • The Ultimate 1-Day Coastal Karnataka Loop</h3>
+      </div>
+      <p class="text-xs text-stone-600 mb-6 text-center">How to seamlessly combine Kaup Lighthouse, Padubidri Blue Flag Beach, and an authentic seafood dinner in one effortless day trip along NH 66.</p>
+
+      <div class="relative border-l-2 border-stone-400 ml-4 sm:ml-8 space-y-6">
+        <!-- Stop 1 -->
+        <div class="relative pl-6">
+          <span class="absolute -left-3 top-0 bg-sky-700 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">1</span>
+          <span class="text-xs font-bold text-sky-800 uppercase">08:30 AM – 11:30 AM • 12 km North of Padubidri</span>
+          <h4 class="vintage-font text-lg text-stone-800">Kaup (Kapu) Beach & Historic Lighthouse</h4>
+          <p class="text-xs text-stone-600 mt-1">Explore the iconic 1901 stone lighthouse perched on granite rocks. Climb the lighthouse stairs for panoramic coastline views before the midday heat.</p>
+        </div>
+
+        <!-- Stop 2 -->
+        <div class="relative pl-6">
+          <span class="absolute -left-3 top-0 bg-sky-700 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">2</span>
+          <span class="text-xs font-bold text-sky-800 uppercase">12:00 PM – 02:00 PM • Padubidri Junction / Udupi</span>
+          <h4 class="vintage-font text-lg text-stone-800">Authentic Coastal Lunch & Relaxation</h4>
+          <p class="text-xs text-stone-600 mt-1">Savor fresh Anjal fish curry with red boiled rice or authentic Udupi vegetarian meals along NH 66.</p>
+        </div>
+
+        <!-- Stop 3 -->
+        <div class="relative pl-6">
+          <span class="absolute -left-3 top-0 bg-sky-700 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">3</span>
+          <span class="text-xs font-bold text-sky-800 uppercase">03:00 PM – 05:30 PM • Padubidri Blue Flag Beach</span>
+          <h4 class="vintage-font text-lg text-stone-800">Water Sports, Swimming & Clean Boardwalk</h4>
+          <p class="text-xs text-stone-600 mt-1">Hit the Arabian Sea for Jet Skiing and Speed Boat safaris. Enjoy the international Blue Flag amenities: safe swimming inside the buoy zone, followed by free freshwater showers.</p>
+        </div>
+
+        <!-- Stop 4 -->
+        <div class="relative pl-6">
+          <span class="absolute -left-3 top-0 bg-sky-700 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">4</span>
+          <span class="text-xs font-bold text-sky-800 uppercase">05:35 PM – 06:30 PM • Padubidri End Point Estuary</span>
+          <h4 class="vintage-font text-lg text-stone-800">Kamini River Sunset & Estuary Walk</h4>
+          <p class="text-xs text-stone-600 mt-1">Head 1.5 km south to the river mouth as the golden sun dips into the Arabian Sea. Watch traditional fishing trawlers return while the river mirrors the crimson sky.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLUE FLAG BENCHMARK DETAILS -->
+    <section class="bg-[#fbf8f2] border border-[#d7c8b0] rounded p-5 sm:p-8 shadow-sm" id="blueflag">
+      <div class="border-b-2 border-dashed border-[#c2b299] pb-3 mb-6">
+        <span class="text-xs font-bold tracking-widest uppercase text-sky-700">Official Tourism & Environmental Benchmark</span>
+        <h2 class="heading-font text-3xl text-stone-900">Blue Flag Certification & Eco-Sanctuary Standards</h2>
+        <p class="text-xs text-stone-600 mt-1 leading-relaxed">
+          Padubidri Beach was certified under the prestigious international <strong>Blue Flag programme</strong> by Denmark-based <strong>Foundation for Environmental Education (FEE)</strong>. The certification requires rigorous compliance with 33 criteria across four core categories: Environmental Education, Water Quality, Environmental Management, and Safety & Services.
+        </p>
       </div>
 
-      <!-- Quick Action CTA -->
-      <div class="mt-8 pt-6 border-t border-dashed border-[#b8a68b] flex flex-wrap justify-between items-center gap-4 bg-[#f0e6d5] p-4 rounded">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <i class="fa-solid fa-flask-vial text-2xl text-sky-700 mb-2"></i>
+          <h4 class="font-bold text-stone-800 text-sm">Microbial Water Purity</h4>
+          <p class="text-xs text-stone-600 mt-1">Bi-weekly sampling verifies zero industrial runoff and strict microbiological swimming safety standards.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <i class="fa-solid fa-recycle text-2xl text-emerald-700 mb-2"></i>
+          <h4 class="font-bold text-stone-800 text-sm">Greywater Recycling</h4>
+          <p class="text-xs text-stone-600 mt-1">All washroom and rinse water passes through an on-site bio-treatment plant to irrigate beachfront palm lawns.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <i class="fa-solid fa-life-ring text-2xl text-amber-700 mb-2"></i>
+          <h4 class="font-bold text-stone-800 text-sm">Lifeguard Towers</h4>
+          <p class="text-xs text-stone-600 mt-1">Staffed daily by certified rescue lifeguards equipped with motorized craft, buoy lines, and first-aid kits.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <i class="fa-solid fa-wheelchair text-2xl text-indigo-700 mb-2"></i>
+          <h4 class="font-bold text-stone-800 text-sm">Wheelchair Accessibility</h4>
+          <p class="text-xs text-stone-600 mt-1">A solid ramp system and elevated wooden boardwalk allow unrestricted access for wheelchairs and strollers.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 bg-[#efe5d3] p-4 rounded border border-[#d4c3a9] flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="text-xs text-stone-700">
+          <strong>Official Geography:</strong> Padubidri End Point, Udupi District, Karnataka 574111 • GPS Coordinates: 13.1362° N, 74.7865° E
+        </div>
+        <button onclick="copyGPS()" class="retro-btn-dark text-white text-xs font-bold uppercase px-3 py-1.5 rounded shrink-0">
+          <i class="fa-regular fa-copy mr-1"></i> Copy GPS Pin
+        </button>
+      </div>
+    </section>
+
+    <!-- ROUTE MAP & HIGHWAY ACCESS -->
+    <section class="bg-[#f9f5ed] border border-[#d3c2a6] rounded p-5 sm:p-6 shadow-md" id="contact">
+      <div class="ribbon-banner-blue -mx-5 -mt-5 sm:-mx-6 sm:-mt-6 py-2 px-4 mb-6 text-center">
+        <h3 class="heading-font text-xl text-white">Navigation & Highway Route • Direct Access via NH 66</h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <h4 class="font-bold text-stone-800 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-location-dot text-sky-700"></i> From Udupi / Manipal
+          </h4>
+          <p class="text-xs text-stone-600 mt-2">25 km Southbound along NH 66 (~28 Mins). Take right turn at Padubidri Post office junction.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <h4 class="font-bold text-stone-800 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-plane text-sky-700"></i> From Mangalore Airport
+          </h4>
+          <p class="text-xs text-stone-600 mt-2">32 km Northbound via Surathkal (~38 Mins). Turn left at main Padubidri arch.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <h4 class="font-bold text-stone-800 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-lighthouse text-sky-700"></i> From Kaup Lighthouse
+          </h4>
+          <p class="text-xs text-stone-600 mt-2">11 km scenic coast road (~14 Mins). Direct connecting road to Blue Flag main gate.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center">
+        <a href="https://maps.google.com/?q=Padubidri+Blue+Flag+Beach+Karnataka" target="_blank" class="retro-btn-blue text-white text-xs font-bold uppercase px-6 py-2.5 rounded shadow inline-flex items-center gap-2">
+          <i class="fa-solid fa-map-pin"></i> Open Live Route in Google Maps / Waze
+        </a>
+      </div>
+    </section>
+
+    <!-- RESORTS & HOMESTAYS DIRECTORY -->
+    <section class="bg-[#fbf8f2] border border-[#d7c8b0] rounded p-5 sm:p-8 shadow-sm" id="stays">
+      <div class="border-b-2 border-dashed border-[#c2b299] pb-3 mb-6">
+        <span class="text-xs font-bold tracking-widest uppercase text-sky-700">Hospitality Directory</span>
+        <h2 class="heading-font text-3xl text-stone-900">Curated Stays Near Padubidri</h2>
+        <p class="text-xs text-stone-600">Hand-picked beachfront villas, coconut grove homestays, and family resorts within minutes of the Blue Flag gate.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Stay 1 -->
+        <div class="bg-white p-5 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <span class="bg-sky-100 text-sky-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Beachfront</span>
+              <span class="text-xs font-bold text-amber-600"><i class="fa-solid fa-star"></i> 4.8</span>
+            </div>
+            <h4 class="vintage-font text-xl text-stone-800 mt-2">Blue Wave Coastal Retreat</h4>
+            <p class="text-xs text-stone-600 mt-2">Direct sea facing lawn • 400m from Blue Flag gate.</p>
+            <span class="block mt-3 text-sm font-bold text-sky-800">Starting from ₹3,400 / night</span>
+          </div>
+          <button onclick="prefillInquiry('Stay Inquiry: Blue Wave Retreat')" class="mt-4 retro-btn-dark text-white text-xs font-bold uppercase py-2 px-3 rounded text-center">Contact Stay</button>
+        </div>
+
+        <!-- Stay 2 -->
+        <div class="bg-white p-5 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <span class="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Heritage</span>
+              <span class="text-xs font-bold text-amber-600"><i class="fa-solid fa-star"></i> 4.9</span>
+            </div>
+            <h4 class="vintage-font text-xl text-stone-800 mt-2">Sannidhi Palm Grove Homestay</h4>
+            <p class="text-xs text-stone-600 mt-2">Authentic coastal meals • Coconut orchard setting.</p>
+            <span class="block mt-3 text-sm font-bold text-sky-800">Starting from ₹2,200 / night</span>
+          </div>
+          <button onclick="prefillInquiry('Stay Inquiry: Sannidhi Homestay')" class="mt-4 retro-btn-dark text-white text-xs font-bold uppercase py-2 px-3 rounded text-center">Contact Stay</button>
+        </div>
+
+        <!-- Stay 3 -->
+        <div class="bg-white p-5 rounded border border-stone-300 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-start">
+              <span class="bg-emerald-100 text-emerald-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Pool Resort</span>
+              <span class="text-xs font-bold text-amber-600"><i class="fa-solid fa-star"></i> 4.7</span>
+            </div>
+            <h4 class="vintage-font text-xl text-stone-800 mt-2">Hejamadi Cove Resort</h4>
+            <p class="text-xs text-stone-600 mt-2">Swimming pool & estuary views • 4 km from beach.</p>
+            <span class="block mt-3 text-sm font-bold text-sky-800">Starting from ₹4,800 / night</span>
+          </div>
+          <button onclick="prefillInquiry('Stay Inquiry: Hejamadi Cove')" class="mt-4 retro-btn-dark text-white text-xs font-bold uppercase py-2 px-3 rounded text-center">Contact Stay</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="bg-[#f9f5ed] border border-[#d3c2a6] rounded p-5 sm:p-6 shadow-md" id="faq">
+      <div class="ribbon-banner-dark -mx-5 -mt-5 sm:-mx-6 sm:-mt-6 py-2 px-4 mb-6 text-center">
+        <h3 class="heading-font text-xl text-amber-50">Visitor Guidelines • Frequently Asked Questions</h3>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <h4 class="font-bold text-stone-800 text-sm">What are the photography and pre-wedding shoot rules?</h4>
+          <p class="text-xs text-stone-600 mt-1">Casual mobile photography is completely free. Commercial productions, drone videography, and pre-wedding photo shoots require a nominal sanitation token and clearance at the main gate reception counter.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <h4 class="font-bold text-stone-800 text-sm">Are pets allowed on the Blue Flag certified beach?</h4>
+          <p class="text-xs text-stone-600 mt-1">In strict accordance with international Blue Flag hygiene and sand purity mandates, domestic pets are restricted from the primary certified swimming shoreline to preserve water quality.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded border border-stone-300">
+          <h4 class="font-bold text-stone-800 text-sm">Do water sports operate during the monsoon season?</h4>
+          <p class="text-xs text-stone-600 mt-1">For passenger safety, motorized water sports and open-sea swimming are suspended during the high monsoon period (typically June through September). Kayaking in protected backwater channels continues when calm.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INQUIRY & BOOKING FORM -->
+    <section class="bg-[#fbf8f2] border border-[#d7c8b0] rounded p-5 sm:p-8 shadow-sm" id="inquiry">
+      <div class="border-b-2 border-dashed border-[#c2b299] pb-3 mb-6">
+        <span class="text-xs font-bold tracking-widest uppercase text-sky-700">Shoot & Event Inquiries</span>
+        <h2 class="heading-font text-3xl text-stone-900">Padubidri Beach Inquiry</h2>
+        <p class="text-xs text-stone-600">Fill out the details below. Local travel operators respond within 24 hours.</p>
+      </div>
+
+      <form id="inquiryForm" onsubmit="handleInquirySubmit(event)" class="space-y-4 max-w-xl mx-auto bg-white p-6 rounded border border-stone-300 shadow-sm">
         <div>
-          <h4 class="heading-font text-xl text-stone-800">Planning a trip to padubidribeach.com?</h4>
-          <p class="text-xs text-stone-600">Save the official location coordinates and emergency helpline numbers.</p>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Your Name</label>
+          <input type="text" id="inquiryName" required class="w-full text-xs p-2 bg-stone-50 border border-stone-300 rounded focus:ring-1 focus:ring-sky-600">
         </div>
-        <div class="flex gap-2">
-          <button onclick="copyDomain()" class="retro-btn-dark text-white text-xs font-bold uppercase px-4 py-2 rounded shadow">
-            <i class="fa-regular fa-copy mr-1"></i> Copy Domain URL
-          </button>
-          <a href="https://maps.google.com/?q=Padubidri+Blue+Flag+Beach+Karnataka" target="_blank" rel="noopener noreferrer" class="retro-btn-blue text-white text-xs font-bold uppercase px-4 py-2 rounded shadow inline-flex items-center gap-1">
-            <i class="fa-solid fa-location-arrow mr-1"></i> Open in Maps
-          </a>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Mobile / WhatsApp Number</label>
+          <input type="tel" id="inquiryPhone" required class="w-full text-xs p-2 bg-stone-50 border border-stone-300 rounded focus:ring-1 focus:ring-sky-600">
         </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Planned Visit Date / Group Size</label>
+          <input type="text" id="inquiryDate" placeholder="e.g. 24th Nov, 4 adults" class="w-full text-xs p-2 bg-stone-50 border border-stone-300 rounded focus:ring-1 focus:ring-sky-600">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-700 mb-1">Notes / Requirement</label>
+          <textarea id="inquiryNotes" rows="3" placeholder="Water sports package, pre-wedding shoot clearance, or stay recommendation..." class="w-full text-xs p-2 bg-stone-50 border border-stone-300 rounded focus:ring-1 focus:ring-sky-600"></textarea>
+        </div>
+
+        <button type="submit" class="w-full retro-btn-blue text-white text-xs font-bold uppercase py-2.5 rounded shadow">Submit Details</button>
+      </form>
+
+      <!-- Confirmation Box -->
+      <div id="inquirySuccess" class="hidden max-w-xl mx-auto bg-emerald-50 border border-emerald-300 p-6 rounded text-center">
+        <i class="fa-solid fa-circle-check text-3xl text-emerald-600 mb-2"></i>
+        <h4 class="vintage-font text-xl text-emerald-900">Inquiry Received!</h4>
+        <p class="text-xs text-stone-600 mt-1">Thank you. The local concierge / coordinator will get in touch via WhatsApp shortly.</p>
+        <button onclick="resetInquiryForm()" class="mt-4 retro-btn-dark text-white text-xs font-bold uppercase px-4 py-1.5 rounded">Done</button>
       </div>
     </section>
 
@@ -757,64 +1018,57 @@
 
   <!-- VINTAGE FOOTER -->
   <footer class="kraft-header border-t border-amber-900/30 py-8 px-4 text-center text-stone-800">
-    <div class="max-w-4xl mx-auto space-y-3">
+    <div class="max-w-4xl mx-auto space-y-4">
       <div class="flex justify-center items-center gap-2">
         <i class="fa-solid fa-star text-xs text-stone-600"></i>
-        <span class="heading-font text-2xl tracking-widest uppercase text-stone-900">PADUBIDRI BEACH</span>
+        <span class="heading-font text-2xl tracking-widest uppercase text-stone-900">PADUBIDRIBEACH.COM</span>
         <i class="fa-solid fa-star text-xs text-stone-600"></i>
       </div>
 
       <p class="text-xs text-stone-700 max-w-xl mx-auto">
-        Dedicated to promoting responsible, plastic-free coastal tourism in Karnataka. Blue Flag certified eco-beach maintaining the highest coastal conservation standards.
+        The independent digital guide and community resource for visitors, road-trippers, and travelers exploring Padubidri Blue Flag Beach in Udupi District, Coastal Karnataka.<br>
+        <span class="text-[11px] text-stone-600 font-semibold">GPS: 13.1362° N, 74.7865° E • NH 66 Coastal Route</span>
       </p>
 
-      <div class="flex flex-wrap justify-center gap-4 text-xs font-semibold text-stone-700 pt-2">
-        <a href="#home" class="hover:text-sky-800 underline">Top of Page</a>
-        <span>&bull;</span>
-        <a href="#activities" onclick="showModal('activitiesModal')" class="hover:text-sky-800 underline">Water Sports</a>
-        <span>&bull;</span>
-        <a href="#blueflag" onclick="showModal('blueflagModal')" class="hover:text-sky-800 underline">Blue Flag Criteria</a>
-        <span>&bull;</span>
-        <a href="#visitor-guide" onclick="showModal('guideModal')" class="hover:text-sky-800 underline">Visitor Guidelines</a>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-semibold text-stone-700 max-w-2xl mx-auto pt-2 text-left sm:text-center border-t border-stone-400/40">
+        <div>
+          <span class="block font-bold text-stone-900 uppercase text-[10px] tracking-wider mb-1">Quick Navigation</span>
+          <a href="#live-status" class="block hover:underline">Visitor Guide & Amenities</a>
+          <a href="#watersports" class="block hover:underline">Water Sports Pricing</a>
+          <a href="#live-status" class="block hover:underline">Sunset & Tide Times</a>
+          <a href="#transit" class="block hover:underline">Route from Udupi & Mangalore</a>
+          <a href="#stays" class="block hover:underline">Beach Resorts & Stays</a>
+        </div>
+        <div>
+          <span class="block font-bold text-stone-900 uppercase text-[10px] tracking-wider mb-1">Community & Bookings</span>
+          <a href="#inquiry" onclick="prefillInquiry('Pre-wedding photo shoot')" class="block hover:underline">Pre-Wedding Shoots</a>
+          <a href="#inquiry" onclick="prefillInquiry('List My Resort')" class="block hover:underline">List Your Resort / Homestay</a>
+          <a href="#inquiry" onclick="prefillInquiry('Group Water Sports')" class="block hover:underline">Group Water Sports</a>
+          <a href="mailto:contact@padubidribeach.com" class="block hover:underline">contact@padubidribeach.com</a>
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+          <span class="block font-bold text-stone-900 uppercase text-[10px] tracking-wider mb-1">Legal</span>
+          <a href="#rules" class="block hover:underline">Privacy Policy</a>
+          <a href="#rules" class="block hover:underline">Terms of Service</a>
+          <a href="#home" class="block hover:underline">Sitemap</a>
+        </div>
       </div>
 
       <div class="pt-4 border-t border-stone-400/40 text-[11px] text-stone-600">
-        &copy; <span id="currentYear"></span> padubidribeach.com &bull; Handcrafted Retro Theme inspired design &bull; Coastal Karnataka Tourism
+        © 2026 padubidribeach.com. All rights reserved. Independent community portal.
       </div>
     </div>
   </footer>
 
-  <!-- INTERACTIVE MODAL POPUP (Replaces alert/confirm) -->
-  <div id="infoModal" class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center p-4">
-    <div class="bg-[#fcf9f2] border-2 border-[#bfae95] rounded-sm max-w-md w-full p-6 relative shadow-2xl corner-fold">
-      <button onclick="closeModal()" class="absolute top-3 right-3 text-stone-600 hover:text-stone-900 text-lg p-1">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-      <div id="modalContent">
-        <!-- Injected via JavaScript -->
-      </div>
-
-      <div class="mt-5 pt-3 border-t border-dashed border-stone-300 flex justify-end">
-        <button onclick="closeModal()" class="retro-btn-blue text-white text-xs font-bold uppercase px-4 py-1.5 rounded">
-          Got It
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FLOATING FEEDBACK TOAST -->
+  <!-- FLOATING TOAST -->
   <div id="customToast" class="fixed bottom-5 right-5 z-50 bg-[#32363b] text-amber-50 text-xs px-4 py-2.5 rounded shadow-xl border border-amber-200/20 flex items-center gap-2">
     <i class="fa-solid fa-circle-check text-sky-400"></i>
     <span id="toastMsg">Action completed</span>
   </div>
 
-  <!-- JAVASCRIPT FOR SLIDER AND INTERACTIVITY -->
+  <!-- JAVASCRIPT -->
   <script>
-    // Set Current Year dynamically
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-    // Mobile Single Menu Toggle Functionality
+    // Navigation Toggle
     function toggleMobileMenu() {
       const menu = document.getElementById('mobileDropdownMenu');
       const icon = document.getElementById('mobileMenuIcon');
@@ -827,42 +1081,36 @@
       }
     }
 
-    function handleMobileSearch() {
-      const input = document.getElementById('mobileSearchInput');
-      const val = input ? input.value.trim().toLowerCase() : '';
-      if (!val) {
-        showNotice("Enter a search term");
-        return;
-      }
-      toggleMobileMenu();
-      if (val.includes("sport") || val.includes("boat") || val.includes("activity")) {
-        showModal('activitiesModal');
-      } else if (val.includes("flag") || val.includes("clean") || val.includes("certif")) {
-        showModal('blueflagModal');
+    // Auto Fare Estimator
+    function calculateFare() {
+      const dist = parseFloat(document.getElementById('pickupPoint').value);
+      const trip = parseInt(document.getElementById('tripType').value);
+      const output = document.getElementById('calculatedFare');
+
+      let minFare, maxFare;
+
+      if (dist === 2.4) {
+        minFare = trip === 1 ? 50 : 150;
+        maxFare = trip === 1 ? 70 : 200;
+      } else if (dist === 5.8) {
+        minFare = trip === 1 ? 120 : 280;
+        maxFare = trip === 1 ? 160 : 350;
+      } else if (dist === 12) {
+        minFare = trip === 1 ? 250 : 500;
+        maxFare = trip === 1 ? 320 : 600;
       } else {
-        showModal('guideModal');
+        minFare = trip === 1 ? 380 : 700;
+        maxFare = trip === 1 ? 450 : 850;
       }
+
+      output.textContent = `₹${minFare} – ₹${maxFare}`;
     }
 
-    if (document.getElementById('mobileSearchInput')) {
-      document.getElementById('mobileSearchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') handleMobileSearch();
-      });
-    }
-
-    // SLIDER ENGINE
+    // Slider Engine
     const slides = document.querySelectorAll('.slide-item');
-    const dots = document.querySelectorAll('.dot-indicator');
     const prevBtn = document.getElementById('prevSlideBtn');
     const nextBtn = document.getElementById('nextSlideBtn');
-    const pauseToggleBtn = document.getElementById('pauseToggleBtn');
-    const pauseIcon = document.getElementById('pauseIcon');
-    const pauseText = document.getElementById('pauseText');
-
     let currentSlide = 0;
-    let autoSlideInterval = null;
-    let isPlaying = true;
-    const SLIDE_DURATION = 4500; // 4.5 seconds
 
     function showSlide(index) {
       if (index >= slides.length) currentSlide = 0;
@@ -870,225 +1118,78 @@
       else currentSlide = index;
 
       slides.forEach((slide, idx) => {
-        if (idx === currentSlide) {
-          slide.classList.add('active');
-        } else {
-          slide.classList.remove('active');
-        }
-      });
-
-      dots.forEach((dot, idx) => {
-        if (idx === currentSlide) {
-          dot.classList.add('active');
-        } else {
-          dot.classList.remove('active');
-        }
+        if (idx === currentSlide) slide.classList.add('active');
+        else slide.classList.remove('active');
       });
     }
 
-    function nextSlide() {
+    nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+    prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+
+    setInterval(() => {
       showSlide(currentSlide + 1);
-    }
+    }, 5000);
 
-    function prevSlide() {
-      showSlide(currentSlide - 1);
-    }
-
-    function goToSlide(index) {
-      showSlide(index);
-      resetAutoSlide();
-    }
-
-    function startAutoSlide() {
-      if (autoSlideInterval) clearInterval(autoSlideInterval);
-      autoSlideInterval = setInterval(nextSlide, SLIDE_DURATION);
-      isPlaying = true;
-      pauseIcon.className = "fa-solid fa-pause text-[9px]";
-      pauseText.textContent = "Auto-sliding";
-    }
-
-    function stopAutoSlide() {
-      if (autoSlideInterval) clearInterval(autoSlideInterval);
-      isPlaying = false;
-      pauseIcon.className = "fa-solid fa-play text-[9px]";
-      pauseText.textContent = "Slide Paused";
-    }
-
-    function resetAutoSlide() {
-      if (isPlaying) {
-        startAutoSlide();
-      }
-    }
-
-    // Slider Event Listeners
-    nextBtn.addEventListener('click', () => {
-      nextSlide();
-      resetAutoSlide();
-    });
-
-    prevBtn.addEventListener('click', () => {
-      prevSlide();
-      resetAutoSlide();
-    });
-
-    pauseToggleBtn.addEventListener('click', () => {
-      if (isPlaying) {
-        stopAutoSlide();
-        showNotice('Slider paused');
-      } else {
-        startAutoSlide();
-        showNotice('Slider resumed');
-      }
-    });
-
-    // Touch swipe support for mobile
-    const heroSlider = document.getElementById('home');
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    heroSlider.addEventListener('touchstart', e => {
-      touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    heroSlider.addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleGesture();
-    }, { passive: true });
-
-    function handleGesture() {
-      if (touchEndX < touchStartX - 40) {
-        // Swipe Left -> Next
-        nextSlide();
-        resetAutoSlide();
-      }
-      if (touchEndX > touchStartX + 40) {
-        // Swipe Right -> Prev
-        prevSlide();
-        resetAutoSlide();
-      }
-    }
-
-    // Modal Handling (Replaces alert())
-    const modal = document.getElementById('infoModal');
-    const modalContent = document.getElementById('modalContent');
-
-    const modalData = {
-      blueflagModal: `
-        <div class="ribbon-banner-blue -mx-6 -mt-6 py-2 px-4 mb-4 text-center">
-          <h3 class="heading-font text-lg text-white">Padubidri Blue Flag Certification</h3>
-        </div>
-        <p class="text-xs text-stone-600 mb-3 leading-relaxed">
-          The <strong>Blue Flag</strong> is one of the world's most recognized voluntary eco-labels awarded to beaches, marinas, and sustainable tourism boats. Padubidri was rigorously audited and certified under Denmark's FEE.
-        </p>
-        <div class="bg-amber-100/60 p-3 rounded text-xs space-y-1.5 text-stone-700 border border-amber-300">
-          <p><strong>1. Bathing Water Quality:</strong> Strictly tested every fortnight.</p>
-          <p><strong>2. Environmental Management:</strong> Zero plastic zone, clean toilets, gray-water recycling.</p>
-          <p><strong>3. Safety & Services:</strong> First-aid facilities, professional beach rescuers, life buoys.</p>
-          <p><strong>4. Universal Access:</strong> Wheelchair ramps directly approaching the shoreline.</p>
-        </div>
-      `,
-      activitiesModal: `
-        <div class="ribbon-banner-dark -mx-6 -mt-6 py-2 px-4 mb-4 text-center">
-          <h3 class="heading-font text-lg text-amber-50">Watersports & Activities</h3>
-        </div>
-        <p class="text-xs text-stone-600 mb-3 leading-relaxed">
-          From adrenaline rushes to quiet contemplation, here is what you can experience at Padubidri:
-        </p>
-        <ul class="text-xs text-stone-700 space-y-2 border-l-2 border-sky-600 pl-3">
-          <li><strong>Jet Ski & Water Scooter:</strong> Supervised rides along designated deep water corridors.</li>
-          <li><strong>Banana & Bumper Rides:</strong> Perfect for groups and families.</li>
-          <li><strong>Padubidri River Estuary Boating:</strong> Peaceful boat rides where the Kamini river meets the sea.</li>
-          <li><strong>Beach Volleyball & Play Yard:</strong> Standard courts and dedicated swing sets for children.</li>
-        </ul>
-      `,
-      guideModal: `
-        <div class="ribbon-banner-blue -mx-6 -mt-6 py-2 px-4 mb-4 text-center">
-          <h3 class="heading-font text-lg text-white">Visitor Guide & Regulations</h3>
-        </div>
-        <div class="text-xs text-stone-700 space-y-2">
-          <p><strong>Timings:</strong> 8:00 AM to 7:00 PM every day.</p>
-          <p><strong>Entry Ticket:</strong> ₹10 for adults, ₹5 for children (funds maintenance & eco conservation).</p>
-          <p><strong>Guidelines:</strong></p>
-          <ul class="list-disc pl-5 space-y-1 text-stone-600">
-            <li>Single-use plastic bottles and polythene bags are strictly forbidden.</li>
-            <li>No alcohol consumption or littering on the beach grounds.</li>
-            <li>Follow lifeguard flag warnings (Red flag indicates rough sea).</li>
-          </ul>
-        </div>
-      `
-    };
-
-    function showModal(type) {
-      if (modalData[type]) {
-        modalContent.innerHTML = modalData[type];
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-      }
-    }
-
-    function closeModal() {
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    // Toast message function
+    // Toast helper
     function showNotice(text) {
       const toast = document.getElementById('customToast');
       const toastMsg = document.getElementById('toastMsg');
       toastMsg.textContent = text;
       toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    // Copy Domain button helper (uses execCommand fallback for iFrame compatibility)
-    function copyDomain() {
+    // Clipboard helpers
+    function copyGPS() {
       const dummy = document.createElement("input");
       document.body.appendChild(dummy);
-      dummy.value = "https://padubidribeach.com";
+      dummy.value = "13.1362, 74.7865";
       dummy.select();
       document.execCommand("copy");
       document.body.removeChild(dummy);
-      showNotice("Copied padubidribeach.com to clipboard!");
+      showNotice("GPS Coordinates (13.1362, 74.7865) copied!");
     }
 
-    // Search Box Functionality
-    function handleSearch() {
-      const val = document.getElementById('searchInput').value.trim().toLowerCase();
-      if (!val) {
-        showNotice("Please enter a term (e.g., 'water sports', 'timing', 'parking')");
-        return;
-      }
-      if (val.includes("sport") || val.includes("boat") || val.includes("activity")) {
-        showModal('activitiesModal');
-      } else if (val.includes("flag") || val.includes("clean") || val.includes("certif")) {
-        showModal('blueflagModal');
+    // Inquiry Prefill & Form Handling
+    function prefillInquiry(topic) {
+      document.getElementById('inquiryNotes').value = `Inquiry regarding: ${topic}`;
+      document.getElementById('inquiry').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function handleInquirySubmit(e) {
+      e.preventDefault();
+      document.getElementById('inquiryForm').classList.add('hidden');
+      document.getElementById('inquirySuccess').classList.remove('hidden');
+      showNotice("Inquiry sent successfully!");
+    }
+
+    function resetInquiryForm() {
+      document.getElementById('inquiryForm').reset();
+      document.getElementById('inquiryForm').classList.remove('hidden');
+      document.getElementById('inquirySuccess').classList.add('hidden');
+    }
+
+    // Countdown clock calculation for 6:00 PM cutoff
+    function updateCountdown() {
+      const now = new Date();
+      const cutoff = new Date();
+      cutoff.setHours(18, 0, 0, 0);
+
+      const diff = cutoff - now;
+      const el = document.getElementById('timeRemaining');
+
+      if (diff <= 0) {
+        el.textContent = "Gate Ticket Counter Closed for Today";
+        el.classList.add("text-rose-800");
       } else {
-        showModal('guideModal');
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        el.textContent = `${hours}h ${mins}m until Gate Lock-in`;
       }
     }
 
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        handleSearch();
-      }
-    });
-
-    // Close modal on escape key
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
-
-    // Close modal on outside click
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // Initialize Auto Slider on window load
-    window.onload = function() {
-      startAutoSlide();
-    };
+    updateCountdown();
+    setInterval(updateCountdown, 60000);
   </script>
 </body>
-  </html>
+</html>
